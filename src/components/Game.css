@@ -1,4 +1,33 @@
-#gameCanvas {
-
+#groundLayer {
+    position: absolute; 
+    left: 0; 
+    top: 0; 
+    z-index: 0;
 }
-    
+#splatLayer{
+    position: absolute; 
+    left: 0; 
+    top: 0; 
+    z-index: 0;
+}
+
+#fieldLayer{
+    position: absolute; 
+    left: 0; 
+    top: 0; 
+    z-index: 0;
+}
+
+#playerLayer{
+    position: absolute; 
+    left: 0; 
+    top: 0; 
+    z-index: 0;
+}
+
+#itemLayer{
+    position: absolute; 
+    left: 0; 
+    top: 0; 
+    z-index: 0;
+}

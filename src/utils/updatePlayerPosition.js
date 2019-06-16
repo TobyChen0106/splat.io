@@ -31,23 +31,21 @@ export const updatePlayerPosition = (gameState, playerPosition, playerMoveDirect
       const centerX = objects[i][1] + objects[i][3] / 2;
       const centerY = objects[i][2] + objects[i][4] / 2;
 
-      if ( Math.abs(new_x - centerX)< (objects[i][3] +playerWidth)/ 2 && Math.abs(new_y - centerY)< (objects[i][4]+playerHeight) / 2 ){
+
+      if (Math.abs(new_x - centerX) < (objects[i][3] + playerWidth) / 2 && Math.abs(new_y - centerY) < (objects[i][4] + playerHeight) / 2) {
         // collision occured
-        
-        const temp_new_x = p_x;
-        if ( Math.abs(temp_new_x - centerX)< (objects[i][3] +playerWidth)/ 2 && Math.abs(new_y - centerY)< (objects[i][4]+playerHeight) / 2 ){
-          const temp_new_y = p_y;
-          if ( Math.abs(temp_new_x - centerX)< (objects[i][3] +playerWidth)/ 2 && Math.abs(temp_new_y - centerY)< (objects[i][4]+playerHeight) / 2 ){
-            new_x = p_x;
-            new_y = p_y;
-          }else{
-            //adjust works
-            new_y = p_y;
-          }
-        }else{
-          //adjust works
-          new_x = p_x;
+        const temp_new_x = p_x < centerX ? centerX - (objects[i][3] + playerWidth) / 2 : centerX + (objects[i][3] + playerWidth) / 2;
+        const temp_new_y = p_y < centerY ? centerY - (objects[i][4] + playerHeight) / 2 : centerY + (objects[i][4] + playerHeight) / 2;
+
+        if (Math.abs(temp_new_x - p_x) < Math.abs(temp_new_y - p_y)) {
+          new_x = temp_new_x;
+        } else if (Math.abs(temp_new_x - p_x) > Math.abs(temp_new_y - p_y)) {
+          new_y = temp_new_y;
+        } else {
+          new_x = temp_new_x;
+          new_y = temp_new_y;
         }
+        
       }
     }
 

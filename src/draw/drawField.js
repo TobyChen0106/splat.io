@@ -9,9 +9,12 @@ export const drawField = (c) => {
     context.save();
     // console.log(field.fieldRange)
     //draw the ground
-    context.fillStyle = "#aaaaaa";
-    context.fillRect(field.fieldRange.xMin, field.fieldRange.yMin, field.fieldRange.xMax, field.fieldRange.yMax);
-
+    // context.fillStyle = "#aaaaaa";
+    // context.fillRect(field.fieldRange.xMin, field.fieldRange.yMin, field.fieldRange.xMax-field.fieldRange.xMin, field.fieldRange.yMax-field.fieldRange.yMin);
+    
+    context.strokeStyle = "#333333";
+    context.lineWidth = 10;
+    context.strokeRect(field.fieldRange.xMin, field.fieldRange.yMin, field.fieldRange.xMax-field.fieldRange.xMin, field.fieldRange.yMax-field.fieldRange.yMin);
     // draw the objects
     for (var i = 0; i < objects.length; ++i) {
         switch (objects[i][0]) {

@@ -10,7 +10,8 @@ export const drawPlayer = (c, state) => {
     const playerStatus= state.playerStatus
     
     var context = c.getContext("2d");
-
+    context.clearRect(0, 0, c.width, c.height);
+    
     context.save();
     context.translate(playerPosition.x, playerPosition.y)
 
@@ -20,6 +21,10 @@ export const drawPlayer = (c, state) => {
     //draw the player part moving with mouse 
     context.fillStyle = playerColor;
     context.fillRect(-playerWidth/2, -playerHeight/2, playerWidth, playerHeight);
+    context.strokeStyle = "#33333344";
+    context.lineWidth = 5;
+    context.strokeRect(-playerWidth/2, -playerHeight/2, playerWidth, playerHeight);
+
     context.fillStyle = "#33cc59";
     context.fillRect(-playerWidth/2, -playerHeight/2, 15, 15);
     context.fillStyle = "#33a6cc";
@@ -33,10 +38,12 @@ export const drawPlayer = (c, state) => {
     const playerNameLen = context.measureText(playerName).width;    
 
     context.strokeStyle = "#dddddd";
+    context.lineWidth = 3;
     context.strokeText(playerName, -playerNameLen/2, 50)
 
     context.fillStyle = "#111111";
     context.font = "bold 20pt Arial";
+    
     context.fillText(playerName, -playerNameLen/2, 50);
     //end of player drawing
     context.restore();

@@ -1,6 +1,6 @@
 import React from 'react';
 import './Game.css';
-import { drawPlayer, drawField } from '../draw'
+import { drawPlayer, drawField, drawSplat } from '../draw'
 
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
 import {
@@ -9,15 +9,17 @@ import {
     getMousePos,
     calculatePlayerAngle,
     updatePlayerPosition,
+    getSplats,
 } from '../utils'
 
 class Game extends React.Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
-            gameBoardWidth: 1500,
-            gameBoardHeight: 800,
+            gameBoardWidth: 1600,
+            gameBoardHeight: 900,
             gameState: GAME_STATE.GAMING,
 
             //player info
@@ -26,7 +28,7 @@ class Game extends React.Component {
             playerPosition: { x: 100, y: 100 },
             playerAngle: 0,
             playerStatus: PLAYER_STATUS.STANDING,
-            playerMoveSpeed: 10,
+            playerMoveSpeed: 5,
             playerMoveDirection: { x: 0, y: 0 },
             playerEquipment: {
                 mainWeapon: 0,
@@ -36,6 +38,13 @@ class Game extends React.Component {
 
             keyStrokeState: { left: 0, right: 0, up: 0, down: 0, space: 0, g: 0 },
             mouseMoveState: { x: 0, y: 0 },
+            // refs: {
+            //     groundRef: this.groundRef,
+            //     splatRef: this.splatRef,
+            //     fieldRef: this.fieldRef,
+            //     playerRef: this.playerRef,
+            //     itemRef: this.itemRef,
+            // },
         }
     }
 
@@ -50,20 +59,18 @@ class Game extends React.Component {
     }
 
     trackMouse = e => {
-        const c = this.canvasRef;
-
+        const c = this.playerRef;
         const mousePos = getMousePos(c, e)
-
         this.setState({ mouseMoveState: mousePos })
     }
 
     handleClick = e => {
-
+        const splat = getSplats(this.state);
+        drawSplat(this.splatRef, splat, this.state.playerColor);
     }
 
     updateGame = () => {
         // get cnavas
-        var c = this.canvasRef;
 
         // get player angle
         const playerAngle = calculatePlayerAngle(this.state.playerPosition.x, this.state.playerPosition.y, this.state.mouseMoveState.x, this.state.mouseMoveState.y)
@@ -71,13 +78,12 @@ class Game extends React.Component {
 
         // get player position
         updatePlayerPosition(this.state.gameState, this.state.playerPosition, this.state.playerMoveDirection, this.state.playerMoveSpeed);
-
-        var context = c.getContext("2d");
-
-        context.clearRect(0, 0, c.width, c.height);
-
-        drawField(c)
-        drawPlayer(c, this.state)
+        
+        //draw filed
+        drawField(this.fieldRef);
+        
+        //draw player 
+        drawPlayer(this.playerRef, this.state);
     }
 
     componentDidMount = () => {
@@ -94,7 +100,11 @@ class Game extends React.Component {
     render() {
         return (
             <div>
-                <canvas id="gameCanvas" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.canvasRef = el} />
+                <canvas id="groundLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.groundRef = el} />
+                <canvas id="splatLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.splatRef = el} />
+                <canvas id="fieldLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.fieldRef = el} />
+                <canvas id="playerLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.playerRef = el} />
+                <canvas id="itemLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.itemRef = el} />
             </div>
         );
     }
