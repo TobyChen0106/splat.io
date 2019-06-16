@@ -19,6 +19,8 @@ class Game extends React.Component {
         this.state = {
             gameBoardWidth: 1600,
             gameBoardHeight: 900,
+            cameraSize: 1000,
+
             gameState: GAME_STATE.GAMING,
 
             //player info
@@ -55,8 +57,8 @@ class Game extends React.Component {
     trackMouse = e => {
         const c = this.playerRef;
         var mousePos = getMousePos(c, e)
-        mousePos.x -= this.state.playerPosition.x; 
-        mousePos.y -= this.state.playerPosition.y; 
+        mousePos.x -= this.state.playerPosition.x;
+        mousePos.y -= this.state.playerPosition.y;
         this.setState({ mouseMoveState: mousePos })
     }
 
@@ -75,8 +77,8 @@ class Game extends React.Component {
         this.setState({ playerAngle: playerAngle })
 
         // get player position
-        updatePlayerPosition(this.state.gameState, this.state.playerPosition, this.state.playerMoveDirection, this.state.playerMoveSpeed);
-
+        const new_playerPosition = updatePlayerPosition(this.state.gameState, this.state.playerPosition, this.state.playerMoveDirection, this.state.playerMoveSpeed);
+        this.setState({ new_playerPosition });
         //draw filed
         drawField(this.fieldRef);
 
@@ -103,15 +105,14 @@ class Game extends React.Component {
     }
 
     render() {
-        const cameraSize = 1000;
         return (
             <svg className="App"
                 preserveAspectRatio="xMidYMid meet"
                 viewBox={
-                    [cameraSize / -2 + this.state.playerPosition.x,
-                    cameraSize / -4 + this.state.playerPosition.y,
-                        cameraSize,
-                        cameraSize]}>
+                    [this.state.cameraSize / -2 + this.state.playerPosition.x,
+                    this.state.cameraSize / -4 + this.state.playerPosition.y,
+                    this.state.cameraSize,
+                    this.state.cameraSize]}>
                 <foreignObject x="0" y="0" width="10000" height="10000">
                     <canvas id="groundLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.groundRef = el} />
                     <canvas id="realSplatLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.realSplatRef = el} />
