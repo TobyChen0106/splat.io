@@ -16,7 +16,6 @@ class Game extends React.Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             gameBoardWidth: 1600,
             gameBoardHeight: 900,
@@ -39,13 +38,7 @@ class Game extends React.Component {
 
             keyStrokeState: { left: 0, right: 0, up: 0, down: 0, space: 0, g: 0 },
             mouseMoveState: { x: 0, y: 0 },
-            // refs: {
-            //     groundRef: this.groundRef,
-            //     splatRef: this.splatRef,
-            //     fieldRef: this.fieldRef,
-            //     playerRef: this.playerRef,
-            //     itemRef: this.itemRef,
-            // },
+            mouseDownState: 0,
         }
     }
 
@@ -61,13 +54,17 @@ class Game extends React.Component {
 
     trackMouse = e => {
         const c = this.playerRef;
-        const mousePos = getMousePos(c, e)
+        var mousePos = getMousePos(c, e)
+        mousePos.x -= this.state.playerPosition.x; 
+        mousePos.y -= this.state.playerPosition.y; 
         this.setState({ mouseMoveState: mousePos })
     }
 
-    handleClick = e => {
-        const splat = getSplats(this.state);
-        drawSplat(this.splatRef, splat, this.state.playerColor);
+    mouseDown = e => {
+        this.setState({ mouseDownState: 1 });
+    }
+    mouseUp = e => {
+        this.setState({ mouseDownState: 0 });
     }
 
     updateGame = () => {
@@ -79,10 +76,16 @@ class Game extends React.Component {
 
         // get player position
         updatePlayerPosition(this.state.gameState, this.state.playerPosition, this.state.playerMoveDirection, this.state.playerMoveSpeed);
-        
+
         //draw filed
         drawField(this.fieldRef);
-        
+
+        // draw splat if clicked
+        if (this.state.mouseDownState === 1) {
+            const splat = getSplats(this.state);
+            drawSplat(this.realSplatRef, splat, this.state.playerColor);
+        }
+
         //draw player 
         drawPlayer(this.playerRef, this.state);
     }
@@ -91,7 +94,8 @@ class Game extends React.Component {
         window.addEventListener("keyup", this.onKeyUp);
         window.addEventListener("keydown", this.onKeyDown);
         window.addEventListener("mousemove", this.trackMouse);
-        window.addEventListener("click", this.handleClick);
+        window.addEventListener("mousedown", this.mouseDown);
+        window.addEventListener("mouseup", this.mouseUp);
 
         setInterval(() => {
             this.updateGame();
@@ -99,14 +103,24 @@ class Game extends React.Component {
     }
 
     render() {
+        const cameraSize = 1000;
         return (
-            <div>
-                <canvas id="groundLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.groundRef = el} />
-                <canvas id="splatLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.splatRef = el} />
-                <canvas id="fieldLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.fieldRef = el} />
-                <canvas id="playerLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.playerRef = el} />
-                <canvas id="itemLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.itemRef = el} />
-            </div>
+            <svg className="App"
+                preserveAspectRatio="xMidYMid meet"
+                viewBox={
+                    [cameraSize / -2 + this.state.playerPosition.x,
+                    cameraSize / -4 + this.state.playerPosition.y,
+                        cameraSize,
+                        cameraSize]}>
+                <foreignObject x="0" y="0" width="10000" height="10000">
+                    <canvas id="groundLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.groundRef = el} />
+                    <canvas id="realSplatLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.realSplatRef = el} />
+                    <canvas id="splatLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.splatRef = el} />
+                    <canvas id="fieldLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.fieldRef = el} />
+                    <canvas id="playerLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.playerRef = el} />
+                    <canvas id="itemLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.itemRef = el} />
+                </foreignObject>
+            </svg>
         );
     }
 }
