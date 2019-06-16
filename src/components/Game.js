@@ -25,6 +25,7 @@ class Game extends React.Component {
             //player info
             playerName: "player",
             playerColor: "#ff6666",
+            playerHealth: 100,
             playerPosition: { x: 100, y: 100 },
             playerAngle: 0,
             playerStatus: PLAYER_STATUS.STANDING,
