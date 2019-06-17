@@ -2,6 +2,7 @@ import { battleField_1 } from '../field'
 
 // line = []
 var lines = [];
+var timeLog = 0;
 export const getSplats = (state) => {
     const angle = state.playerAngle;
     const p_x = state.playerPosition.x;
@@ -11,14 +12,20 @@ export const getSplats = (state) => {
 
     const field = battleField_1;
     const objects = field.objects;
+    
     var splats = [];
     var aimPoints = [];
+    var bullets = [];
 
     // find shoot line
     switch (state.playerEquipment.mainWeapon) {
         case 0:
+            const maxShootDistance = 300;
+            const bulletSpeed = 30;
+            const fireSpeed = 200; // ms
+
             const mouseLength = Math.pow(Math.pow(m_x - p_x, 2) + Math.pow(m_y - p_y, 2), 0.5);
-            const shootDistance = Math.min(mouseLength, 300);
+            const shootDistance = Math.min(mouseLength, maxShootDistance);
             const d_x = p_x + Math.sin(angle / 180 * Math.PI) * shootDistance;
             const d_y = p_y - Math.cos(angle / 180 * Math.PI) * shootDistance;
 
@@ -61,11 +68,37 @@ export const getSplats = (state) => {
             c_x = Math.min(Math.max(c_x, field.fieldRange.xMin), field.fieldRange.xMax);
             c_y = Math.min(Math.max(c_y, field.fieldRange.yMin), field.fieldRange.yMax);
             aimPoints.push([c_x, c_y]);
-            splats.push([c_x, c_y, 50]);
-
+            // splats.push([c_x, c_y, 50]);
+            // line (type, current_point_x, current_point_y, end_point_x, end_point_y, d_x, d_y)
+            if(state.mouseDownState === 1 && state.timeStamp - timeLog > fireSpeed){
+                timeLog = state.timeStamp;
+                lines.push([0, p_x, p_y, c_x, c_y, 
+                    Math.sin(angle / 180 * Math.PI) * bulletSpeed, Math.cos(angle / 180 * Math.PI) * bulletSpeed]);
+            }
+            
             break;
         default:
             break;
     }
-    return [splats, aimPoints];
+
+    // update line and get bullet
+    for ( var l = 0 ; l < lines.length ; ++l){
+        lines[l][1]+=lines[l][5];
+        lines[l][2]-=lines[l][6];
+
+        // bullet = [type, x, y]
+        bullets.push([0, lines[l][1], lines[l][2]]);
+        
+        // check if create splat
+        if ( Math.abs(lines[l][1]-lines[l][3])< Math.abs(lines[l][5])  || Math.abs(lines[l][2]-lines[l][4])< Math.abs(lines[l][6])){
+            console.log('splat',lines[l][3], lines[l][4])
+            splats.push([lines[l][3], lines[l][4], 50]);
+            
+            lines.splice(l, 1);;
+            --l;
+            continue;
+        }
+    }
+    console.log([bullets, splats, aimPoints]);
+    return [bullets, splats, aimPoints];
 }

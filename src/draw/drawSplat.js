@@ -1,5 +1,5 @@
 
-export const drawSplat = (c, splat, playerColor, image) => {
+export const drawSplat = (c, splat, playerColor) => {
 
     var context = c.getContext("2d");
     context.save();

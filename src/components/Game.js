@@ -1,6 +1,7 @@
 import React from 'react';
 import './Game.css';
-import { drawPlayer, drawField, drawSplat, drawAimPoint } from '../draw'
+import { drawPlayer, drawField, drawSplat, drawAimPoint, drawBullet, } from '../draw'
+
 
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
 import {
@@ -43,6 +44,8 @@ class Game extends React.Component {
             mousePosition: { x: 0, y: 0 },
             mouseClient: { x: 0, y: 0 },
             mouseDownState: 0,
+
+            timeStamp: Date.now(),
         }
     }
 
@@ -86,29 +89,36 @@ class Game extends React.Component {
         // get filed property
         canvas = this.splatRef;
         var c = canvas.getContext('2d');
-        var p = c.getImageData(this.state.playerPosition.x, this.state.playerPosition.y, 1, 1).data; 
-        
+        var p = c.getImageData(this.state.playerPosition.x, this.state.playerPosition.y, 1, 1).data;
+
         // console.log(p);
-        
+
         // get player position
         const new_playerPosition = updatePlayerPosition(this.state.gameState, this.state.playerPosition, this.state.playerMoveDirection, this.state.playerMoveSpeed);
         this.setState({ new_playerPosition });
-        
+
         //draw filed
         drawField(this.fieldRef);
 
-        // draw splat if clicked
-        const [splat ,aimPoints] = getSplats(this.state);
+        // get splat (include draw bullet)
+        var [bullets, splats, aimPoints] = getSplats(this.state);
 
-        if (this.state.mouseDownState === 1) {
-            drawSplat(this.splatRef, splat, this.state.playerColor);
-        }
+        // draw splat
+        drawSplat(this.splatRef, splats, this.state.playerColor);
+
+        // draw bullet 
+        drawBullet(this.bulletRef, bullets, this.state.playerColor);
 
         //draw player 
         drawPlayer(this.playerRef, this.state);
 
         // draw aim point
         drawAimPoint(this.aimPointRef, this.state.playerPosition, this.state.mousePosition, this.state.playerAngle, aimPoints);
+
+        // update time
+        var new_time = Date.now();
+        // console.log(1/(new_time-this.state.timeStamp)*1000);
+        this.setState({ timeStamp: new_time });
     }
 
     componentDidMount = () => {
@@ -120,7 +130,7 @@ class Game extends React.Component {
 
         setInterval(() => {
             this.updateGame();
-        }, 20);
+        }, 25);
     }
 
     render() {
@@ -141,6 +151,7 @@ class Game extends React.Component {
                     <canvas id="fieldLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.fieldRef = el} />
                     <canvas id="playerLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.playerRef = el} />
                     <canvas id="itemLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.itemRef = el} />
+                    <canvas id="bulletLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.bulletRef = el} />
                     <canvas id="aimPointLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.aimPointRef = el} />
                 </foreignObject>
             </svg>
