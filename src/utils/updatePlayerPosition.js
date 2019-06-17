@@ -10,7 +10,7 @@ export const updatePlayerPosition = (gameState, playerPosition, playerMoveDirect
     const p_x = playerPosition.x;
     const p_y = playerPosition.y;
 
-    var speed = playerMoveSpeed
+    var speed = playerMoveSpeed;
 
 
     const d_x = playerMoveDirection.x;
@@ -30,7 +30,6 @@ export const updatePlayerPosition = (gameState, playerPosition, playerMoveDirect
     for (var i = 0; i < objects.length; ++i) {
       const centerX = objects[i][1] + objects[i][3] / 2;
       const centerY = objects[i][2] + objects[i][4] / 2;
-
 
       if (Math.abs(new_x - centerX) < (objects[i][3] + playerWidth) / 2 && Math.abs(new_y - centerY) < (objects[i][4] + playerHeight) / 2) {
         // collision occured

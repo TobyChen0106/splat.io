@@ -7,7 +7,7 @@ export const drawSplat = (c, splat, playerColor, image) => {
 
     for (var i = 0; i < splat.length; ++i) {
         context.fillStyle = playerColor;
-        drawCircle(context, splat[i][0], splat[i][1], splat[i][2], 10);
+        drawCircle(context, splat[i][0], splat[i][1], splat[i][2], 20);
     }
 
     // image.src = context.canvas.toDataURL();

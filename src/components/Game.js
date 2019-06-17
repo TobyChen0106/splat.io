@@ -1,6 +1,6 @@
 import React from 'react';
 import './Game.css';
-import { drawPlayer, drawField, drawSplat } from '../draw'
+import { drawPlayer, drawField, drawSplat, drawAimPoint } from '../draw'
 
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
 import {
@@ -73,30 +73,42 @@ class Game extends React.Component {
         const windowHeight = window.innerHeight;
         const windowWidth = window.innerWidth;
         this.mouseScale = windowWidth > windowHeight ? this.state.cameraSize / windowWidth : this.state.cameraSize / windowHeight;
-        
+
         // get and set mouse position
         var canvas = this.groundRef;
         var rect = canvas.getBoundingClientRect();
         this.setState({ mousePosition: { x: (this.state.mouseClient.x - rect.left) * this.mouseScale, y: (this.state.mouseClient.y - rect.top) * this.mouseScale } });
-        
+
         // get and set player angle
         const playerAngle = calculatePlayerAngle(this.state.playerPosition.x, this.state.playerPosition.y, this.state.mousePosition.x, this.state.mousePosition.y)
         this.setState({ playerAngle: playerAngle })
 
+        // get filed property
+        canvas = this.splatRef;
+        var c = canvas.getContext('2d');
+        var p = c.getImageData(this.state.playerPosition.x, this.state.playerPosition.y, 1, 1).data; 
+        
+        // console.log(p);
+        
         // get player position
         const new_playerPosition = updatePlayerPosition(this.state.gameState, this.state.playerPosition, this.state.playerMoveDirection, this.state.playerMoveSpeed);
         this.setState({ new_playerPosition });
+        
         //draw filed
         drawField(this.fieldRef);
 
         // draw splat if clicked
+        const [splat ,aimPoints] = getSplats(this.state);
+
         if (this.state.mouseDownState === 1) {
-            const splat = getSplats(this.state);
             drawSplat(this.splatRef, splat, this.state.playerColor);
         }
 
         //draw player 
         drawPlayer(this.playerRef, this.state);
+
+        // draw aim point
+        drawAimPoint(this.aimPointRef, this.state.playerPosition, this.state.mousePosition, this.state.playerAngle, aimPoints);
     }
 
     componentDidMount = () => {
@@ -129,6 +141,7 @@ class Game extends React.Component {
                     <canvas id="fieldLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.fieldRef = el} />
                     <canvas id="playerLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.playerRef = el} />
                     <canvas id="itemLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.itemRef = el} />
+                    <canvas id="aimPointLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.aimPointRef = el} />
                 </foreignObject>
             </svg>
         );

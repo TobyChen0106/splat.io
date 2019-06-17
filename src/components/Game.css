@@ -38,7 +38,12 @@
     top: 0; 
     z-index: 0;
 }
-
+#aimPointLayer{
+    position: absolute; 
+    left: 0; 
+    top: 0; 
+    z-index: 0;
+}
 #svg-container{
     /* position: absolute; 
     left: 0; 
