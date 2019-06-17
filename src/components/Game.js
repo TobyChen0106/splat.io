@@ -16,6 +16,7 @@ class Game extends React.Component {
 
     constructor(props) {
         super(props);
+        var mouseScale = 1;
         this.state = {
             gameBoardWidth: 1600,
             gameBoardHeight: 900,
@@ -39,7 +40,8 @@ class Game extends React.Component {
             },
 
             keyStrokeState: { left: 0, right: 0, up: 0, down: 0, space: 0, g: 0 },
-            mouseMoveState: { x: 0, y: 0 },
+            mousePosition: { x: 0, y: 0 },
+            mouseClient: { x: 0, y: 0 },
             mouseDownState: 0,
         }
     }
@@ -55,11 +57,8 @@ class Game extends React.Component {
     }
 
     trackMouse = e => {
-        const c = this.playerRef;
-        var mousePos = getMousePos(c, e)
-        mousePos.x -= this.state.playerPosition.x;
-        mousePos.y -= this.state.playerPosition.y;
-        this.setState({ mouseMoveState: mousePos })
+        var mouseClient = getMousePos(e);
+        this.setState({ mouseClient: mouseClient })
     }
 
     mouseDown = e => {
@@ -70,10 +69,18 @@ class Game extends React.Component {
     }
 
     updateGame = () => {
-        // get cnavas
-
-        // get player angle
-        const playerAngle = calculatePlayerAngle(this.state.playerPosition.x, this.state.playerPosition.y, this.state.mouseMoveState.x, this.state.mouseMoveState.y)
+        // measure screen scale
+        const windowHeight = window.innerHeight;
+        const windowWidth = window.innerWidth;
+        this.mouseScale = windowWidth > windowHeight ? this.state.cameraSize / windowWidth : this.state.cameraSize / windowHeight;
+        
+        // get and set mouse position
+        var canvas = this.groundRef;
+        var rect = canvas.getBoundingClientRect();
+        this.setState({ mousePosition: { x: (this.state.mouseClient.x - rect.left) * this.mouseScale, y: (this.state.mouseClient.y - rect.top) * this.mouseScale } });
+        
+        // get and set player angle
+        const playerAngle = calculatePlayerAngle(this.state.playerPosition.x, this.state.playerPosition.y, this.state.mousePosition.x, this.state.mousePosition.y)
         this.setState({ playerAngle: playerAngle })
 
         // get player position
@@ -85,7 +92,7 @@ class Game extends React.Component {
         // draw splat if clicked
         if (this.state.mouseDownState === 1) {
             const splat = getSplats(this.state);
-            drawSplat(this.realSplatRef, splat, this.state.playerColor);
+            drawSplat(this.splatRef, splat, this.state.playerColor);
         }
 
         //draw player 
@@ -106,8 +113,10 @@ class Game extends React.Component {
 
     render() {
         return (
-            <svg className="App"
-                preserveAspectRatio="xMidYMid meet"
+            <svg id="svg-container"
+                width={Math.max(window.innerWidth, window.innerHeight)}
+                height={Math.max(window.innerWidth, window.innerHeight)}
+                preserveAspectRatio="xMidYMid slice"
                 viewBox={
                     [this.state.cameraSize / -2 + this.state.playerPosition.x,
                     this.state.cameraSize / -4 + this.state.playerPosition.y,
@@ -115,8 +124,8 @@ class Game extends React.Component {
                     this.state.cameraSize]}>
                 <foreignObject x="0" y="0" width="10000" height="10000">
                     <canvas id="groundLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.groundRef = el} />
-                    <canvas id="realSplatLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.realSplatRef = el} />
                     <canvas id="splatLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.splatRef = el} />
+                    <canvas id="splatAnimationLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.splatAnimationRef = el} />
                     <canvas id="fieldLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.fieldRef = el} />
                     <canvas id="playerLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.playerRef = el} />
                     <canvas id="itemLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.itemRef = el} />

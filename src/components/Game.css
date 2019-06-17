@@ -4,14 +4,14 @@
     top: 0; 
     z-index: 0;
 }
-#realSplatLayer{
+
+#splatLayer{
     position: absolute; 
     left: 0; 
     top: 0; 
     z-index: 0;
-    display: "none";
 }
-#splatLayer{
+#splatAnimationLayer{
     position: absolute; 
     left: 0; 
     top: 0; 
@@ -37,4 +37,12 @@
     left: 0; 
     top: 0; 
     z-index: 0;
+}
+
+#svg-container{
+    /* position: absolute; 
+    left: 0; 
+    top: 0; 
+    z-index: 0; */
+    border:1px solid;
 }

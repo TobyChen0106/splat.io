@@ -1,8 +1,7 @@
-export const getMousePos = (canvas, event) => {
-    var rect = canvas.getBoundingClientRect();
+export const getMousePos = (event) => {
     return {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top
+      x: event.clientX,
+      y: event.clientY
     };
 }
 

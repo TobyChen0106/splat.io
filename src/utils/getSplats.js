@@ -1,5 +1,6 @@
 import { battleField_1 } from '../field'
 
+var lines = [];
 export const getSplats = (state) => {
     const angle = state.playerAngle;
     const p_x = state.playerPosition.x;
