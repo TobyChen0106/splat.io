@@ -91,7 +91,6 @@ export const getSplats = (state) => {
         
         // check if create splat
         if ( Math.abs(lines[l][1]-lines[l][3])< Math.abs(lines[l][5])  || Math.abs(lines[l][2]-lines[l][4])< Math.abs(lines[l][6])){
-            console.log('splat',lines[l][3], lines[l][4])
             splats.push([lines[l][3], lines[l][4], 50]);
             
             lines.splice(l, 1);;

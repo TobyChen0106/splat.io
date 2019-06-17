@@ -104,7 +104,7 @@ class Game extends React.Component {
         var [bullets, splats, aimPoints] = getSplats(this.state);
 
         // draw splat
-        drawSplat(this.splatRef, splats, this.state.playerColor);
+        drawSplat(this.splatRef, this.splatAnimationRef, splats, this.state.playerColor);
 
         // draw bullet 
         drawBullet(this.bulletRef, bullets, this.state.playerColor);
