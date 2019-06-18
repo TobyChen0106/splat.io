@@ -37,7 +37,9 @@ export const getKeyDownState = (e, state) => {
             key.right = 1;
 
             break;
-
+        case ' ':
+            key.space = 1;
+            break;
         default:
             break;
     }

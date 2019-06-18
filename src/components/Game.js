@@ -11,7 +11,12 @@ import {
     calculatePlayerAngle,
     updatePlayerPosition,
     getSplats,
+    getPlayerStatus,
+    getPlayerSpeed,
+    getInkAmount,
 } from '../utils'
+
+import InkBar from './inkBar';
 
 class Game extends React.Component {
 
@@ -27,11 +32,11 @@ class Game extends React.Component {
 
             //player info
             playerName: "player",
-            playerColor: "#ff6666",
+            playerColor: [255, 102, 102, 1],
             playerHealth: 100,
             playerPosition: { x: 100, y: 100 },
             playerAngle: 0,
-            playerStatus: PLAYER_STATUS.STANDING,
+            playerStatus: PLAYER_STATUS.STANDING_SPACE,
             playerMoveSpeed: 5,
             playerMoveDirection: { x: 0, y: 0 },
             playerEquipment: {
@@ -39,6 +44,8 @@ class Game extends React.Component {
                 sideWeapon: 0,
                 items: [],
             },
+
+            inkAmount: 100,
 
             keyStrokeState: { left: 0, right: 0, up: 0, down: 0, space: 0, g: 0 },
             mousePosition: { x: 0, y: 0 },
@@ -86,12 +93,13 @@ class Game extends React.Component {
         const playerAngle = calculatePlayerAngle(this.state.playerPosition.x, this.state.playerPosition.y, this.state.mousePosition.x, this.state.mousePosition.y)
         this.setState({ playerAngle: playerAngle })
 
-        // get filed property
-        canvas = this.splatRef;
-        var c = canvas.getContext('2d');
-        var p = c.getImageData(this.state.playerPosition.x, this.state.playerPosition.y, 1, 1).data;
+        // get & update new player status according field property
+        var new_player_status = getPlayerStatus(this.splatRef, this.state);
+        this.setState({ playerStatus: new_player_status });
 
-        // console.log(p);
+        // update player speed 
+        var new_playerMoveSpeed = getPlayerSpeed(new_player_status, this.state);
+        this.setState({ playerMoveSpeed: new_playerMoveSpeed });
 
         // get player position
         const new_playerPosition = updatePlayerPosition(this.state.gameState, this.state.playerPosition, this.state.playerMoveDirection, this.state.playerMoveSpeed);
@@ -101,7 +109,12 @@ class Game extends React.Component {
         drawField(this.fieldRef);
 
         // get splat (include draw bullet)
-        var [bullets, splats, aimPoints] = getSplats(this.state);
+        var [bullets, splats, aimPoints, inkConsumption] = getSplats(this.state);
+
+
+        //get and update ink amount
+        var new_inkAmount = getInkAmount(inkConsumption, this.state);
+        this.setState({ inkAmount: new_inkAmount });
 
         // draw splat
         drawSplat(this.splatRef, this.splatAnimationRef, splats, this.state.playerColor);
@@ -135,26 +148,34 @@ class Game extends React.Component {
 
     render() {
         return (
-            <svg id="svg-container"
-                width={Math.max(window.innerWidth, window.innerHeight)}
-                height={Math.max(window.innerWidth, window.innerHeight)}
-                preserveAspectRatio="xMidYMid slice"
-                viewBox={
-                    [this.state.cameraSize / -2 + this.state.playerPosition.x,
-                    this.state.cameraSize / -4 + this.state.playerPosition.y,
-                    this.state.cameraSize,
-                    this.state.cameraSize]}>
-                <foreignObject x="0" y="0" width="10000" height="10000">
-                    <canvas id="groundLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.groundRef = el} />
-                    <canvas id="splatLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.splatRef = el} />
-                    <canvas id="splatAnimationLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.splatAnimationRef = el} />
-                    <canvas id="fieldLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.fieldRef = el} />
-                    <canvas id="playerLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.playerRef = el} />
-                    <canvas id="itemLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.itemRef = el} />
-                    <canvas id="bulletLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.bulletRef = el} />
-                    <canvas id="aimPointLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.aimPointRef = el} />
-                </foreignObject>
-            </svg>
+            <div id="game-container">
+                <svg id="svg-container"
+                    width={Math.max(window.innerWidth, window.innerHeight)}
+                    height={Math.max(window.innerWidth, window.innerHeight)}
+                    preserveAspectRatio="xMidYMid slice"
+                    viewBox={
+                        [this.state.cameraSize / -2 + this.state.playerPosition.x,
+                        this.state.cameraSize / -4 + this.state.playerPosition.y,
+                        this.state.cameraSize,
+                        this.state.cameraSize]}>
+                    <foreignObject x="0" y="0" width="10000" height="10000">
+                        <canvas id="groundLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.groundRef = el} />
+                        <canvas id="splatLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.splatRef = el} />
+                        <canvas id="splatAnimationLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.splatAnimationRef = el} />
+                        <canvas id="fieldLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.fieldRef = el} />
+                        <canvas id="playerLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.playerRef = el} />
+                        <canvas id="itemLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.itemRef = el} />
+                        <canvas id="bulletLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.bulletRef = el} />
+                        <canvas id="aimPointLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.aimPointRef = el} />
+                    </foreignObject>
+                </svg>
+                <svg id="info-container"
+                    x="0" y="0"
+                    width={window.innerWidth}
+                    height={window.innerHeight}>
+                    <InkBar inkColor={this.state.playerColor} inkAmount={this.state.inkAmount} />
+                </svg>
+            </div>
         );
     }
 }

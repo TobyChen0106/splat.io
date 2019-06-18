@@ -42,6 +42,9 @@ export const getKeyUpState = (e, state) => {
             key.right = 0;
             break;
 
+        case ' ':
+            key.space = 0;
+            break;
         default:
             break;
     }
