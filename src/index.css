@@ -1,5 +1,8 @@
 * {
-  cursor: none;
+  /*cursor: none;*/
+  font-family: 'Freckle Face', cursive;
+  letter-spacing: 3px;
+  
 }
 body {
   margin: 0;
@@ -16,4 +19,30 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.App_button{
+
+  width: 160px;
+  height: 60px;
+
+  background: rgba(0, 0, 0, 0.637);
+  color: cyan;
+
+  border: solid 2px;
+  border-radius: 30px;
+
+  font-size: 22px;
+
+  animation: border-size-transform 1.5s infinite;
+}
+
+@keyframes border-size-transform {
+  0%   { transform: scale(1.015); border-color: rgb(87, 231, 87); color: rgb(87, 231, 87); }
+  50%  { transform: scale(1.00); border-color: rgb(255, 81, 81); color: rgb(255, 81, 81); }
+  100% { transform: scale(1.015); border-color: rgb(0, 255, 255); color: rgb(0, 255, 255); }
+}
+
+.App_button:hover {
+  background: cyan;
 }
