@@ -1,8 +1,20 @@
 import inkHit06 from '../sounds/inkHit/inkHit06.wav';
+import ink01 from '../images/ink/n-01.svg'
+import ink02 from '../images/ink/n-02.svg'
+import ink03 from '../images/ink/n-03.svg'
+
+const ink = [ink02, ink03];
+var ink_size = 180;
 var ripple = [];
 var audio = new Audio(inkHit06);
 audio.volume = 0.5;
 
+function random_ink() 
+{
+    var l = ink.length;
+    var r = Math.floor(Math.random() * l)
+    return ink[r]
+}
 
 export const drawSplat = (c, a, splat, playerColor) => {
 
@@ -11,14 +23,26 @@ export const drawSplat = (c, a, splat, playerColor) => {
 
     context.save();
     // context.drawImage(image, 0,0,1600,900);
+    
 
     for (var i = 0; i < splat.length; ++i) {
 
-        context.fillStyle =  'rgba(' + playerColor +')';
+        //context.fillStyle =  'rgba(' + playerColor +')';
+
+        var img = new Image;
+        img.src = random_ink()//"data:image/svg+xml;base64,"+btoa(trysvg);
+        //img.style = "fill:#B0E0E6;"
+        //console.log(img.style)
+        img.onload = function() { 
+            console.log(splat[0])
+            context.drawImage(img, splat[0][0] - ink_size/2, splat[0][1] - ink_size/2, ink_size, ink_size);
+        }
         
-        drawCircle(context, splat[i][0], splat[i][1], splat[i][2], 20);
-        audio.currentTime = 0;
-        audio.play();
+
+        //drawCircle(context, splat[i][0], splat[i][1], splat[i][2], 20);
+        //audio.currentTime = 0;
+        //audio.play();
+        
         // ripple
         ripple.push([splat[i][0], splat[i][1], 1, splat[i][2]]);
     }
@@ -59,6 +83,7 @@ export const drawCircle = (graph, centerX, centerY, radius, sides) => {
     graph.closePath();
     graph.fill();
 }
+
 
 const drawRipple = (graph, centerX, centerY, radius, sides) => {
     var theta = 0;
