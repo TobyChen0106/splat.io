@@ -25,7 +25,7 @@
     left: 0; 
     top: 0; 
     z-index: 0;
-    /*filter: drop-shadow(0px 0px 5px rgb(255, 60, 141));*/
+    /*filter: drop-shadow(0px 0px 5px rgb(235, 84, 147));*/
 }
 #splatAnimationLayer{
     position: absolute; 

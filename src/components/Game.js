@@ -172,7 +172,7 @@ class Game extends React.Component {
                 <svg id="info-container"
                     x="0" y="0"
                     width={window.innerWidth}
-                    height={window.innerHeight}>
+                    height={window.innerHeight} >
                     <InkBar inkColor={this.state.playerColor} inkAmount={this.state.inkAmount} />
                 </svg>
             </div>

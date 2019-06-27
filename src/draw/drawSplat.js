@@ -5,7 +5,6 @@ import ink02 from '../images/ink/n-02.svg'
 import ink03 from '../images/ink/n-03.svg'
 
 const ink = [ink01, ink02, ink03];
-var ink_size = 200;
 var ripple = [];
 var audio = new Audio(inkHit06);
 audio.volume = 0.5;
@@ -23,6 +22,8 @@ export const drawSplat = (c, a, splat, playerColor, playerAngle, playerPosition)
     var r_context = a.getContext("2d");
 
     context.save();
+    
+    //context.filter = 'drop-shadow(0px 0px 5px #FF1493)';
     // context.drawImage(image, 0,0,1600,900);
     
 
@@ -33,7 +34,8 @@ export const drawSplat = (c, a, splat, playerColor, playerAngle, playerPosition)
         var aimY = splat[i][1] 
         var playerX = playerPosition.x
         var playerY = playerPosition.y
-        var angle = playerAngle< 0 ? playerAngle + 270 : playerAngle - 90
+        var angle = playerAngle< 0 ? playerAngle + 270 : playerAngle - 90;
+        var ink_size = splat[i][2] * 3; //因為我圖畫得比較小所以先乘3
 
         var img = new Image;
         img.src = random_ink()//"data:image/svg+xml;base64,"+btoa(trysvg);
@@ -41,6 +43,8 @@ export const drawSplat = (c, a, splat, playerColor, playerAngle, playerPosition)
         //console.log(img.style)
         img.onload = function() { 
             console.log(angle)
+            context.shadowBlur = 5;
+            context.shadowColor = "#FF00FF";
             context.translate(aimX , aimY)
             context.rotate(angle/180 * Math.PI);
             context.drawImage(img, -ink_size/2, -ink_size/2, ink_size, ink_size);

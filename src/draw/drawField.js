@@ -18,6 +18,11 @@ export const drawField = (c) => {
     var context = c.getContext("2d");
 
     context.save();
+    context.shadowBlur = 3;
+    context.shadowColor = "rgba(63, 255, 239, 0.555)";
+    context.shadowOffsetX = 0;
+    context.shadowOffsetY = 0;
+    //context.filter = 'drop-shadow(0px 0px 1px #e81)';
     // console.log(field.fieldRange)
     //draw the ground
     //context.fillStyle = "#aaaaaa";
@@ -78,8 +83,8 @@ export const drawField = (c) => {
         //context.fillRect(objects[i][1], objects[i][2], objects[i][3], objects[i][4]);
     }
 
-
-    context.restore();
+    
+    context.restore(); 
 }
 
 
