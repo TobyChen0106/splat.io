@@ -37,8 +37,6 @@ class InkBar extends React.Component {
                 <svg width="1000" height="70" style={inkBarStyle} x={this.state.inkBarPosition.x - 300} y={this.state.inkBarPosition.y-50}>
                 <image href={inkBarSVG} width="1000" height="70" style={inkBarStyle}/>
                 </svg>
-                
-                
             </g>
 
         );
