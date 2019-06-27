@@ -1,10 +1,10 @@
 import inkHit06 from '../sounds/inkHit/inkHit06.wav';
-import ink00 from '../images/ink/n.svg'
+
 import ink01 from '../images/ink/n-01.svg'
 import ink02 from '../images/ink/n-02.svg'
 import ink03 from '../images/ink/n-03.svg'
 
-const ink = [ink00, ink02, ink03];
+const ink = [ink01, ink02, ink03];
 var ink_size = 200;
 var ripple = [];
 var audio = new Audio(inkHit06);
@@ -114,6 +114,7 @@ const drawRipple = (graph, centerX, centerY, radius, sides) => {
     graph.stroke();
     graph.restore();
 }
+
 const drawRipple2 = (graph, centerX, centerY, radius, sides) => {
     var theta = 0;
     var x = 0;

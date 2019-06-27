@@ -1,10 +1,19 @@
 import { battleField_1 } from '../field'
-import trysvg from '../images/crosshair.svg'
+import rock from '../images/rock1.svg'
+
+const outerColor = "#525C63"
+const middleColor = "#3B4349"
+const innerColor = "#21292D"
+
 
 
 export const drawField = (c) => {
     const field = battleField_1;
     const objects = field.objects;
+    var xMin = field.fieldRange.xMin
+    var yMin = field.fieldRange.yMin
+    var xMax = field.fieldRange.xMax
+    var yMax = field.fieldRange.yMax
 
     var context = c.getContext("2d");
 
@@ -14,24 +23,58 @@ export const drawField = (c) => {
     //context.fillStyle = "#aaaaaa";
     //context.fillRect(field.fieldRange.xMin, field.fieldRange.yMin, field.fieldRange.xMax-field.fieldRange.xMin, field.fieldRange.yMax-field.fieldRange.yMin);
 
-    var path = drawUsingArc(field.fieldRange.xMin, field.fieldRange.yMin, 
-        field.fieldRange.xMax-field.fieldRange.xMin, field.fieldRange.yMax-field.fieldRange.yMin , 40);
-    context.strokeStyle = "#778899";
-    context.lineWidth = 6;
+    var path = drawUsingArc( xMin, yMin, xMax-xMin, yMax-yMin , 30);
+    context.strokeStyle = outerColor;
+    context.lineWidth = 8;
+    context.stroke(path)
+    var offset = 12
+    var path = drawUsingArc(xMin-offset/2, yMin-offset/2, xMax-xMin+offset, yMax-yMin+offset , 30);
+    context.strokeStyle = middleColor;
+    context.lineWidth = 8;
     context.stroke(path)
     
     
     //context.strokeRect(field.fieldRange.xMin, field.fieldRange.yMin, 
             //field.fieldRange.xMax-field.fieldRange.xMin, field.fieldRange.yMax-field.fieldRange.yMin);
     // draw the objects
-    for (var i = 0; i < objects.length; ++i) {
+    for (var i = 0; i < objects.length; ++i) 
+    {
+        var obj = {x: objects[i][1], y: objects[i][2], w: objects[i][3], h: objects[i][4]}
+        
         switch (objects[i][0]) {
             case "rock": 
-                context.fillStyle = "#778899"; break;
+                
+                //最外圈
+                context.fillStyle = outerColor;
+                var obj_path = drawUsingArc(objects[i][1], objects[i][2], objects[i][3], objects[i][4], 5)
+                context.fill(obj_path)
+
+                //中間
+                context.fillStyle = middleColor;
+                obj_path = drawUsingArc(objects[i][1]+8, objects[i][2]+8, objects[i][3]-16, objects[i][4]-16, 5)
+                context.fill(obj_path)
+
+                //最內圈
+                context.fillStyle = innerColor;
+                obj_path = drawUsingArc(objects[i][1]+20, objects[i][2]+20, objects[i][3]-40, objects[i][4]-40, 5)
+                context.fill(obj_path)
+                
+                break;
             default: break;
         }
+        
+        /*
+        var img = new Image();
+        img.src = rock;
+        img.onload = function() {
+            context.drawImage(img, obj.x, obj.y, obj.w, obj.h)
+        }
+        
         var obj_path = drawUsingArc(objects[i][1], objects[i][2], objects[i][3], objects[i][4], 10)
         context.fill(obj_path)
+        */
+        //var obj_path = drawUsingArc(objects[i][1]+5, objects[i][2]+5, objects[i][3]-10, objects[i][4]-10, 10)
+        //context.fill(obj_path)
         //context.fillRect(objects[i][1], objects[i][2], objects[i][3], objects[i][4]);
     }
 
