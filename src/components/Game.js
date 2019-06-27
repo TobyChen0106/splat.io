@@ -1,6 +1,7 @@
 import React from 'react';
 import './Game.css';
 import { drawPlayer, drawField, drawSplat, drawAimPoint, drawBullet, } from '../draw'
+import {COLOR_ASSET} from './ColorAssets'
 
 
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
