@@ -1,5 +1,7 @@
 import React from 'react';
 import './inkBar.css';
+import inkBarSVG from '../images/inkBar.svg'
+import ReactSVG from 'react-svg'
 
 class InkBar extends React.Component {
     constructor(props) {
@@ -27,11 +29,16 @@ class InkBar extends React.Component {
                 {/* <text className="inkBarNum" x={this.state.inkBarPosition.x} y={this.state.inkBarPosition.y}>
                     {this.props.inkAmount}
                 </text> */}
-                <rect className="inkBarBase" x={this.state.inkBarPosition.x} y={this.state.inkBarPosition.y}
+                {/*<rect className="inkBarBase" x={this.state.inkBarPosition.x} y={this.state.inkBarPosition.y}
                     width="400" height="50" style={inkBarBaseStyle} />
-
-                <rect className="inkBar" x={this.state.inkBarPosition.x} y={this.state.inkBarPosition.y}
-                    width={4 * this.props.inkAmount} height="50" style={inkBarStyle} />
+                */}
+                <rect className="inkBar" x={this.state.inkBarPosition.x + 30 } y={this.state.inkBarPosition.y-40}
+                    width={3.4 * this.props.inkAmount} height="50" style={inkBarStyle} />
+                <svg width="1000" height="70" style={inkBarStyle} x={this.state.inkBarPosition.x - 300} y={this.state.inkBarPosition.y-50}>
+                <image href={inkBarSVG} width="1000" height="70" style={inkBarStyle}/>
+                </svg>
+                
+                
             </g>
 
         );
