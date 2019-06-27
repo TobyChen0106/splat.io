@@ -1,5 +1,15 @@
-export const splatterShot_v1 = {
-    main: {},
-    sub:{},
-    price: 1000,
+export const weapons = {
+    splatterShot_v1: {
+        main: {
+            type: 0, // 0 for one line gun
+            maxShootDistance: 400,
+            bulletSpeed: 30,
+            fireSpeed: 200, //cd time(ms) for one shot
+            fireInkCost: 0,
+            maxError: 20,
+            gunLength: 40,
+        },
+        sub: {},
+        price: 1000,
+    }
 }
