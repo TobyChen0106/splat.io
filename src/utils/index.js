@@ -6,3 +6,4 @@ export { getSplats } from './getSplats';
 export { getPlayerStatus } from './getPlayerStatus';
 export { getPlayerSpeed } from './getPlayerSpeed';
 export { getInkAmount } from './getInkAmount';
+export { getLineIntersection } from './getLineIntersection';

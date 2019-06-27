@@ -1,5 +1,5 @@
 export const battleField_1 = {
-    fieldRange: { xMin: 50, xMax: 1550, yMin: 50, yMax: 850 },
+    fieldRange: { xMin: 50, xMax: 2950, yMin: 50, yMax: 2950 },
 
     //(xPos, yPos, width, height)
     objects: [

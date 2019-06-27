@@ -14,8 +14,8 @@ export const getPlayerSpeed = (new_player_status, state)=>{
         case PLAYER_STATUS.SWIMMING_SPACE: speed = 1; break;
         case PLAYER_STATUS.ATTACKING_SPACE: speed = 1; break;
 
-        case PLAYER_STATUS.STANDING_ENEMY: speed = 0.1; break;
-        case PLAYER_STATUS.WALKING_ENEMY: speed = 0.1; break;
+        case PLAYER_STATUS.STANDING_ENEMY: speed = 1.5; break;
+        case PLAYER_STATUS.WALKING_ENEMY: speed = 1.5; break;
         case PLAYER_STATUS.DIVING_ENEMY: speed = 1.5; break;
         case PLAYER_STATUS.SWIMMING_ENEMY: speed = 1.5; break;
         case PLAYER_STATUS.ATTACKING_ENEMY: speed = 0.5; break;
