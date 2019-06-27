@@ -1,10 +1,11 @@
 import inkHit06 from '../sounds/inkHit/inkHit06.wav';
+import ink00 from '../images/ink/n.svg'
 import ink01 from '../images/ink/n-01.svg'
 import ink02 from '../images/ink/n-02.svg'
 import ink03 from '../images/ink/n-03.svg'
 
-const ink = [ink02, ink03];
-var ink_size = 180;
+const ink = [ink00, ink02, ink03];
+var ink_size = 200;
 var ripple = [];
 var audio = new Audio(inkHit06);
 audio.volume = 0.5;
@@ -16,7 +17,7 @@ function random_ink()
     return ink[r]
 }
 
-export const drawSplat = (c, a, splat, playerColor) => {
+export const drawSplat = (c, a, splat, playerColor, playerAngle, playerPosition) => {
 
     var context = c.getContext("2d");
     var r_context = a.getContext("2d");
@@ -28,20 +29,28 @@ export const drawSplat = (c, a, splat, playerColor) => {
     for (var i = 0; i < splat.length; ++i) {
 
         //context.fillStyle =  'rgba(' + playerColor +')';
+        var aimX = splat[i][0] 
+        var aimY = splat[i][1] 
+        var playerX = playerPosition.x
+        var playerY = playerPosition.y
+        var angle = playerAngle< 0 ? playerAngle + 270 : playerAngle - 90
 
         var img = new Image;
         img.src = random_ink()//"data:image/svg+xml;base64,"+btoa(trysvg);
         //img.style = "fill:#B0E0E6;"
         //console.log(img.style)
         img.onload = function() { 
-            console.log(splat[0])
-            context.drawImage(img, splat[0][0] - ink_size/2, splat[0][1] - ink_size/2, ink_size, ink_size);
+            console.log(angle)
+            context.translate(aimX , aimY)
+            context.rotate(angle/180 * Math.PI);
+            context.drawImage(img, -ink_size/2, -ink_size/2, ink_size, ink_size);
+            context.rotate(-angle/180 * Math.PI);
+            context.translate(-aimX , -aimY )
         }
         
-
-        //drawCircle(context, splat[i][0], splat[i][1], splat[i][2], 20);
-        //audio.currentTime = 0;
-        //audio.play();
+        //drawCircle(context, aimX, aimY, splat[i][2], 20);
+        audio.currentTime = 0;
+        audio.play();
         
         // ripple
         ripple.push([splat[i][0], splat[i][1], 1, splat[i][2]]);

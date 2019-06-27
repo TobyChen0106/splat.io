@@ -117,7 +117,7 @@ class Game extends React.Component {
         this.setState({ inkAmount: new_inkAmount });
 
         // draw splat
-        drawSplat(this.splatRef, this.splatAnimationRef, splats, this.state.playerColor);
+        drawSplat(this.splatRef, this.splatAnimationRef, splats, this.state.playerColor, this.state.playerAngle, this.state.playerPosition);
 
         // draw bullet 
         drawBullet(this.bulletRef, bullets, this.state.playerColor);
