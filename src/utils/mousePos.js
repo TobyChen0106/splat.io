@@ -1,8 +1,6 @@
-export const getMousePos = (event) => {
-    return {
-      x: event.clientX,
-      y: event.clientY
-    };
+export const getMousePos = (event, state) => {
+  state.mouseClient.x = event.clientX;
+  state.mouseClient.y = event.clientY;
 }
 
 export const calculatePlayerAngle = (x1, y1, x2, y2) => {

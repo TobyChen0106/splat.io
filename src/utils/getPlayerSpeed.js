@@ -1,25 +1,23 @@
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
-export const getPlayerSpeed = (new_player_status, state)=>{
-    var speed = state.playerMoveSpeed;
-    switch(new_player_status){
-        case PLAYER_STATUS.STANDING_OWN: speed = 4; break;
-        case PLAYER_STATUS.WALKING_OWN: speed = 4; break;
-        case PLAYER_STATUS.DIVING_OWN: speed = 8; break;
-        case PLAYER_STATUS.SWIMMING_OWN: speed = 8; break;
-        case PLAYER_STATUS.ATTACKING_OWN: speed = 2.5; break;
+export const getPlayerSpeed = (playerData, localPlayerData)=>{
+    switch(playerData.playerStatus){
+        case PLAYER_STATUS.STANDING_OWN: localPlayerData.playerMoveSpeed = 4; break;
+        case PLAYER_STATUS.WALKING_OWN: localPlayerData.playerMoveSpeed = 4; break;
+        case PLAYER_STATUS.DIVING_OWN: localPlayerData.playerMoveSpeed = 6; break;
+        case PLAYER_STATUS.SWIMMING_OWN: localPlayerData.playerMoveSpeed = 6; break;
+        case PLAYER_STATUS.ATTACKING_OWN: localPlayerData.playerMoveSpeed = 2.5; break;
 
-        case PLAYER_STATUS.STANDING_SPACE: speed = 3; break;
-        case PLAYER_STATUS.WALKING_SPACE: speed = 3; break;
-        case PLAYER_STATUS.DIVING_SPACE: speed = 1; break;
-        case PLAYER_STATUS.SWIMMING_SPACE: speed = 1; break;
-        case PLAYER_STATUS.ATTACKING_SPACE: speed = 1; break;
+        case PLAYER_STATUS.STANDING_SPACE: localPlayerData.playerMoveSpeed = 3; break;
+        case PLAYER_STATUS.WALKING_SPACE: localPlayerData.playerMoveSpeed = 3; break;
+        case PLAYER_STATUS.DIVING_SPACE: localPlayerData.playerMoveSpeed = 1; break;
+        case PLAYER_STATUS.SWIMMING_SPACE: localPlayerData.playerMoveSpeed = 1; break;
+        case PLAYER_STATUS.ATTACKING_SPACE: localPlayerData.playerMoveSpeed = 1; break;
 
-        case PLAYER_STATUS.STANDING_ENEMY: speed = 1.5; break;
-        case PLAYER_STATUS.WALKING_ENEMY: speed = 1.5; break;
-        case PLAYER_STATUS.DIVING_ENEMY: speed = 1.5; break;
-        case PLAYER_STATUS.SWIMMING_ENEMY: speed = 1.5; break;
-        case PLAYER_STATUS.ATTACKING_ENEMY: speed = 0.5; break;
-        default: speed = 4; break;
+        case PLAYER_STATUS.STANDING_ENEMY: localPlayerData.playerMoveSpeed = 1.5; break;
+        case PLAYER_STATUS.WALKING_ENEMY: localPlayerData.playerMoveSpeed = 1.5; break;
+        case PLAYER_STATUS.DIVING_ENEMY: localPlayerData.playerMoveSpeed = 1.5; break;
+        case PLAYER_STATUS.SWIMMING_ENEMY: localPlayerData.playerMoveSpeed = 1.5; break;
+        case PLAYER_STATUS.ATTACKING_ENEMY: localPlayerData.playerMoveSpeed = 0.5; break;
+        default: localPlayerData.playerMoveSpeed = 4; break;
     }
-    return speed;
 }

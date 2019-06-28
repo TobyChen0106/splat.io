@@ -1,10 +1,20 @@
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
 var dive_counter = 0;
-export const getPlayerStatus = (c, state) => {
-    var new_player_status = state.playerStatus;
-    var ownColor = state.playerColor;
+
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? [
+        parseInt(result[1], 16),
+        parseInt(result[2], 16),
+        parseInt(result[3], 16)
+    ] : null;
+}
+
+export const getPlayerStatus = (c, playerData, localPlayerData) => {
+    const ownColor = hexToRgb(playerData.playerColor.main);
+    
     var context = c.getContext('2d');
-    var p = context.getImageData(state.playerPosition.x - 25, state.playerPosition.y - 25, 51, 51).data;
+    var p = context.getImageData(playerData.playerPosition.x - 25, playerData.playerPosition.y - 25, 51, 51).data;
 
     var own_color_count = 0;
     var empty_color_count = 0;
@@ -21,7 +31,6 @@ export const getPlayerStatus = (c, state) => {
             }
         }
     }
-    // console.log(own_color_count, empty_color_count)
 
     var field_property = 0;// 0 for in space, 1 for in enemy, 2 for in own
     if (empty_color_count / 121 < 0.5) {
@@ -30,65 +39,63 @@ export const getPlayerStatus = (c, state) => {
 
     switch (field_property) {
         case 0:
-            if (state.mouseDownState === 1) {
-                new_player_status = PLAYER_STATUS.ATTACKING_SPACE;
+            if (localPlayerData.mouseDownState === 1) {
+                playerData.playerStatus = PLAYER_STATUS.ATTACKING_SPACE;
             }
-            else if (state.keyStrokeState.space === 0) {
-                if (state.playerMoveDirection.x === 0 && state.playerMoveDirection.y === 0) {
-                    new_player_status = PLAYER_STATUS.STANDING_SPACE;
+            else if (localPlayerData.keyStrokeState.space === 0) {
+                if (localPlayerData.playerMoveDirection.x === 0 && localPlayerData.playerMoveDirection.y === 0) {
+                    playerData.playerStatus = PLAYER_STATUS.STANDING_SPACE;
                 } else {
-                    new_player_status = PLAYER_STATUS.WALKING_SPACE;
+                    playerData.playerStatus = PLAYER_STATUS.WALKING_SPACE;
                 }
             } else {
-                if (state.playerMoveDirection.x === 0 && state.playerMoveDirection.y === 0) {
-                    new_player_status = PLAYER_STATUS.DIVING_SPACE;
+                if (localPlayerData.playerMoveDirection.x === 0 && localPlayerData.playerMoveDirection.y === 0) {
+                    playerData.playerStatus = PLAYER_STATUS.DIVING_SPACE;
                 } else {
-                    new_player_status = PLAYER_STATUS.SWIMMING_SPACE;
+                    playerData.playerStatus = PLAYER_STATUS.SWIMMING_SPACE;
                 }
             }
             break;
         case 1:
-            if (state.mouseDownState === 1) {
-                new_player_status = PLAYER_STATUS.ATTACKING_ENEMY;
+            if (localPlayerData.mouseDownState === 1) {
+                playerData.playerStatus = PLAYER_STATUS.ATTACKING_ENEMY;
             }
-            else if (state.keyStrokeState.space === 0) {
-                if (state.playerMoveDirection.x === 0 && state.playerMoveDirection.y === 0) {
-                    new_player_status = PLAYER_STATUS.STANDING_ENEMY;
+            else if (localPlayerData.keyStrokeState.space === 0) {
+                if (localPlayerData.playerMoveDirection.x === 0 && localPlayerData.playerMoveDirection.y === 0) {
+                    playerData.playerStatus = PLAYER_STATUS.STANDING_ENEMY;
                 } else {
-                    new_player_status = PLAYER_STATUS.WALKING_ENEMY;
+                    playerData.playerStatus = PLAYER_STATUS.WALKING_ENEMY;
                 }
             } else {
-                if (state.playerMoveDirection.x === 0 && state.playerMoveDirection.y === 0) {
-                    new_player_status = PLAYER_STATUS.DIVING_ENEMY;
+                if (localPlayerData.playerMoveDirection.x === 0 && localPlayerData.playerMoveDirection.y === 0) {
+                    playerData.playerStatus = PLAYER_STATUS.DIVING_ENEMY;
                 } else {
-                    new_player_status = PLAYER_STATUS.SWIMMING_ENEMY;
+                    playerData.playerStatus = PLAYER_STATUS.SWIMMING_ENEMY;
                 }
             }
             break;
 
         case 2:
-            if (state.mouseDownState === 1) {
-                new_player_status = PLAYER_STATUS.ATTACKING_OWN;
+            if (localPlayerData.mouseDownState === 1) {
+                playerData.playerStatus = PLAYER_STATUS.ATTACKING_OWN;
             }
-            else if (state.keyStrokeState.space === 0) {
-                if (state.playerMoveDirection.x === 0 && state.playerMoveDirection.y === 0) {
-                    new_player_status = PLAYER_STATUS.STANDING_OWN;
+            else if (localPlayerData.keyStrokeState.space === 0) {
+                if (localPlayerData.playerMoveDirection.x === 0 && localPlayerData.playerMoveDirection.y === 0) {
+                    playerData.playerStatus = PLAYER_STATUS.STANDING_OWN;
                 } else {
-                    new_player_status = PLAYER_STATUS.WALKING_OWN;
+                    playerData.playerStatus = PLAYER_STATUS.WALKING_OWN;
                 }
             } else {
-                if (state.playerMoveDirection.x === 0 && state.playerMoveDirection.y === 0) {
-                    new_player_status = PLAYER_STATUS.DIVING_OWN;
+                if (localPlayerData.playerMoveDirection.x === 0 && localPlayerData.playerMoveDirection.y === 0) {
+                    playerData.playerStatus = PLAYER_STATUS.DIVING_OWN;
                 } else {
-                    new_player_status = PLAYER_STATUS.SWIMMING_OWN;
+                    playerData.playerStatus = PLAYER_STATUS.SWIMMING_OWN;
                 }
             }
             break;
         default:
             break;
     }
-    // console.log(new_player_status);
-    return new_player_status;
 }
 
 // export const PLAYER_STATUS = {

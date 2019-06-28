@@ -3,17 +3,25 @@ import './inkBar.css';
 import inkBarSVG from '../images/inkBar.svg'
 import ReactSVG from 'react-svg'
 
+
 class InkBar extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            inkColor: this.props.inkColor,
+            inkColor: this.hexToRgb(this.props.inkColor.main),
             inkAmount: this.props.inkAmount,
             inkBarPosition: { x: window.innerWidth / 2 - 200, y: window.innerHeight - 80 },
         }
     }
-
+    hexToRgb(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? [
+            parseInt(result[1], 16),
+            parseInt(result[2], 16),
+            parseInt(result[3], 16)
+        ] : null;
+    }
     render() {
         const inkBarStyle = {
             fill: 'rgba(' + this.state.inkColor + ')',

@@ -12,26 +12,26 @@ noInkAudio.volume = 0.5;
 // line = []
 var lines = [];
 var timeLog = 0;
-export const getSplats = (state) => {
-    const angle = state.playerAngle;
-    const p_x = state.playerPosition.x;
-    const p_y = state.playerPosition.y;
-    const m_x = state.mousePosition.x;
-    const m_y = state.mousePosition.y;
+export const getSplats = (playerData, localPlayerData) => {
+    const angle = playerData.playerAngle;
+    const p_x = playerData.playerPosition.x;
+    const p_y = playerData.playerPosition.y;
+    const m_x = localPlayerData.mousePosition.x;
+    const m_y = localPlayerData.mousePosition.y;
 
     var splats = [];
     var aimPoints = [];
     var bullets = [];
     var inkConsumption = 0;
     // find shoot line
-    switch (state.playerWeapon.main.type) {
+    switch (playerData.playerWeapon.main.type) {
         case 0:
-            var maxShootDistance = state.playerWeapon.main.maxShootDistance;
-            var bulletSpeed = state.playerWeapon.main.bulletSpeed;
-            var fireSpeed = state.playerWeapon.main.fireSpeed;
-            var fireInkCost = state.playerWeapon.main.fireInkCost;
-            var maxError = state.playerWeapon.main.maxError;
-            var gunLength = state.playerWeapon.main.gunLength;
+            var maxShootDistance = playerData.playerWeapon.main.maxShootDistance;
+            var bulletSpeed = playerData.playerWeapon.main.bulletSpeed;
+            var fireSpeed = playerData.playerWeapon.main.fireSpeed;
+            var fireInkCost = playerData.playerWeapon.main.fireInkCost;
+            var maxError = playerData.playerWeapon.main.maxError;
+            var gunLength = playerData.playerWeapon.main.gunLength;
             var mouseLength = Math.pow(Math.pow(m_x - p_x, 2) + Math.pow(m_y - p_y, 2), 0.5);
             var shootDistance = Math.min(mouseLength, maxShootDistance);
 
@@ -51,9 +51,9 @@ export const getSplats = (state) => {
             var bullet_length = Math.pow(Math.pow(c_x - g_x, 2) + Math.pow(c_y - g_y, 2), 0.5);
 
             // line (type, current_point_x, current_point_y, end_point_x, end_point_y, d_x, d_y)
-            if (state.keyStrokeState.space === 0 && state.mouseDownState === 1 && state.timeStamp - timeLog > fireSpeed) {
-                timeLog = state.timeStamp;
-                if (state.inkAmount - fireInkCost >= 0) {
+            if (localPlayerData.keyStrokeState.space === 0 && localPlayerData.mouseDownState === 1 && localPlayerData.timeStamp - timeLog > fireSpeed) {
+                timeLog = localPlayerData.timeStamp;
+                if (localPlayerData.inkAmount - fireInkCost >= 0) {
                     inkConsumption = fireInkCost;
                     lines.push([0, g_x, g_y, c_x, c_y,
                         (c_x - g_x) / bullet_length * bulletSpeed, (c_y - g_y) / bullet_length * bulletSpeed]);
@@ -89,7 +89,10 @@ export const getSplats = (state) => {
             continue;
         }
     }
-    return [bullets, splats, aimPoints, inkConsumption];
+
+    playerData.bullets = bullets;
+    playerData.splats = splats;
+    return [aimPoints, inkConsumption];
 }
 
 export const checkFieldCollision = (p_x, p_y, d_x, d_y) => {

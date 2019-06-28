@@ -1,12 +1,11 @@
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
-export const getInkAmount = (inkConsumption, state)=>{
-    var new_inkAmount = state.inkAmount;
+export const getInkAmount = (inkConsumption, playerData, localPlayerData)=>{
+    var new_inkAmount = localPlayerData.inkAmount;
     new_inkAmount = new_inkAmount-inkConsumption;
     
     var restoreInk = 0;
-    const new_player_status = state.playerStatus;
 
-    switch(new_player_status){
+    switch(playerData.playerStatus){
         case PLAYER_STATUS.STANDING_OWN: restoreInk = 0.1; break;
         case PLAYER_STATUS.WALKING_OWN: restoreInk = 0.1; break;
         case PLAYER_STATUS.DIVING_OWN: restoreInk = 0.5; break;
@@ -30,5 +29,6 @@ export const getInkAmount = (inkConsumption, state)=>{
     new_inkAmount = new_inkAmount+restoreInk;
     new_inkAmount = Math.max(Math.min(new_inkAmount,100),0);
 
+    localPlayerData.inkAmount = new_inkAmount;
     return new_inkAmount;
 }
