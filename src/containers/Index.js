@@ -6,10 +6,13 @@ import Game from '../components/Game'
 import Home from './Home'
 import Wait from './Wait'
 
+const host = '140.112.76.126'
+const localhost = 'localhost'
+
 class Index extends Component {
     constructor(props) {
         super(props);
-        this.socket = io('http://localhost:8080');
+        this.socket = io('http://'+ localhost +':8080');
         this.state = {
             roomId: 'temp',
             name: 'Player',

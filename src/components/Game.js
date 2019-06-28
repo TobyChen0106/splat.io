@@ -67,6 +67,10 @@ class Game extends React.Component {
                 allPlayers: data
             });
         })
+        
+        setInterval(() => {
+            this.props.socket.emit('updateGame', {...this.state});
+        }, 500);
     }
 
     onKeyDown = e => {
@@ -124,7 +128,6 @@ class Game extends React.Component {
         // get splat (include draw bullet)
         var [bullets, splats, aimPoints, inkConsumption] = getSplats(this.state);
 
-
         //get and update ink amount
         var new_inkAmount = getInkAmount(inkConsumption, this.state);
         this.setState({ inkAmount: new_inkAmount });
@@ -146,7 +149,6 @@ class Game extends React.Component {
         // console.log(1/(new_time-this.state.timeStamp)*1000);
         this.setState({ timeStamp: new_time });
 
-        this.props.socket.emit('updateGame', {...this.state});
     }
 
     componentDidMount = () => {
@@ -158,14 +160,13 @@ class Game extends React.Component {
 
         setInterval(() => {
             this.updateGame();
-        }, 20);
+        }, 100);
         drawField(this.fieldRef);
 
 
     }
 
     render() {
-        // console.log(this.state.allPlayers)
         return (
             <div id="game-container">
                 <svg id="svg-container"
