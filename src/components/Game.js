@@ -3,6 +3,7 @@ import './Game.css';
 import { drawPlayer, drawField, drawSplat, drawAimPoint, drawBullet, } from '../draw'
 import { COLOR_ASSET } from './ColorAssets'
 import { weapons } from '../weapons'
+import Timer  from './Timer'
 
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
 import {
@@ -56,6 +57,7 @@ class Game extends React.Component {
             allPlayers: [],
 
             timeStamp: Date.now(),
+            timeStampColor: "#FFFFFF"
         }
         
         this.props.socket.emit('enterGame', {
@@ -145,9 +147,10 @@ class Game extends React.Component {
         drawAimPoint(this.aimPointRef, this.state.playerPosition, this.state.mousePosition, this.state.playerAngle, aimPoints);
 
         // update time
-        var new_time = Date.now();
+        var new_time = Date.now(); //可以把這邊改成從socket拿整個時間～
         // console.log(1/(new_time-this.state.timeStamp)*1000);
         this.setState({ timeStamp: new_time });
+        if (new_time < 20) this.setState({timeStampColor: "#ff1493"}) //少於20秒顏色會變紅
 
     }
 
@@ -194,6 +197,7 @@ class Game extends React.Component {
                     width={window.innerWidth}
                     height={window.innerHeight} >
                     <InkBar inkColor={this.state.playerColor} inkAmount={this.state.inkAmount} />
+                    <text id="timer" x="600" y="50" width="300" height="100" style={{fill: this.state.timeStampColor}}>{this.state.timeStamp}</text>
                 </svg>
             </div>
         );
