@@ -33,7 +33,6 @@ class Home extends Component {
                             Play!
                         </button>
                     {/* </NavLink> */}
-
                 </div>
                 <div className='Home_mask'></div>
                 <div id='bg_wrapper'>

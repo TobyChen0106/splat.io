@@ -48,6 +48,11 @@ class Wait extends Component {
                             Start!
                         </button>
                     </NavLink>
+                    <NavLink to={`/home`}>
+                        <button className='App_button'>
+                            Back
+                        </button>
+                    </NavLink>
                 </div>
                 
             </div>
