@@ -11,7 +11,7 @@ class Home extends Component {
                 <div className='Home_main'>
                     <img src={logo}></img>
                     <input></input>
-                    <NavLink to='/wait' style={{"text-decoration": "none"}}>
+                    <NavLink to='/wait' style={{"text-decoration": "none", "width": "180px"}}>
                         <button className='App_button'>
                             Play!
                         </button>

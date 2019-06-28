@@ -1,12 +1,22 @@
 
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
+import playerSVG from '../images/player/p-01.svg'
+import playerHandSVG from '../images/player/p-02.svg'
 
-export const playerWidth = 50;
-export const playerHeight = 50;
+export const playerWidth = 80;
+export const playerHeight = 80;
+const handOffset = 15
+var img = new Image()
+var img2 = new Image()
+
+
+
+
 
 export const drawPlayer = (c, state) => {
 
     var context = c.getContext("2d");
+    // attach the context to the canvas for easy access and to reduce complexity.
     context.clearRect(0, 0, c.width, c.height);
 
     switch (state.playerStatus) {
@@ -70,21 +80,38 @@ export const drawPlayer = (c, state) => {
 
 }
 
+
+
 const drawPlayerNormal = (context, state) => {
     const playerName = state.playerName
     const playerColor = state.playerColor
     const playerPosition = state.playerPosition
     const playerAngle = state.playerAngle
     const playerStatus = state.playerStatus
-
+    /*
     context.save();
     context.translate(playerPosition.x, playerPosition.y)
 
     context.save();
     context.rotate(Math.PI / 180 * playerAngle);
+    */
+    context.save()
+    img.src = playerSVG;
+    img2.src = playerHandSVG;
+    context.translate(playerPosition.x + playerWidth/2, playerPosition.y + playerHeight/2)
+    context.rotate(Math.PI / 180 * (playerAngle + 180));
+    context.drawImage(img,-playerWidth / 2, -playerHeight / 2, playerWidth, playerHeight)
+    context.drawImage(img2,-playerWidth / 2 , -playerHeight / 2 + handOffset, playerWidth, playerHeight)
+    context.rotate( - Math.PI / 180 * (playerAngle + 180))
+    context.translate(-playerPosition.x -  playerWidth/2, -playerPosition.y - playerHeight/2)
+
+    
+    
 
     //draw the player part moving with mouse 
-    context.fillStyle = 'rgba(' + playerColor + ')';
+
+
+    /*context.fillStyle = 'rgba(' + playerColor + ')';
     context.fillRect(-playerWidth / 2, -playerHeight / 2, playerWidth, playerHeight);
     context.strokeStyle = "#33333344";
     context.lineWidth = 5;
@@ -94,7 +121,7 @@ const drawPlayerNormal = (context, state) => {
     context.fillRect(-playerWidth / 2, -playerHeight / 2, 15, 15);
     context.fillStyle = "#33a6cc";
     context.fillRect(playerWidth / 2 - 15, -playerHeight / 2, 15, 15);
-
+    */
 
     context.restore();
     //draw the player part NOT moving with mouse 
@@ -146,3 +173,4 @@ const drawPlayerName = (context, state) => {
     //end of player drawing
     context.restore();
 }
+
