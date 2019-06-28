@@ -11,7 +11,7 @@ class Index extends Component {
         super(props);
         this.socket = io('http://localhost:8080');
         this.state = {
-            roomId: 'temp',
+            roomId: null,
             name: 'Player',
             uid: null,
             team: null
@@ -23,7 +23,7 @@ class Index extends Component {
         else { this.setState( {name: 'Player'} ); }
     }
     setUid = (uid) => { this.setState( {uid: uid} ); }
-    setRoomId = (id) => { this.setState( {roomId: id} ); }
+    setRoomId = (roomId) => { this.setState( {roomId: roomId} ); }
     setTeam = (team) => { this.setState( {team: team} ); }
 
     render(){
