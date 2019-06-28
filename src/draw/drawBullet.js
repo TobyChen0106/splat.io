@@ -8,7 +8,7 @@ export const drawBullet = (c, bullets, playerColor) => {
     // context.drawImage(image, 0,0,1600,900);
     
     for (var i = 0; i < bullets.length; ++i) {
-        context.fillStyle =  'rgba(' + playerColor +')';
+        context.fillStyle =  playerColor.main;
         drawCircle(context, bullets[i][1], bullets[i][2], 8, 10);
         drawCircleOutLine(context, bullets[i][1], bullets[i][2], 8, 10);
     }

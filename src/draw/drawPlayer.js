@@ -11,17 +11,17 @@ var img = new Image()
 var img2 = new Image()
 var img3 = new Image()
 
+var ripple = [];
+var lastRippleTimeStamp = 0;
+var lastRipplePosition= {x:-1000, y: -1000};
 
-
-
-
-export const drawPlayer = (c, state) => {
+export const drawPlayer = (c, a, state) => {
 
     var context = c.getContext("2d");
     // attach the context to the canvas for easy access and to reduce complexity.
     context.clearRect(0, 0, c.width, c.height);
-    drawPlayerNormal(context, state)
-    /*
+    // drawPlayerNormal(context, state)
+
     switch (state.playerStatus) {
         case PLAYER_STATUS.STANDING_OWN:
             drawPlayerNormal(context, state);
@@ -30,10 +30,10 @@ export const drawPlayer = (c, state) => {
             drawPlayerNormal(context, state);
             break;
         case PLAYER_STATUS.DIVING_OWN:
-                drawPlayerName(context, state);
+            drawPlayerName(context, state);
             break;
         case PLAYER_STATUS.SWIMMING_OWN:
-                drawPlayerName(context, state);
+            drawPlayerName(context, state);
 
             break;
         case PLAYER_STATUS.ATTACKING_OWN:
@@ -79,10 +79,34 @@ export const drawPlayer = (c, state) => {
             break;
         default: break;
     }
-    */
 
+    // ripples
+    var r_context = a.getContext("2d");
+    if ((Math.abs(state.playerPosition.x - lastRipplePosition.x) > 50 || Math.abs(state.playerPosition.y - lastRipplePosition.y) > 50) &&
+        (state.playerStatus === PLAYER_STATUS.WALKING_OWN || state.playerStatus === PLAYER_STATUS.SWIMMING_OWN
+            || state.playerStatus === PLAYER_STATUS.WALKING_ENEMY || state.playerStatus === PLAYER_STATUS.SWIMMING_ENEMY)) {
+        ripple.push([state.playerPosition.x, state.playerPosition.y, 20, 300]);
+        lastRipplePosition.x = state.playerPosition.x ;
+        lastRipplePosition.y = state.playerPosition.y ;
+    }
+
+    r_context.clearRect(0, 0, a.width, a.height);
+    for (var r = 0; r < ripple.length; ++r) {
+        ripple[r][2] += 1;
+        drawRipple(r_context, ripple[r][0], ripple[r][1], ripple[r][2], 20);
+        if (ripple[r][2] - 10 > 0) {
+            drawRipple2(r_context, ripple[r][0], ripple[r][1], ripple[r][2] - 10, 20);
+        }
+        if (ripple[r][2] - 20 > 0) {
+            drawRipple3(r_context, ripple[r][0], ripple[r][1], ripple[r][2] - 20, 20);
+        }
+        if (ripple[r][2] >= ripple[r][3]) {
+            ripple.splice(r, 1);;
+            --r;
+            continue;
+        }
+    }
 }
-
 
 
 const drawPlayerNormal = (context, state) => {
@@ -123,15 +147,15 @@ const drawPlayerNormal = (context, state) => {
 
     context.translate(playerPosition.x, playerPosition.y)
     context.rotate(Math.PI / 180 * (playerAngle + 180));
-    context.drawImage(img,-playerWidth / 2, -playerHeight / 2, playerWidth, playerHeight)
-    context.drawImage(img2,-playerWidth / 2 - 10, -playerHeight / 2 + handOffset, playerWidth, playerHeight)
-    context.drawImage(img2,-playerWidth / 2 + 10, -playerHeight / 2 + handOffset, playerWidth, playerHeight)
-    context.drawImage(img3,-playerWidth / 2 , -playerHeight / 2 + 40, playerWidth, playerHeight)
-    context.rotate( - Math.PI / 180 * (playerAngle + 180))
+    context.drawImage(img, -playerWidth / 2, -playerHeight / 2, playerWidth, playerHeight)
+    context.drawImage(img2, -playerWidth / 2 - 10, -playerHeight / 2 + handOffset, playerWidth, playerHeight)
+    context.drawImage(img2, -playerWidth / 2 + 10, -playerHeight / 2 + handOffset, playerWidth, playerHeight)
+    context.drawImage(img3, -playerWidth / 2, -playerHeight / 2 + 40, playerWidth, playerHeight)
+    context.rotate(- Math.PI / 180 * (playerAngle + 180))
     context.translate(-playerPosition.x, -playerPosition.y)
 
-    
-    
+
+
 
     //draw the player part moving with mouse 
 
@@ -187,3 +211,66 @@ const drawPlayerName = (context, state) => {
     context.restore();
 }
 
+const drawRipple = (graph, centerX, centerY, radius, sides) => {
+    var theta = 0;
+    var x = 0;
+    var y = 0;
+
+
+    graph.save();
+    graph.beginPath();
+    for (var i = 0; i < sides; i++) {
+        theta = (i / sides) * 2 * Math.PI;
+        x = centerX + radius * Math.sin(theta);
+        y = centerY + radius * Math.cos(theta);
+        graph.lineTo(x, y);
+    }
+    graph.closePath();
+    graph.lineWidth = 3;
+    graph.strokeStyle = 'rgba(230,230,230,' + (Math.max(0, 40 - radius) / 100) + ')';
+    graph.stroke();
+    graph.restore();
+}
+
+const drawRipple2 = (graph, centerX, centerY, radius, sides) => {
+    var theta = 0;
+    var x = 0;
+    var y = 0;
+
+
+    graph.save();
+    graph.beginPath();
+    for (var i = 0; i < sides; i++) {
+        theta = (i / sides) * 2 * Math.PI;
+        x = centerX + radius * Math.sin(theta);
+        y = centerY + radius * Math.cos(theta);
+        graph.lineTo(x, y);
+    }
+    graph.closePath();
+    graph.lineWidth = 2;
+    graph.strokeStyle = 'rgba(220,220,220,' + (Math.max(0, 26 - radius) / 100) + ')';
+    graph.stroke();
+    graph.restore();
+}
+
+const drawRipple3 = (graph, centerX, centerY, radius, sides) => {
+    var theta = 0;
+    var x = 0;
+    var y = 0;
+
+
+    graph.save();
+    graph.beginPath();
+    for (var i = 0; i < sides; i++) {
+        theta = (i / sides) * 2 * Math.PI;
+        x = centerX + radius * Math.sin(theta);
+        y = centerY + radius * Math.cos(theta);
+        graph.lineTo(x, y);
+    }
+    graph.closePath();
+    graph.lineWidth = 1;
+    graph.strokeStyle = 'rgba(200,200,200,' + (Math.max(0, 22 - radius) / 100) + ')';
+
+    graph.stroke();
+    graph.restore();
+}

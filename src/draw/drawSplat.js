@@ -42,7 +42,7 @@ export const drawSplat = (c, a, splat, playerColor, playerAngle, playerPosition)
         //img.style = "fill:#B0E0E6;"
         //console.log(img.style)
         img.onload = function() { 
-            console.log(angle)
+            // console.log(angle)
             context.shadowBlur = 5;
             context.shadowColor = "#FF00FF";
             context.translate(aimX , aimY)

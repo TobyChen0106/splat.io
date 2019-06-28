@@ -2,19 +2,19 @@ import { GAME_STATE } from '../enum'
 import { battleField_1 } from '../field'
 import { playerWidth, playerHeight } from '../draw'
 
-export const updatePlayerPosition = (gameState, playerPosition, playerMoveDirection, playerMoveSpeed) => {
+export const updatePlayerPosition = (playerData, localPlayerData) => {
   const field = battleField_1;
   const objects = field.rectObjects;
 
-  if (gameState === GAME_STATE.GAMING) {
-    const p_x = playerPosition.x;
-    const p_y = playerPosition.y;
+  if (localPlayerData.gameState === GAME_STATE.GAMING) {
+    const p_x = playerData.playerPosition.x;
+    const p_y = playerData.playerPosition.y;
 
-    var speed = playerMoveSpeed;
+    var speed = localPlayerData.playerMoveSpeed;
 
 
-    const d_x = playerMoveDirection.x;
-    const d_y = playerMoveDirection.y;
+    const d_x = localPlayerData.playerMoveDirection.x;
+    const d_y = localPlayerData.playerMoveDirection.y;
     if (d_x !== 0 && d_y !== 0) {
       speed = speed / 1.414;
     }
@@ -44,12 +44,12 @@ export const updatePlayerPosition = (gameState, playerPosition, playerMoveDirect
           new_x = temp_new_x;
           new_y = temp_new_y;
         }
-        
+
       }
     }
 
-    playerPosition.x = new_x;
-    playerPosition.y = new_y;
-    return { playerPosition }
+    playerData.playerPosition.x = new_x;
+    playerData.playerPosition.y = new_y;
+    return playerData.playerPosition;
   }
 }
