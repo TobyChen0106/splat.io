@@ -3,7 +3,6 @@ import './Game.css';
 import { drawPlayer, drawField, drawSplat, drawAimPoint, drawBullet, } from '../draw'
 import { COLOR_ASSET } from './ColorAssets'
 import { weapons } from '../weapons'
-import Timer  from './Timer'
 
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
 import {
