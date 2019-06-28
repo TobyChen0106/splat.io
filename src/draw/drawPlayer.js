@@ -123,9 +123,28 @@ const drawPlayerNormal = (context, state) => {
     context.rotate(Math.PI / 180 * playerAngle);
     */
     context.save()
+
+    context.translate(playerPosition.x, playerPosition.y)
+
+    context.font = "bold 10pt Freckle Face";
+    const playerNameLen = context.measureText(playerName).width;
+
+    context.strokeStyle = "#FFFFFF";
+    context.lineWidth = 3;
+    context.strokeText(playerName, -playerNameLen / 2, 50)
+
+    context.fillStyle = playerColor;
+    context.font = "bold 10pt Freckle Face";
+
+    context.fillText(playerName, -playerNameLen / 2, 50);
+    //end of player drawing
+    context.restore();
+
+
     img.src = playerSVG;
     img2.src = playerHandSVG;
     img3.src = gunSVG;
+
     context.translate(playerPosition.x, playerPosition.y)
     context.rotate(Math.PI / 180 * (playerAngle + 180));
     context.drawImage(img, -playerWidth / 2, -playerHeight / 2, playerWidth, playerHeight)
@@ -153,22 +172,10 @@ const drawPlayerNormal = (context, state) => {
     context.fillRect(playerWidth / 2 - 15, -playerHeight / 2, 15, 15);
     */
 
-    context.restore();
+    //context.restore();
     //draw the player part NOT moving with mouse 
 
-    context.font = "bold 20pt Arial";
-    const playerNameLen = context.measureText(playerName).width;
-
-    context.strokeStyle = "#dddddd";
-    context.lineWidth = 3;
-    context.strokeText(playerName, -playerNameLen / 2, 50)
-
-    context.fillStyle = "#111111";
-    context.font = "bold 20pt Arial";
-
-    context.fillText(playerName, -playerNameLen / 2, 50);
-    //end of player drawing
-    context.restore();
+    
 }
 
 const drawPlayerName = (context, state) => {

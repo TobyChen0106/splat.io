@@ -11,7 +11,7 @@ class InkBar extends React.Component {
         this.state = {
             inkColor: this.hexToRgb(this.props.inkColor.main),
             inkAmount: this.props.inkAmount,
-            inkBarPosition: { x: window.innerWidth / 2 - 200, y: window.innerHeight - 80 },
+            inkBarPosition: { x: window.innerWidth-80, y: window.innerHeight - 400 },
         }
     }
     hexToRgb(hex) {
@@ -40,10 +40,10 @@ class InkBar extends React.Component {
                 {/*<rect className="inkBarBase" x={this.state.inkBarPosition.x} y={this.state.inkBarPosition.y}
                     width="400" height="50" style={inkBarBaseStyle} />
                 */}
-                <rect className="inkBar" x={this.state.inkBarPosition.x + 30 } y={this.state.inkBarPosition.y-40}
-                    width={3.4 * this.props.inkAmount} height="50" style={inkBarStyle} />
-                <svg width="1000" height="70" style={inkBarStyle} x={this.state.inkBarPosition.x - 300} y={this.state.inkBarPosition.y-50}>
-                <image href={inkBarSVG} width="1000" height="70" style={inkBarStyle}/>
+                <rect className="inkBar" x={this.state.inkBarPosition.x } y={this.state.inkBarPosition.y + 3.4*(100-this.props.inkAmount)}
+                    width="50" height={3.4 * this.props.inkAmount} style={inkBarStyle} />
+                <svg width="1000" height="1000" style={inkBarStyle} x={this.state.inkBarPosition.x - 10} y={this.state.inkBarPosition.y-330}>
+                <image href={inkBarSVG} width="70" height="1000" style={inkBarStyle}/>
                 </svg>
             </g>
 
