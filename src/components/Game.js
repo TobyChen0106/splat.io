@@ -135,7 +135,7 @@ class Game extends React.Component {
         // draw bullet 
         drawBullet(this.bulletRef, bullets, this.state.playerColor);
 
-        //draw player 
+        //draw player
         drawPlayer(this.playerRef, this.state);
 
         // draw aim point
@@ -158,12 +158,14 @@ class Game extends React.Component {
 
         setInterval(() => {
             this.updateGame();
-        }, 25);
+        }, 20);
         drawField(this.fieldRef);
+
+
     }
 
     render() {
-        console.log(this.state.allPlayers)
+        // console.log(this.state.allPlayers)
         return (
             <div id="game-container">
                 <svg id="svg-container"
