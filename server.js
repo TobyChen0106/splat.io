@@ -3,13 +3,7 @@ const mongoose = require('mongoose');
 const User = require('./models/user');
 const uuid = require('uuidv4')
 let GameData = {};
-let seed = '1';
-
-// for frontend test
-GameData['temp'] = {
-    playerNames: [],
-    allPlayers: []
-}
+let seed = '1234';
 
 // Create server to serve index.html
 const app = express();
@@ -21,7 +15,6 @@ app.use(express.static('public'));
 
 // Socket.io serverSocket
 const serverSocket = require('socket.io')(http);
-// serverSocket.set('origins', '*:*');
 
 // Start server listening process.
 http.listen(port, () => {
@@ -38,28 +31,68 @@ db.on('error', error => { console.log(error) })
 db.once('open', () => {
     console.log('MongoDB connected!')
     serverSocket.on('connection', socket => {
+        let uid = socket.id;
+        let roomId = null;
+        let team = null;
+        
         socket.on('newPlayer', (data) => {
-            let uid = uuid();
-            let team = GameData['temp'].playerNames.length % 2 ? 'B' : 'A'
+            // determine which room to join
+            // no room
+            if (!GameData) {
+                roomId = seed
+                socket.join(roomId)
+                GameData[roomId] = {
+                    playersBasicInfo: [],
+                    allPlayers: []
+                }
+            }
+            // find valid room
+            else {
+                Object.keys(GameData).forEach(id => {
+                    if (GameData[id].playersBasicInfo.length < 4) {
+                        roomId = id;
+                        socket.join(roomId);
+                    }
+                }) 
+            }
+            // no valid room
+            if (!roomId) {
+                seed = (parseInt(seed) * 1213 % 9973).toString();
+                roomId = seed;
+                socket.join(roomId);
+                GameData[roomId] = {
+                    playersBasicInfo: [],
+                    allPlayers: []
+                }
+            }
 
-            GameData['temp'].playerNames.push({
+            // determine which team to join
+            if (GameData[roomId].playersBasicInfo.length === 0) team = 'A';
+            else {
+                let numberA = GameData[roomId].playersBasicInfo.filter(p => p.team === 'A').length;
+                let numberB = GameData[roomId].playersBasicInfo.length - numberA;
+                if (numberA > numberB) team = 'B';
+            }
+
+            // add player info to the room
+            GameData[roomId].playersBasicInfo.push({
                 name: data.name,
                 uid: uid,
                 team: team
             })
 
-            socket.emit('getRoomId', {
-                roomId: 'temp',
+            socket.emit('getPlayerBasicInfo', {
+                roomId: roomId,
                 uid: uid,
                 team: team
             })
         });
 
         socket.on('getRoomPlayers', (data) => {
-            let teamA = GameData[data.roomId].playerNames.filter(p => p.team === 'A');
-            let teamB = GameData[data.roomId].playerNames.filter(p => p.team === 'B');
+            let teamA = GameData[data.roomId].playersBasicInfo.filter(p => p.team === 'A');
+            let teamB = GameData[data.roomId].playersBasicInfo.filter(p => p.team === 'B');
 
-            serverSocket.emit('getRoomPlayers', {
+            serverSocket.to(data.roomId).emit('getRoomPlayers', {
                 teamA: teamA,
                 teamB: teamB
             })
@@ -74,19 +107,21 @@ db.once('open', () => {
                 if (p.playerUid === data.playerUid) { return data; }
                 else { return p; }
             });
-            serverSocket.emit('updateGame', {
+            socket.broadcast.to(data.roomId).emit('updateGame', {
                 allPlayers: GameData[data.roomId].allPlayers
             });
         });
 
-        // socket.on('joinRoom', (data) => {
-        //     socket.join(data.roomId);
-        //     console.log(data.name, 'join Room', roomId, 'successfully.')
-        // });
-
-        // socket.on('leaveRoom', () => {
-        //     socket.emit('disconnect');
-        // });
+        socket.on('disconnect', () => {
+            if (GameData[roomId]) {
+                GameData[roomId].playersBasicInfo = GameData[roomId].playersBasicInfo.filter(
+                    p => !(p.uid === socket.id)
+                );
+                GameData[roomId].allPlayers = GameData[roomId].allPlayers.filter(
+                    p => !(p.playerUid === socket.id)
+                );
+            }
+        });
 
     })
 })

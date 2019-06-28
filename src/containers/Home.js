@@ -9,10 +9,11 @@ class Home extends Component {
         this.props.socket.emit('newPlayer', {
             name: this.props.name
         })
-        this.props.socket.on('getRoomId', (data) => {
+        this.props.socket.on('getPlayerBasicInfo', (data) => {
             this.props.setRoomId(data.roomId);
             this.props.setUid(data.uid);
             this.props.setTeam(data.team);
+            this.props.history.push(`/wait/${this.props.roomId}`);
         })
     }
 
@@ -27,11 +28,11 @@ class Home extends Component {
                         spellCheck="false"
                         onKeyUp={this.props.setName}
                     />
-                    <NavLink to={`/wait/${this.props.roomId}`} style={{"text-decoration": "none"}}>
+                    {/* <NavLink to={`/wait/${this.props.roomId}`} style={{"text-decoration": "none"}}> */}
                         <button className='App_button' onClick={this.handlePlay}>
                             Play!
                         </button>
-                    </NavLink>
+                    {/* </NavLink> */}
 
                 </div>
                 <div className='Home_mask'></div>

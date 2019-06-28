@@ -6,15 +6,15 @@ import Game from '../components/Game'
 import Home from './Home'
 import Wait from './Wait'
 
-const host = '140.112.73.24'
-const localhost = 'localhost'
+let host = '140.112.244.155:8080' // server ip (andyh0913 for temporary use)
 
 class Index extends Component {
     constructor(props) {
         super(props);
-        this.socket = io('http://'+ host +':8080');
+        // this.socket = io(host);
+        this.socket = io('http://localhost:8080');
         this.state = {
-            roomId: 'temp',
+            roomId: null,
             name: 'Player',
             uid: null,
             team: null
@@ -26,7 +26,7 @@ class Index extends Component {
         else { this.setState( {name: 'Player'} ); }
     }
     setUid = (uid) => { this.setState( {uid: uid} ); }
-    setRoomId = (id) => { this.setState( {roomId: id} ); }
+    setRoomId = (roomId) => { this.setState( {roomId: roomId} ); }
     setTeam = (team) => { this.setState( {team: team} ); }
 
     render(){
