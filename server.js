@@ -49,7 +49,10 @@ db.once('open', () => {
             // find valid room
             else {
                 Object.keys(GameData).forEach(id => {
-                    if (GameData[id].playersBasicInfo.length < 4) roomId = id;
+                    if (GameData[id].playersBasicInfo.length < 2) {
+                        roomId = id;
+                        socket.join(roomId);
+                    }
                 }) 
             }
             // no valid room
@@ -89,7 +92,7 @@ db.once('open', () => {
             let teamA = GameData[data.roomId].playersBasicInfo.filter(p => p.team === 'A');
             let teamB = GameData[data.roomId].playersBasicInfo.filter(p => p.team === 'B');
 
-            serverSocket.emit('getRoomPlayers', {
+            serverSocket.to(data.roomId).emit('getRoomPlayers', {
                 teamA: teamA,
                 teamB: teamB
             })
@@ -104,7 +107,7 @@ db.once('open', () => {
                 if (p.playerUid === data.playerUid) { return data; }
                 else { return p; }
             });
-            serverSocket.emit('updateGame', {
+            socket.broadcast.to(data.roomId).emit('updateGame', {
                 allPlayers: GameData[data.roomId].allPlayers
             });
         });
@@ -119,15 +122,6 @@ db.once('open', () => {
                 );
             }
         });
-
-        // socket.on('joinRoom', (data) => {
-        //     socket.join(data.roomId);
-        //     console.log(data.name, 'join Room', roomId, 'successfully.')
-        // });
-
-        // socket.on('leaveRoom', () => {
-        //     socket.emit('disconnect');
-        // });
 
     })
 })
