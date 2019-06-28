@@ -64,7 +64,6 @@ class Game extends React.Component {
         });
         
         this.props.socket.on('updateGame', (data) => {
-            console.log(data[0].mousePosition)
             this.setState({
                 allPlayers: data
             });

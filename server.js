@@ -70,11 +70,18 @@ db.once('open', () => {
         });
 
         socket.on('updateGame', (data) => {
+            // console.log('updataGame data: ', data);
             GameData[data.roomId].allPlayers.forEach(p => {
-                if (p.playerUid === data.playerUid) return data;
-                else return p;
+                if (p.playerUid === data.playerUid) {
+                    console.log('catch');
+                    return data;
+                }
+                else {
+                    console.log('oh no')
+                    return p;
+                }
             });
-            console.log(GameData[data.roomId].allPlayers[0].mousePosition)
+            // console.log('GameData: ', GameData[data.roomId].allPlayers[0]);
             serverSocket.emit('updateGame', {
                 allPlayers: GameData[data.roomId].allPlayers
             });
