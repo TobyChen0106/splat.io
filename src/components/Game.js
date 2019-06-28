@@ -138,7 +138,7 @@ class Game extends React.Component {
         // draw bullet 
         drawBullet(this.bulletRef, bullets, this.state.playerColor);
 
-        //draw player 
+        //draw player
         drawPlayer(this.playerRef, this.state);
 
         // draw aim point
@@ -160,8 +160,10 @@ class Game extends React.Component {
 
         setInterval(() => {
             this.updateGame();
-        }, 50);
+        }, 100);
         drawField(this.fieldRef);
+
+
     }
 
     render() {
