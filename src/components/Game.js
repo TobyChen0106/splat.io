@@ -1,9 +1,10 @@
 import React from 'react';
 import './Game.css';
-import { drawPlayer, drawField, drawSplat, drawAimPoint, drawBullet, } from '../draw'
+import { drawPlayer, drawField, drawSplat, drawAimPoint, drawBullet, drawOtherPlayers, } from '../draw'
 import { COLOR_ASSET } from './ColorAssets'
 import { weapons } from '../weapons'
-import Timer  from './Timer'
+import Timer from './Timer'
+import { clone }  from 'lodash';
 
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
 import {
@@ -20,6 +21,22 @@ import {
 
 import InkBar from './inkBar';
 
+// function Player(props) {
+//     this.playerName = props.name;
+//         this.playerUid = props.uid;
+//         this.playerTeam = props.team;
+
+//         this.playerColor = COLOR_ASSET[0];
+//         this.playerHealth = 100;
+//         this.playerPosition = { x: 100, y: 100 };
+//         this.playerAngle = 0;
+//         this.playerStatus = PLAYER_STATUS.STANDING_SPACE;
+//         this.playerWeapon = weapons.splatterShot_v1;
+
+//         this.bullets = [];
+//         this.splats = [];
+// }
+
 class Game extends React.Component {
     constructor(props) {
 
@@ -33,6 +50,38 @@ class Game extends React.Component {
             playerColor: COLOR_ASSET[0],
             playerHealth: 100,
             playerPosition: { x: 100, y: 100 },
+            playerAngle: 0,
+            playerStatus: PLAYER_STATUS.STANDING_SPACE,
+            playerWeapon: weapons.splatterShot_v1,
+
+            bullets: [],
+            splats: [],
+        };
+
+        this.playerData_2 = {
+            playerName: this.props.name,
+            playerUid: this.props.uid,
+            playerTeam: this.props.team,
+
+            playerColor: COLOR_ASSET[0],
+            playerHealth: 100,
+            playerPosition: { x: 200, y: 200 },
+            playerAngle: 0,
+            playerStatus: PLAYER_STATUS.STANDING_SPACE,
+            playerWeapon: weapons.splatterShot_v1,
+
+            bullets: [],
+            splats: [],
+        };
+
+        this.playerData_3 = {
+            playerName: this.props.name,
+            playerUid: this.props.uid,
+            playerTeam: this.props.team,
+
+            playerColor: COLOR_ASSET[0],
+            playerHealth: 100,
+            playerPosition: { x: 300, y: 300 },
             playerAngle: 0,
             playerStatus: PLAYER_STATUS.STANDING_SPACE,
             playerWeapon: weapons.splatterShot_v1,
@@ -102,6 +151,10 @@ class Game extends React.Component {
     }
 
     updateGame = () => {
+
+        this.otherPlayerData = [this.playerData_2, this.playerData_3];
+        // drawOtherPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
+
         // measure and update screen scale
         const windowHeight = window.innerHeight;
         const windowWidth = window.innerWidth;
@@ -138,6 +191,11 @@ class Game extends React.Component {
         const new_inkAmount = getInkAmount(inkConsumption, this.playerData, this.localPlayerData);
         this.setState({ inkAmount: new_inkAmount });
 
+        this.otherPlayerData.push(this.playerData);
+        // console.log(this.otherPlayerData);
+        drawOtherPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
+
+/*  
         // draw splat
         drawSplat(this.splatRef, this.splatAnimationRef, this.playerData.splats, this.playerData.playerColor, this.playerData.playerAngle, this.playerData.playerPosition);
 
@@ -146,12 +204,14 @@ class Game extends React.Component {
 
         //draw player
         drawPlayer(this.playerRef, this.splatAnimationRef, this.playerData);
-
+*/
         // draw aim point
         drawAimPoint(this.aimPointRef, this.playerData.playerPosition, this.localPlayerData.mousePosition, this.playerData.playerAngle, aimPoints);
 
         // update time
         this.localPlayerData.timeStamp = Date.now();
+
+
     }
 
     componentDidMount = () => {
@@ -185,6 +245,7 @@ class Game extends React.Component {
                         <canvas id="splatAnimationLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.splatAnimationRef = el} />
                         <canvas id="fieldLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.fieldRef = el} />
                         <canvas id="playerLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.playerRef = el} />
+                        {/* <canvas id="otherPlayerLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.playerRef = el} /> */}
                         <canvas id="itemLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.itemRef = el} />
                         <canvas id="bulletLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.bulletRef = el} />
                         <canvas id="aimPointLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.aimPointRef = el} />
@@ -195,7 +256,7 @@ class Game extends React.Component {
                     width={window.innerWidth}
                     height={window.innerHeight} >
                     <InkBar inkColor={this.playerData.playerColor} inkAmount={this.localPlayerData.inkAmount} />
-                    <text id="timer" x="600" y="50" width="300" height="100" style={{fill: this.state.timeStampColor}}>{this.state.timeStamp}</text>
+                    <text id="timer" x="600" y="50" width="300" height="100" style={{ fill: this.state.timeStampColor }}>{this.state.timeStamp}</text>
                 </svg>
             </div>
         );

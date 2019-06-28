@@ -19,7 +19,7 @@ export const drawPlayer = (c, a, state) => {
 
     var context = c.getContext("2d");
     // attach the context to the canvas for easy access and to reduce complexity.
-    context.clearRect(0, 0, c.width, c.height);
+    // context.clearRect(0, 0, c.width, c.height);
     // drawPlayerNormal(context, state)
 
     switch (state.playerStatus) {

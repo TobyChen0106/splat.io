@@ -63,7 +63,7 @@ export const drawSplat = (c, a, splat, playerColor, playerAngle, playerPosition)
     // image.src = context.canvas.toDataURL();
     context.restore();
     // context.clearRect(0, 0, c.width, c.height);
-    r_context.clearRect(0, 0, a.width, a.height);
+    // r_context.clearRect(0, 0, a.width, a.height);
     for (var r = 0; r < ripple.length; ++r) {
         ripple[r][2] += 2;
         drawRipple(r_context, ripple[r][0], ripple[r][1], ripple[r][2], 20);
