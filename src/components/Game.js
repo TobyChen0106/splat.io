@@ -3,6 +3,7 @@ import './Game.css';
 import { drawPlayer, drawField, drawSplat, drawAimPoint, drawBullet, } from '../draw'
 import { COLOR_ASSET } from './ColorAssets'
 import { weapons } from '../weapons'
+import {Redirect} from 'react-router'
 
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
 import {
@@ -18,6 +19,8 @@ import {
 } from '../utils'
 
 import InkBar from './inkBar';
+
+const GAME_INTERVAL = 40;
 
 class Game extends React.Component {
     constructor(props) {
@@ -52,7 +55,9 @@ class Game extends React.Component {
             mousePosition: { x: 0, y: 0 },
             mouseClient: { x: 0, y: 0 },
             mouseDownState: 0,
+            initTime: Date.now(),
             timeStamp: Date.now(),
+            timeColor: "#FFFFFF"
         }
 
         //data that recieved from the server
@@ -150,7 +155,13 @@ class Game extends React.Component {
         drawAimPoint(this.aimPointRef, this.playerData.playerPosition, this.localPlayerData.mousePosition, this.playerData.playerAngle, aimPoints);
 
         // update time
-        this.localPlayerData.timeStamp = Date.now();
+        var t = GAME_INTERVAL - parseInt((Date.now() - this.localPlayerData.initTime)/1000);
+        this.localPlayerData.timeStamp = t
+        if(t < 10) this.localPlayerData.timeColor = "#ff1493";
+        if(t === -1) {
+            console.log("GAME END!!");
+
+        }
     }
 
     componentDidMount = () => {
@@ -159,7 +170,6 @@ class Game extends React.Component {
         window.addEventListener("mousemove", this.trackMouse);
         window.addEventListener("mousedown", this.mouseDown);
         window.addEventListener("mouseup", this.mouseUp);
-
         setInterval(() => {
             this.updateGame();
         }, 20);
@@ -167,7 +177,8 @@ class Game extends React.Component {
     }
 
     render() {
-        return (
+        if(this.localPlayerData.timeStamp > -1) {
+            return (
             <div id="game-container">
                 <svg id="svg-container"
                     width={Math.max(window.innerWidth, window.innerHeight)}
@@ -194,10 +205,13 @@ class Game extends React.Component {
                     width={window.innerWidth}
                     height={window.innerHeight} >
                     <InkBar inkColor={this.playerData.playerColor} inkAmount={this.localPlayerData.inkAmount} />
-                    <text id="timer" x="600" y="50" width="300" height="100" style={{fill: this.state.timeStampColor}}>{this.state.timeStamp}</text>
+                    <text id="timer" x="600" y="80" width="300" height="100" style={{fill: this.localPlayerData.timeColor}}>{this.localPlayerData.timeStamp}</text>
                 </svg>
             </div>
-        );
+        )}
+        else {
+            return( <Redirect to="/home" />);
+        }
     }
 }
 

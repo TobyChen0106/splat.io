@@ -185,7 +185,25 @@ const drawPlayerName = (context, state) => {
     const playerAngle = state.playerAngle
     const playerStatus = state.playerStatus
 
-    context.save();
+    context.save()
+
+    context.translate(playerPosition.x, playerPosition.y)
+
+    context.font = "bold 10pt Freckle Face";
+    const playerNameLen = context.measureText(playerName).width;
+
+    context.strokeStyle = "#FFFFFF";
+    context.lineWidth = 3;
+    context.strokeText(playerName, -playerNameLen / 2, 50)
+
+    context.fillStyle = playerColor;
+    context.font = "bold 10pt Freckle Face";
+
+    context.fillText(playerName, -playerNameLen / 2, 50);
+    //end of player drawing
+    context.restore();
+
+    /*context.save();
     context.translate(playerPosition.x, playerPosition.y)
 
     context.save();
@@ -209,6 +227,7 @@ const drawPlayerName = (context, state) => {
     context.fillText(playerName, -playerNameLen / 2, 50);
     //end of player drawing
     context.restore();
+    */
 }
 
 const drawRipple = (graph, centerX, centerY, radius, sides) => {
