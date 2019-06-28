@@ -1,7 +1,8 @@
 import React from 'react';
 import './Game.css';
 import { drawPlayer, drawField, drawSplat, drawAimPoint, drawBullet, } from '../draw'
-
+import { COLOR_ASSET } from './ColorAssets'
+import { weapons } from '../weapons'
 
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
 import {
@@ -42,11 +43,9 @@ class Game extends React.Component {
             playerMoveSpeed: 5,
             playerMoveDirection: { x: 0, y: 0 },
             playerEquipment: {
-                mainWeapon: 0,
-                sideWeapon: 0,
                 items: [],
             },
-
+            playerWeapon: weapons.splatterShot_v1,
             inkAmount: 100,
 
             keyStrokeState: { left: 0, right: 0, up: 0, down: 0, space: 0, g: 0 },

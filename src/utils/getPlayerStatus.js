@@ -1,4 +1,5 @@
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
+var dive_counter = 0;
 export const getPlayerStatus = (c, state) => {
     var new_player_status = state.playerStatus;
     var ownColor = state.playerColor;
