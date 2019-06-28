@@ -49,7 +49,7 @@ db.once('open', () => {
             // find valid room
             else {
                 Object.keys(GameData).forEach(id => {
-                    if (GameData[id].playersBasicInfo.length < 2) {
+                    if (GameData[id].playersBasicInfo.length < 4) {
                         roomId = id;
                         socket.join(roomId);
                     }
