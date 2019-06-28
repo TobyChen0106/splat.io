@@ -7,7 +7,7 @@ export const weapons = {
             fireSpeed: 200, //cd time(ms) for one shot
             fireInkCost: 5,
             maxError: 20,
-            gunLength: 40,
+            gunLength: 25,
         },
         sub: {},
         price: 1000,

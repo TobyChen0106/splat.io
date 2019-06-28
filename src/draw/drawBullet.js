@@ -2,7 +2,7 @@
 export const drawBullet = (c, bullets, playerColor) => {
 
     var context = c.getContext("2d");
-    context.clearRect(0, 0, c.width, c.height);
+    // context.clearRect(0, 0, c.width, c.height);
 
     context.save();
     // context.drawImage(image, 0,0,1600,900);
