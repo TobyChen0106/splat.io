@@ -9,6 +9,7 @@ class Result extends Component {
         return(
             <div className='Result-container'>
                 <h1>Result</h1>
+                {/*<h1>Splat.io</h1>*/}
                 <div>
 
                 </div>

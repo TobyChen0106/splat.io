@@ -22,8 +22,16 @@ class Wait extends Component {
     }
 
     render() {
-        let teamA = this.state.teamA.map(name => <li>{name}</li>);
-        let teamB = this.state.teamB.map(name => <li>{name}</li>);
+        let teamA = this.state.teamA.map(name => 
+                <li>
+                    <UserBlock userName={name} />
+                </li>
+            );
+        let teamB = this.state.teamB.map(name =>
+            <li>
+                    <UserBlock userName={name} />
+                </li>
+            );
 
         return(
             <div className='Wait_container'>
