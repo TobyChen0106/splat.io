@@ -94,14 +94,15 @@ export const getSplats = (state) => {
 
 export const checkFieldCollision = (p_x, p_y, d_x, d_y) => {
     const field = battleField_1;
-    const objects = field.objects;
+    
 
     var c_x = d_x;
     var c_y = d_y;
 
     var realShootDistance = Math.pow(Math.pow(c_x - p_x, 2) + Math.pow(c_y - p_y, 2), 0.5);
-
-    // check objects
+    var tempShootDistance;
+    // check rectobjects
+    var objects = field.rectObjects;
     for (var j = 0; j < objects.length; ++j) {
         const o_x1 = objects[j][1];
         const o_y1 = objects[j][2];
@@ -117,11 +118,44 @@ export const checkFieldCollision = (p_x, p_y, d_x, d_y) => {
 
         for (var i = 0; i < interSections.length; ++i) {
             if (interSections[i] !== false) {
-                const tempShootDistance = Math.pow(Math.pow(interSections[i].x - p_x, 2) + Math.pow(interSections[i].y - p_y, 2), 0.5);
+                tempShootDistance = Math.pow(Math.pow(interSections[i].x - p_x, 2) + Math.pow(interSections[i].y - p_y, 2), 0.5);
                 if (tempShootDistance < realShootDistance) {
                     realShootDistance = tempShootDistance;
                     c_x = interSections[i].x;
                     c_y = interSections[i].y;
+                }
+            }
+        }
+    }
+    
+    // check polyobjects
+    objects = field.polyObjects;
+    for (var j = 0; j < objects.length; ++j) {
+        const n  = objects[j].length;
+        var interSection;
+
+        for (var i = 1; i < n; ++i) {
+            if(i === n-1){
+                interSection = getLineIntersection(p_x, p_y, c_x, c_y, objects[j][i][0], objects[j][i][1], objects[j][1][0], objects[j][1][1]);
+                if (interSection !== false) {
+                    tempShootDistance = Math.pow(Math.pow(interSection.x - p_x, 2) + Math.pow(interSection.y - p_y, 2), 0.5);
+                    if (tempShootDistance < realShootDistance) {
+                        realShootDistance = tempShootDistance;
+                        c_x = interSection.x;
+                        c_y = interSection.y;
+                    }
+                }
+            }else{
+                interSection = getLineIntersection(p_x, p_y, c_x, c_y, objects[j][i][0], objects[j][i][1], objects[j][i+1][0], objects[j][i+1][1]);
+                // console.log(interSection);
+
+                if (interSection !== false) {
+                    tempShootDistance = Math.pow(Math.pow(interSection.x - p_x, 2) + Math.pow(interSection.y - p_y, 2), 0.5);
+                    if (tempShootDistance < realShootDistance) {
+                        realShootDistance = tempShootDistance;
+                        c_x = interSection.x;
+                        c_y = interSection.y;
+                    }
                 }
             }
         }

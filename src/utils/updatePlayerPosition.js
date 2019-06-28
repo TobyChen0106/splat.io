@@ -4,7 +4,7 @@ import { playerWidth, playerHeight } from '../draw'
 
 export const updatePlayerPosition = (gameState, playerPosition, playerMoveDirection, playerMoveSpeed) => {
   const field = battleField_1;
-  const objects = field.objects;
+  const objects = field.rectObjects;
 
   if (gameState === GAME_STATE.GAMING) {
     const p_x = playerPosition.x;

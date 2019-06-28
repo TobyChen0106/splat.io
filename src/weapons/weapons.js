@@ -5,7 +5,7 @@ export const weapons = {
             maxShootDistance: 400,
             bulletSpeed: 30,
             fireSpeed: 200, //cd time(ms) for one shot
-            fireInkCost: 0,
+            fireInkCost: 5,
             maxError: 20,
             gunLength: 40,
         },

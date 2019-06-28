@@ -25,9 +25,9 @@ class Game extends React.Component {
         super(props);
         var mouseScale = 1;
         this.state = {
-            gameBoardWidth: 3000,
-            gameBoardHeight: 3000,
-            cameraSize: 1500,
+            gameBoardWidth: 1600,
+            gameBoardHeight: 900,
+            cameraSize: 1000,
 
             gameState: GAME_STATE.GAMING,
 

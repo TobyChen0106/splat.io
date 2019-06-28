@@ -9,7 +9,7 @@ const innerColor = "#21292D"
 
 export const drawField = (c) => {
     const field = battleField_1;
-    const objects = field.objects;
+    var objects = field.rectObjects;
     var xMin = field.fieldRange.xMin
     var yMin = field.fieldRange.yMin
     var xMax = field.fieldRange.xMax
@@ -28,46 +28,45 @@ export const drawField = (c) => {
     //context.fillStyle = "#aaaaaa";
     //context.fillRect(field.fieldRange.xMin, field.fieldRange.yMin, field.fieldRange.xMax-field.fieldRange.xMin, field.fieldRange.yMax-field.fieldRange.yMin);
 
-    var path = drawUsingArc( xMin, yMin, xMax-xMin, yMax-yMin , 30);
+    var path = drawRectUsingArc(xMin, yMin, xMax - xMin, yMax - yMin, 30);
     context.strokeStyle = outerColor;
     context.lineWidth = 8;
     context.stroke(path)
     var offset = 12
-    var path = drawUsingArc(xMin-offset/2, yMin-offset/2, xMax-xMin+offset, yMax-yMin+offset , 30);
+    var path = drawRectUsingArc(xMin - offset / 2, yMin - offset / 2, xMax - xMin + offset, yMax - yMin + offset, 30);
     context.strokeStyle = middleColor;
     context.lineWidth = 8;
     context.stroke(path)
-    
-    
+
+
     //context.strokeRect(field.fieldRange.xMin, field.fieldRange.yMin, 
-            //field.fieldRange.xMax-field.fieldRange.xMin, field.fieldRange.yMax-field.fieldRange.yMin);
+    //field.fieldRange.xMax-field.fieldRange.xMin, field.fieldRange.yMax-field.fieldRange.yMin);
     // draw the objects
-    for (var i = 0; i < objects.length; ++i) 
-    {
-        var obj = {x: objects[i][1], y: objects[i][2], w: objects[i][3], h: objects[i][4]}
-        
+    for (var i = 0; i < objects.length; ++i) {
+        var obj = { x: objects[i][1], y: objects[i][2], w: objects[i][3], h: objects[i][4] }
+
         switch (objects[i][0]) {
-            case "rock": 
-                
+            case "rock":
+
                 //最外圈
                 context.fillStyle = outerColor;
-                var obj_path = drawUsingArc(objects[i][1], objects[i][2], objects[i][3], objects[i][4], 5)
+                var obj_path = drawRectUsingArc(objects[i][1], objects[i][2], objects[i][3], objects[i][4], 5)
                 context.fill(obj_path)
 
                 //中間
                 context.fillStyle = middleColor;
-                obj_path = drawUsingArc(objects[i][1]+8, objects[i][2]+8, objects[i][3]-16, objects[i][4]-16, 5)
+                obj_path = drawRectUsingArc(objects[i][1] + 8, objects[i][2] + 8, objects[i][3] - 16, objects[i][4] - 16, 5)
                 context.fill(obj_path)
 
                 //最內圈
                 context.fillStyle = innerColor;
-                obj_path = drawUsingArc(objects[i][1]+20, objects[i][2]+20, objects[i][3]-40, objects[i][4]-40, 5)
+                obj_path = drawRectUsingArc(objects[i][1] + 20, objects[i][2] + 20, objects[i][3] - 40, objects[i][4] - 40, 5)
                 context.fill(obj_path)
-                
+
                 break;
             default: break;
         }
-        
+
         /*
         var img = new Image();
         img.src = rock;
@@ -83,16 +82,39 @@ export const drawField = (c) => {
         //context.fillRect(objects[i][1], objects[i][2], objects[i][3], objects[i][4]);
     }
 
-    
-    context.restore(); 
+    //draw polygon objects
+    objects = field.polyObjects;
+    for (var i = 0; i < objects.length; ++i) {
+        switch (objects[i][0]) {
+            case "rock":
+
+
+                //最外圈
+                context.fillStyle = outerColor;
+                var obj_path = drawPolyUsingArc(objects[i])
+                context.fill(obj_path)
+
+                // //中間
+                // context.fillStyle = middleColor;
+                // var obj_path = drawPolyUsingArc(objects[i])
+                // context.fill(obj_path)
+
+                // //最內圈
+                // context.fillStyle = innerColor;
+                // var obj_path = drawPolyUsingArc(objects[i])                
+                // context.fill(obj_path)
+
+                break;
+            default: break;
+        }
+    }
+    context.restore();
 }
 
 
-
-
-function drawUsingArc(x, y, width, height , r) {
+function drawRectUsingArc(x, y, width, height, r) {
     var path = new Path2D();
- 
+
     path.moveTo(x + r, y);
     path.lineTo(x + width - r, y);
     path.arc(x + width - r, y + r, r, Math.PI / 180 * 270, 0, false);
@@ -102,6 +124,18 @@ function drawUsingArc(x, y, width, height , r) {
     path.arc(x + r, y + height - r, r, Math.PI / 180 * 90, Math.PI / 180 * 180, false);
     path.lineTo(x, y + r);
     path.arc(x + r, y + r, r, Math.PI / 180 * 180, Math.PI / 180 * 270, false);
- 
-    return path
+
+    return path;
+}
+
+function drawPolyUsingArc(polyObject) {
+    var path = new Path2D();
+    const n = polyObject.length;
+    path.moveTo(polyObject[n - 1][0], polyObject[n - 1][1]);
+    
+    for (var i = 1; i < n; i++) {
+        path.lineTo(polyObject[i][0], polyObject[i][1]);
+    }
+
+    return path;
 }
