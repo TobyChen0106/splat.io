@@ -59,7 +59,6 @@ class Game extends React.Component {
         //data that recieved from the server
         this.otherPlayerData = [];
 
-<<<<<<< HEAD
         this.mouseScale = 1;
         this.state = {
             gameBoardWidth: 1600,
@@ -68,10 +67,6 @@ class Game extends React.Component {
 
             playerPosition: { x: 100, y: 100 }, // to update camera position 
             inkAmount: 100, // to update inkbar 
-=======
-            timeStamp: Date.now(),
-            timeStampColor: "#FFFFFF"
->>>>>>> ff33ea61123a82d75ce5bfae68c70c9ac778bd6b
         }
 
         this.props.socket.emit('enterGame', {
