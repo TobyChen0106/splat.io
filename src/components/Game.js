@@ -19,7 +19,6 @@ import {
 import InkBar from './inkBar';
 
 class Game extends React.Component {
-
     constructor(props) {
         super(props);
         var mouseScale = 1;
@@ -29,9 +28,12 @@ class Game extends React.Component {
             cameraSize: 1000,
 
             gameState: GAME_STATE.GAMING,
+            roomId: this.props.roomId,
 
             //player info
-            playerName: "player",
+            playerName: this.props.name,
+            playerUid: this.props.uid,
+            playerTeam: this.props.team,
             playerColor: [255, 102, 102, 1],
             playerHealth: 100,
             playerPosition: { x: 100, y: 100 },
@@ -52,8 +54,21 @@ class Game extends React.Component {
             mouseClient: { x: 0, y: 0 },
             mouseDownState: 0,
 
+            allPlayers: [],
+
             timeStamp: Date.now(),
         }
+        
+        this.props.socket.emit('enterGame', {
+            ...this.state,
+        });
+        
+        this.props.socket.on('updateGame', (data) => {
+            console.log(data[0].mousePosition)
+            this.setState({
+                allPlayers: data
+            });
+        })
     }
 
     onKeyDown = e => {
@@ -132,6 +147,8 @@ class Game extends React.Component {
         var new_time = Date.now();
         // console.log(1/(new_time-this.state.timeStamp)*1000);
         this.setState({ timeStamp: new_time });
+
+        this.props.socket.emit('updateGame', {...this.state});
     }
 
     componentDidMount = () => {

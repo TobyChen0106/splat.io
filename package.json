@@ -15,8 +15,9 @@
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
-    "socket.io": "^2.2.0",
     "react-svg": "^10.0.9",
+    "socket.io": "^2.2.0",
+    "uuidv4": "^4.0.0",
     "xmldom": "^0.1.27"
   },
   "scripts": {

@@ -7,14 +7,20 @@ const UserSchema = new Schema({
 		type: String,
 		required: [true, 'Name field is required.']
 	},
-	body: {
+	uid: {
 		type: String,
-		required: [true, 'Body field is required.']
+		required: [true, 'Uid is required.']
+	},
+	winning: {
+		type: Number,
+		required: true
+	},
+	losing: {
+		type: Number,
+		required: true
 	}
 })
 
-// Creating a table within database with the defined schema
-const Message = mongoose.model('message', MessageSchema)
+const User = mongoose.model('user', UserSchema)
 
-// Exporting table for querying and mutating
-module.exports = Message
+module.exports = User
