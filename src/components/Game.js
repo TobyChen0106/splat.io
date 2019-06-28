@@ -20,9 +20,7 @@ import {
 
 import InkBar from './inkBar';
 
-<<<<<<< HEAD
 const GAME_INTERVAL = 40;
-=======
 // function Player(props) {
 //     this.playerName = props.name;
 //         this.playerUid = props.uid;
@@ -38,7 +36,6 @@ const GAME_INTERVAL = 40;
 //         this.bullets = [];
 //         this.splats = [];
 // }
->>>>>>> 77ca74a4efecc41faf1fb0292c704e9eae6689ef
 
 class Game extends React.Component {
     constructor(props) {
@@ -270,7 +267,7 @@ class Game extends React.Component {
             </div>
         )}
         else {
-            return( <Redirect to="/home" />);
+            return( <Redirect to='/result' />);
         }
     }
 }

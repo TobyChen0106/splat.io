@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {NavLink} from 'react-router-dom'
 import './Wait.css'
+import UserBlock from '../components/UserBlock'
 
 class Wait extends Component {
     constructor(props) {
@@ -48,7 +49,7 @@ class Wait extends Component {
                             Start!
                         </button>
                     </NavLink>
-                    <NavLink to={`/home`}>
+                    <NavLink to='/home'>
                         <button className='App_button'>
                             Back
                         </button>
