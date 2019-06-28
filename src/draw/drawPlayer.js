@@ -2,12 +2,14 @@
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
 import playerSVG from '../images/player/p-01.svg'
 import playerHandSVG from '../images/player/p-02.svg'
+import gunSVG from '../images/player/p-03.svg'
 
 export const playerWidth = 80;
 export const playerHeight = 80;
-const handOffset = 15
+const handOffset = 30
 var img = new Image()
 var img2 = new Image()
+var img3 = new Image()
 
 
 
@@ -18,7 +20,8 @@ export const drawPlayer = (c, state) => {
     var context = c.getContext("2d");
     // attach the context to the canvas for easy access and to reduce complexity.
     context.clearRect(0, 0, c.width, c.height);
-
+    drawPlayerNormal(context, state)
+    /*
     switch (state.playerStatus) {
         case PLAYER_STATUS.STANDING_OWN:
             drawPlayerNormal(context, state);
@@ -76,7 +79,7 @@ export const drawPlayer = (c, state) => {
             break;
         default: break;
     }
-
+    */
 
 }
 
@@ -98,12 +101,15 @@ const drawPlayerNormal = (context, state) => {
     context.save()
     img.src = playerSVG;
     img2.src = playerHandSVG;
-    context.translate(playerPosition.x + playerWidth/2, playerPosition.y + playerHeight/2)
+    img3.src = gunSVG;
+    context.translate(playerPosition.x, playerPosition.y)
     context.rotate(Math.PI / 180 * (playerAngle + 180));
     context.drawImage(img,-playerWidth / 2, -playerHeight / 2, playerWidth, playerHeight)
-    context.drawImage(img2,-playerWidth / 2 , -playerHeight / 2 + handOffset, playerWidth, playerHeight)
+    context.drawImage(img2,-playerWidth / 2 - 10, -playerHeight / 2 + handOffset, playerWidth, playerHeight)
+    context.drawImage(img2,-playerWidth / 2 + 10, -playerHeight / 2 + handOffset, playerWidth, playerHeight)
+    context.drawImage(img3,-playerWidth / 2 , -playerHeight / 2 + 40, playerWidth, playerHeight)
     context.rotate( - Math.PI / 180 * (playerAngle + 180))
-    context.translate(-playerPosition.x -  playerWidth/2, -playerPosition.y - playerHeight/2)
+    context.translate(-playerPosition.x, -playerPosition.y)
 
     
     

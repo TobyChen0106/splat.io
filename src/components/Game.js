@@ -160,7 +160,7 @@ class Game extends React.Component {
 
         setInterval(() => {
             this.updateGame();
-        }, 50);
+        }, 100);
         drawField(this.fieldRef);
     }
 
