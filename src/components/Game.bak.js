@@ -21,61 +21,78 @@ import InkBar from './inkBar';
 
 class Game extends React.Component {
     constructor(props) {
-
+       
         super(props);
-        this.mouseScale = 1;
-        this.state = {
-            gameBoardWidth: 1600,
-            gameBoardHeight: 900,
-            cameraSize: 1000,
-
-            gameState: GAME_STATE.GAMING,
-            roomId: this.props.roomId,
-
-            //player info
+        this.playerData = {
             playerName: this.props.name,
             playerUid: this.props.uid,
             playerTeam: this.props.team,
+
             playerColor: [255, 102, 102, 1],
             playerHealth: 100,
             playerPosition: { x: 100, y: 100 },
             playerAngle: 0,
             playerStatus: PLAYER_STATUS.STANDING_SPACE,
+            playerWeapon: weapons.splatterShot_v1,
+
+            bullets: [], 
+            splats: [],
+        };
+        this.localPlayerData = {
+            gameState: GAME_STATE.GAMING,
+            roomId: this.props.roomId,
+
             playerMoveSpeed: 5,
             playerMoveDirection: { x: 0, y: 0 },
-            playerEquipment: {
-                items: [],
-            },
-            playerWeapon: weapons.splatterShot_v1,
             inkAmount: 100,
-
             keyStrokeState: { left: 0, right: 0, up: 0, down: 0, space: 0, g: 0 },
             mousePosition: { x: 0, y: 0 },
             mouseClient: { x: 0, y: 0 },
             mouseDownState: 0,
-
-            allPlayers: [],
-
             timeStamp: Date.now(),
+        }
+
+        this.otherPlayerData;
+
+        this.mouseScale = 1;
+        this.state = {
+            gameBoardWidth: 1600,
+            gameBoardHeight: 900,
+            cameraSize: 1000,
+            //player info
+            // playerName: this.props.name,
+            // playerUid: this.props.uid,
+            // playerTeam: this.props.team,
+            // playerColor: [255, 102, 102, 1],
+            // playerHealth: 100,
+            playerPosition: { x: 100, y: 100 },
+            // playerAngle: 0,
+            // playerStatus: PLAYER_STATUS.STANDING_SPACE,
+            // playerEquipment: {
+            //     items: [],
+            // },
+            // playerWeapon: weapons.splatterShot_v1,
         }
         
         this.props.socket.emit('enterGame', {
-            ...this.state,
+            ...this.playerData,
         });
         
         this.props.socket.on('updateGame', (data) => {
-            this.setState({
-                allPlayers: data
-            });
+            // this.setState({
+            //     allPlayers: data
+            // });
+            this.otherPlayerData = data;
         })
         
         setInterval(() => {
-            this.props.socket.emit('updateGame', {...this.state});
+            this.props.socket.emit('updateGame', {...this.playerData});
         }, 100);
     }
 
     onKeyDown = e => {
-        const new_State = getKeyDownState(e, this.state);
+        const new_State = getKeyDownState(e, this.localPlayerData);
+        this.
         this.setState(new_State);
     }
 
