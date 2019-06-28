@@ -105,7 +105,7 @@ class Game extends React.Component {
         this.setState({ new_playerPosition });
 
         //draw filed
-        drawField(this.fieldRef);
+        // drawField(this.fieldRef);
 
         // get splat (include draw bullet)
         var [bullets, splats, aimPoints, inkConsumption] = getSplats(this.state);
@@ -143,6 +143,7 @@ class Game extends React.Component {
         setInterval(() => {
             this.updateGame();
         }, 25);
+        drawField(this.fieldRef);
     }
 
     render() {
