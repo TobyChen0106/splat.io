@@ -5,14 +5,30 @@ import logo from '../images/logo.png'
 import './Home.css'
 
 class Home extends Component {
+    handlePlay = () => {
+        this.props.socket.emit('newPlayer', {
+            name: this.props.name
+        })
+        this.props.socket.on('getRoomId', (data) => {
+            this.props.setRoomId(data.roomId);
+            this.props.setUid(data.uid);
+            this.props.setTeam(data.team);
+        })
+    }
+
     render() {
         return(
             <div className='Home_container'>
                 <div className='Home_main'>
                     <img src={logo}></img>
-                    <input></input>
-                    <NavLink to='/wait' style={{"text-decoration": "none", "width": "180px"}}>
-                        <button className='App_button'>
+                    <input 
+                        id="Name"
+                        autoComplete="off"
+                        spellCheck="false"
+                        onKeyUp={this.props.setName}
+                    />
+                    <NavLink to={`/wait/${this.props.roomId}`} style={{"text-decoration": "none"}}>
+                        <button className='App_button' onClick={this.handlePlay}>
                             Play!
                         </button>
                     </NavLink>

@@ -20,19 +20,21 @@ import {
 import InkBar from './inkBar';
 
 class Game extends React.Component {
-
     constructor(props) {
         super(props);
-        var mouseScale = 1;
+        this.mouseScale = 1;
         this.state = {
             gameBoardWidth: 1600,
             gameBoardHeight: 900,
             cameraSize: 1000,
 
             gameState: GAME_STATE.GAMING,
+            roomId: this.props.roomId,
 
             //player info
-            playerName: "player",
+            playerName: this.props.name,
+            playerUid: this.props.uid,
+            playerTeam: this.props.team,
             playerColor: [255, 102, 102, 1],
             playerHealth: 100,
             playerPosition: { x: 100, y: 100 },
@@ -51,8 +53,24 @@ class Game extends React.Component {
             mouseClient: { x: 0, y: 0 },
             mouseDownState: 0,
 
+            allPlayers: [],
+
             timeStamp: Date.now(),
         }
+        
+        this.props.socket.emit('enterGame', {
+            ...this.state,
+        });
+        
+        this.props.socket.on('updateGame', (data) => {
+            this.setState({
+                allPlayers: data
+            });
+        })
+        
+        setInterval(() => {
+            this.props.socket.emit('updateGame', {...this.state});
+        }, 500);
     }
 
     onKeyDown = e => {
@@ -105,11 +123,10 @@ class Game extends React.Component {
         this.setState({ new_playerPosition });
 
         //draw filed
-        drawField(this.fieldRef);
+        // drawField(this.fieldRef);
 
         // get splat (include draw bullet)
         var [bullets, splats, aimPoints, inkConsumption] = getSplats(this.state);
-
 
         //get and update ink amount
         var new_inkAmount = getInkAmount(inkConsumption, this.state);
@@ -131,6 +148,7 @@ class Game extends React.Component {
         var new_time = Date.now();
         // console.log(1/(new_time-this.state.timeStamp)*1000);
         this.setState({ timeStamp: new_time });
+
     }
 
     componentDidMount = () => {
@@ -142,7 +160,8 @@ class Game extends React.Component {
 
         setInterval(() => {
             this.updateGame();
-        }, 25);
+        }, 50);
+        drawField(this.fieldRef);
     }
 
     render() {
