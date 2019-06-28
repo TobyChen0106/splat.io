@@ -22,7 +22,7 @@ import InkBar from './inkBar';
 class Game extends React.Component {
     constructor(props) {
         super(props);
-        var mouseScale = 1;
+        this.mouseScale = 1;
         this.state = {
             gameBoardWidth: 1600,
             gameBoardHeight: 900,
@@ -162,6 +162,7 @@ class Game extends React.Component {
     }
 
     render() {
+        console.log(this.state.allPlayers)
         return (
             <div id="game-container">
                 <svg id="svg-container"
