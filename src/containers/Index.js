@@ -13,8 +13,8 @@ class Index extends Component {
     constructor(props) {
         super(props);
         // this.socket = io(host);
-        // this.socket = io('http://localhost:8080');
-        this.socket = io('http://192.168.0.116:8080');
+        this.socket = io('http://localhost:8080');
+        // this.socket = io('http://192.168.0.116:8080');
         this.state = {
             roomId: null,
             name: 'Player',

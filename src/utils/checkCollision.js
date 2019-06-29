@@ -101,7 +101,6 @@ export const checkFieldCollision = (p_x, p_y, d_x, d_y) => {
 // players = [..., [pos_x, pos_y], ...]
 export const checkPlayerCollision = (p_x, p_y, c_x, c_y, players, own_uid) => {
     for (var j = 0; j < players.length; ++j) {
-        // console.log(players.playerUid)
         if (players[j].playerUid !== own_uid) {
             const o_x1 = players[j].playerPosition.x - playerWidth / 2;
             const o_y1 = players[j].playerPosition.x - playerHeight / 2;
@@ -125,11 +124,7 @@ export const checkPlayerCollision = (p_x, p_y, c_x, c_y, players, own_uid) => {
                     }
                 }
             }
-        }else{
-            // console.log("own");
         }
-
-
     }
     return [c_x, c_y];
 }
