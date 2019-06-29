@@ -82,8 +82,13 @@ export const getSplats = (playerData, localPlayerData) => {
 
         // check if create splat
         if (Math.abs(lines[l][1] - lines[l][3]) < Math.abs(lines[l][5]) || Math.abs(lines[l][2] - lines[l][4]) < Math.abs(lines[l][6])) {
-            splats.push([lines[l][3], lines[l][4], 50]);
-
+            var splat_angle = (Math.random() - 0.5) * 2 * Math.PI; // -Pi to Pi
+            var splatSize = playerData.playerWeapon.main.splatSize;
+            var splatDamage = playerData.playerWeapon.main.splatDamage;
+            var splatShapeId = playerData.playerWeapon.main.splatShapeId[Math.floor(Math.random()*playerData.playerWeapon.main.splatShapeId.length)];
+            
+            // splat [splatShapeId, pos_x, pos_y, splatAngle, splatSize, splatDamage]
+            splats.push([splatShapeId, lines[l][3], lines[l][4], splat_angle, splatSize, splatDamage]);
             lines.splice(l, 1);
             --l;
             continue;

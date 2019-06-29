@@ -92,7 +92,7 @@ export const drawPlayer = (c, a, state) => {
 
     r_context.clearRect(0, 0, a.width, a.height);
     for (var r = 0; r < ripple.length; ++r) {
-        ripple[r][2] += 1;
+        ripple[r][2] += 0.5;
         drawRipple(r_context, ripple[r][0], ripple[r][1], ripple[r][2], 20);
         if (ripple[r][2] - 10 > 0) {
             drawRipple2(r_context, ripple[r][0], ripple[r][1], ripple[r][2] - 10, 20);

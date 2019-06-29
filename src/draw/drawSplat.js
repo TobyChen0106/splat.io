@@ -9,8 +9,7 @@ var ripple = [];
 var audio = new Audio(inkHit06);
 audio.volume = 0.5;
 
-function random_ink() 
-{
+function random_ink() {
     var l = ink.length;
     var r = Math.floor(Math.random() * l)
     return ink[r]
@@ -22,42 +21,44 @@ export const drawSplat = (c, a, splat, playerColor, playerAngle, playerPosition)
     var r_context = a.getContext("2d");
 
     context.save();
-    
+
     //context.filter = 'drop-shadow(0px 0px 5px #FF1493)';
     // context.drawImage(image, 0,0,1600,900);
-    
 
+    // splat [splatShapeId, pos_x, pos_y, splatAngle, splatSize, splatDamage]
     for (var i = 0; i < splat.length; ++i) {
 
         //context.fillStyle =  'rgba(' + playerColor +')';
-        var aimX = splat[i][0] 
-        var aimY = splat[i][1] 
-        var playerX = playerPosition.x
-        var playerY = playerPosition.y
-        var angle = playerAngle< 0 ? playerAngle + 270 : playerAngle - 90;
-        var ink_size = splat[i][2] * 3; //因為我圖畫得比較小所以先乘3
+        var aimX = splat[i][1];
+        var aimY = splat[i][2];
+        var playerX = playerPosition.x;
+        var playerY = playerPosition.y;
+        var angle = splat[i][3];
+        // playerAngle< 0 ? playerAngle + 270 : playerAngle - 90;
+        var ink_size = splat[i][4] * 3; //因為我圖畫得比較小所以先乘3
 
         var img = new Image;
-        img.src = random_ink()//"data:image/svg+xml;base64,"+btoa(trysvg);
+        img.src = ink[splat[i][0]];
+        //"data:image/svg+xml;base64,"+btoa(trysvg);
         //img.style = "fill:#B0E0E6;"
         //console.log(img.style)
-        img.onload = function() { 
+        img.onload = function () {
             // console.log(angle)
-            context.shadowBlur = 5;
-            context.shadowColor = "#FF00FF";
-            context.translate(aimX , aimY)
-            context.rotate(angle/180 * Math.PI);
-            context.drawImage(img, -ink_size/2, -ink_size/2, ink_size, ink_size);
-            context.rotate(-angle/180 * Math.PI);
-            context.translate(-aimX , -aimY )
+            // context.shadowBlur = 5;
+            // context.shadowColor = "#FF00FF";
+            context.translate(aimX, aimY)
+            context.rotate(angle / 180 * Math.PI);
+            context.drawImage(img, -ink_size / 2, -ink_size / 2, ink_size, ink_size);
+            context.rotate(-angle / 180 * Math.PI);
+            context.translate(-aimX, -aimY)
         }
-        
+
         //drawCircle(context, aimX, aimY, splat[i][2], 20);
         audio.currentTime = 0;
         audio.play();
-        
+
         // ripple
-        ripple.push([splat[i][0], splat[i][1], 1, splat[i][2]]);
+        ripple.push([aimX, aimY, 1, ink_size]);
     }
 
     // image.src = context.canvas.toDataURL();

@@ -1,6 +1,6 @@
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
-export const getPlayerSpeed = (playerData, localPlayerData)=>{
-    switch(playerData.playerStatus){
+export const getPlayerSpeed = (playerData, localPlayerData) => {
+    switch (playerData.playerStatus) {
         case PLAYER_STATUS.STANDING_OWN: localPlayerData.playerMoveSpeed = 4; break;
         case PLAYER_STATUS.WALKING_OWN: localPlayerData.playerMoveSpeed = 4; break;
         case PLAYER_STATUS.DIVING_OWN: localPlayerData.playerMoveSpeed = 6; break;
@@ -19,5 +19,10 @@ export const getPlayerSpeed = (playerData, localPlayerData)=>{
         case PLAYER_STATUS.SWIMMING_ENEMY: localPlayerData.playerMoveSpeed = 1.5; break;
         case PLAYER_STATUS.ATTACKING_ENEMY: localPlayerData.playerMoveSpeed = 0.5; break;
         default: localPlayerData.playerMoveSpeed = 4; break;
+    }
+    switch (playerData.gameState) {
+        case GAME_STATE.FREEZE: localPlayerData.playerMoveSpeed = 0; break;
+        case GAME_STATE.FINISH: localPlayerData.playerMoveSpeed = 0; break;
+        default: break;
     }
 }

@@ -4,6 +4,7 @@ import { drawPlayer, drawField, drawSplat, drawAimPoint, drawBullet, drawAllPlay
 import { COLOR_ASSET } from './ColorAssets'
 import { weapons } from '../weapons'
 import { Redirect } from 'react-router'
+import { battleField_1 } from '../field'
 
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
 import {
@@ -155,63 +156,73 @@ class Game extends React.Component {
     }
 
     updateGame = () => {
+        if (this.localPlayerData.gameState === GAME_STATE.GAMING) {
+            this.otherPlayerData = [this.playerData_2, this.playerData_3];
+            // drawOtherPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
 
-        this.otherPlayerData = [this.playerData_2, this.playerData_3];
-        // drawOtherPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
+            // measure and update screen scale
+            const windowHeight = window.innerHeight;
+            const windowWidth = window.innerWidth;
+            this.mouseScale = windowWidth > windowHeight ? this.state.cameraSize / windowWidth : this.state.cameraSize / windowHeight;
 
-        // measure and update screen scale
-        const windowHeight = window.innerHeight;
-        const windowWidth = window.innerWidth;
-        this.mouseScale = windowWidth > windowHeight ? this.state.cameraSize / windowWidth : this.state.cameraSize / windowHeight;
+            // get and update mouse position
+            var canvas = this.groundRef;
+            var rect = canvas.getBoundingClientRect();
+            this.localPlayerData.mousePosition = {
+                x: (this.localPlayerData.mouseClient.x - rect.left) * this.mouseScale,
+                y: (this.localPlayerData.mouseClient.y - rect.top) * this.mouseScale
+            };
 
-        // get and update mouse position
-        var canvas = this.groundRef;
-        var rect = canvas.getBoundingClientRect();
-        this.localPlayerData.mousePosition = {
-            x: (this.localPlayerData.mouseClient.x - rect.left) * this.mouseScale,
-            y: (this.localPlayerData.mouseClient.y - rect.top) * this.mouseScale
-        };
+            // get and update player angle
+            this.playerData.playerAngle = calculatePlayerAngle(
+                this.playerData.playerPosition.x, this.playerData.playerPosition.y,
+                this.localPlayerData.mousePosition.x, this.localPlayerData.mousePosition.y
+            );
 
-        // get and update player angle
-        this.playerData.playerAngle = calculatePlayerAngle(
-            this.playerData.playerPosition.x, this.playerData.playerPosition.y,
-            this.localPlayerData.mousePosition.x, this.localPlayerData.mousePosition.y
-        );
+            // get and update new player status according field property
+            getPlayerStatus(this.splatRef, this.playerData, this.localPlayerData);
 
-        // get and update new player status according field property
-        getPlayerStatus(this.splatRef, this.playerData, this.localPlayerData);
+            // update player speed 
+            getPlayerSpeed(this.playerData, this.localPlayerData);
 
-        // update player speed 
-        getPlayerSpeed(this.playerData, this.localPlayerData);
+            // get player position
+            const new_playerPosition = updatePlayerPosition(this.playerData, this.localPlayerData);
+            this.setState({ playerPosition: new_playerPosition });
 
-        // get player position
-        const new_playerPosition = updatePlayerPosition(this.playerData, this.localPlayerData);
-        this.setState({ playerPosition: new_playerPosition });
+            // get splat (include draw bullet)
+            var [aimPoints, inkConsumption] = getSplats(this.playerData, this.localPlayerData);
 
-        // get splat (include draw bullet)
-        var [aimPoints, inkConsumption] = getSplats(this.playerData, this.localPlayerData);
+            //get and update ink amount
+            const new_inkAmount = getInkAmount(inkConsumption, this.playerData, this.localPlayerData);
+            this.setState({ inkAmount: new_inkAmount });
 
-        //get and update ink amount
-        const new_inkAmount = getInkAmount(inkConsumption, this.playerData, this.localPlayerData);
-        this.setState({ inkAmount: new_inkAmount });
+            this.otherPlayerData.push(this.playerData);
+            
+            // console.log(this.otherPlayerData);
+            drawAllPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
 
-        this.otherPlayerData.push(this.playerData);
-        // console.log(this.otherPlayerData);
-        drawAllPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
+            /*  
+                    // draw splat
+                    drawSplat(this.splatRef, this.splatAnimationRef, this.playerData.splats, this.playerData.playerColor, this.playerData.playerAngle, this.playerData.playerPosition);
+            
+                    // draw bullet 
+                    drawBullet(this.bulletRef, this.playerData.bullets, this.playerData.playerColor);
+            
+                    //draw player
+                    drawPlayer(this.playerRef, this.splatAnimationRef, this.playerData);
+            */
+            // draw aim point
+            drawAimPoint(this.aimPointRef, this.playerData.playerPosition, this.localPlayerData.mousePosition, this.playerData.playerAngle, aimPoints);
+        }
+        else if (this.localPlayerData.gameState === GAME_STATE.FREEZE) {
+            var filedWidth = this.state.gameBoardWidth;
+            var filedHeight =  this.state.gameBoardHeight;
 
-        /*  
-                // draw splat
-                drawSplat(this.splatRef, this.splatAnimationRef, this.playerData.splats, this.playerData.playerColor, this.playerData.playerAngle, this.playerData.playerPosition);
-        
-                // draw bullet 
-                drawBullet(this.bulletRef, this.playerData.bullets, this.playerData.playerColor);
-        
-                //draw player
-                drawPlayer(this.playerRef, this.splatAnimationRef, this.playerData);
-        */
-        // draw aim point
-        drawAimPoint(this.aimPointRef, this.playerData.playerPosition, this.localPlayerData.mousePosition, this.playerData.playerAngle, aimPoints);
-
+            this.setState({ cameraSize: filedWidth > filedHeight ? filedWidth : filedHeight });
+            this.setState({ playerPosition: { x: filedWidth / 2, y: filedHeight / 2 } });
+        } else {
+            this.setState({ cameraSize: 2000 });
+        }
         // update time
         var t = GAME_INTERVAL - parseInt((Date.now() - this.localPlayerData.initTime) / 1000);
         this.localPlayerData.timeStamp = Date.now();
@@ -219,13 +230,15 @@ class Game extends React.Component {
         if (t < 10) this.localPlayerData.timeColor = "#ff1493";
         if (t <= -1) {
             this.localPlayerData.gameState = GAME_STATE.FREEZE;
-            console.log("GAME FREEZE!!");
+            // console.log("GAME FREEZE!!");
 
             if (t <= -5) {
                 this.localPlayerData.gameState = GAME_STATE.FINISH;
-                console.log("GAME FINISH!!");
+                // console.log("GAME FINISH!!");
             }
         }
+        // console.log(t);
+
     }
 
     componentDidMount = () => {
@@ -241,7 +254,8 @@ class Game extends React.Component {
     }
 
     render() {
-        if (this.localPlayerData.gameState !== GAME_STATE.FINISH) {
+
+        if (this.localPlayerData.gameState === GAME_STATE.GAMING || this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             return (
                 <div id="game-container">
                     <svg id="svg-container"
