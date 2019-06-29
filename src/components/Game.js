@@ -40,10 +40,12 @@ const GAME_INTERVAL = 40;
 
 class Game extends React.Component {
     constructor(props) {
-
         super(props);
         // data that most emit to server
         this.playerData = {
+            roomId: this.props.roomId,
+            teamColor: this.props.teamColor,
+
             playerName: this.props.name,
             playerUid: this.props.uid,
             playerTeam: this.props.team,
@@ -123,17 +125,15 @@ class Game extends React.Component {
             inkAmount: 100, // to update inkbar 
         }
 
-        // this.props.socket.emit('enterGame', {
-        //     ...this.playerData,
-        // });
+        this.props.socket.emit('enterGame', { ...this.playerData });
 
-        // this.props.socket.on('updateGame', (data) => {
-        //     this.otherPlayerData = data;
-        // })
+        this.props.socket.on('updateGame', (data) => {            
+            this.otherPlayerData = data.allPlayers.filter(p => p.playerUid !== this.playerData.playerUid);
+        })
 
         setInterval(() => {
-            // this.props.socket.emit('updateGame', { ...this.playerData });
-        }, 100);
+            this.props.socket.emit('updateGame', { ...this.playerData });
+        }, 1000);
     }
 
     onKeyDown = e => {
@@ -263,7 +263,7 @@ class Game extends React.Component {
     }
 
     render() {
-
+        // console.log(this.otherPlayerData)
         if (this.localPlayerData.gameState === GAME_STATE.GAMING || this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             return (
                 <div id="game-container">

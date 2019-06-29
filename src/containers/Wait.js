@@ -65,11 +65,9 @@ class Wait extends Component {
                             Start!
                         </button>
                     </NavLink>
-                    {/* <NavLink to='/home'> */}
-                        <button className='App_button' onClick={this.handleBack}>
-                            Back
-                        </button>
-                    {/* </NavLink> */}
+                    <button className='App_button' onClick={this.handleBack}>
+                        Back
+                    </button>
                 </div>
 
             </div>

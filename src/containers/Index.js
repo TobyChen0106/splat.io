@@ -18,7 +18,8 @@ class Index extends Component {
             roomId: null,
             name: 'Player',
             uid: null,
-            team: null
+            team: null,
+            teamColor: []
         }
     }
 
@@ -27,7 +28,7 @@ class Index extends Component {
         if (e) {
             if (e.target.value !== '') { this.setState( {name: e.target.value} ); }
         }
-        // reset name by calling serName()
+        // reset name by calling setName()
         else { 
             this.setState( {name: 'Player'} ); 
         }
@@ -35,6 +36,7 @@ class Index extends Component {
     setUid = (uid) => { this.setState( {uid: uid} ); }
     setRoomId = (roomId) => { this.setState( {roomId: roomId} ); }
     setTeam = (team) => { this.setState( {team: team} ); }
+    setTeamColor = (teamColor) => { this.setState( {teamColor: teamColor} ); }
 
     render(){
         return (
@@ -47,7 +49,8 @@ class Index extends Component {
                     setName={this.setName} 
                     setUid={this.setUid}
                     setRoomId={this.setRoomId}
-                    setTeam={this.setTeam} />}
+                    setTeam={this.setTeam}
+                    setTeamColor={this.setTeamColor} />}
                 />
                 <Route path={`/wait/${this.state.roomId}`} render={(props) => <Wait {...props} {...this.state}
                     socket={this.socket}

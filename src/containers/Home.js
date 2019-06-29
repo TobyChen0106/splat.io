@@ -13,7 +13,7 @@ class Home extends Component {
             signup_display: {display: "none"}
         }
     }
-    
+
     handlePlay = () => {
         this.props.socket.emit('newPlayer', {
             name: this.props.name
@@ -22,6 +22,7 @@ class Home extends Component {
             this.props.setRoomId(data.roomId);
             this.props.setUid(data.uid);
             this.props.setTeam(data.team);
+            this.props.setTeamColor(data.teamColor);
             this.props.history.push(`/wait/${this.props.roomId}`);
         })
     }
@@ -57,11 +58,9 @@ class Home extends Component {
                         spellCheck="false"
                         onKeyUp={this.props.setName}
                     />
-                    {/* <NavLink to={`/wait/${this.props.roomId}`} style={{"text-decoration": "none"}}> */}
-                        <button className='App_button' onClick={this.handlePlay}>
-                            Play!
-                        </button>
-                    {/* </NavLink> */}
+                    <button className='App_button' onClick={this.handlePlay}>
+                        Play!
+                    </button>
                 </div>
                 <div className='Home_mask'></div>
                 <div id='bg_wrapper'>

@@ -1,9 +1,19 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./models/user');
-const uuid = require('uuidv4')
+const uuid = require('uuidv4');
 let GameData = {};
 let seed = '1234';
+
+let generateColorId = () => {
+    let l = 4
+    let color = [];
+    while (color.length < 2) {
+        let c = Math.floor(Math.random() * l);
+        if (color.indexOf(c) === -1) color.push(c);
+    }
+    return color
+}
 
 let getRoomPlayers = (serverSocket, roomId) => {
     let teamA = GameData[roomId].playersBasicInfo.filter(p => p.team === 'A');
@@ -11,7 +21,7 @@ let getRoomPlayers = (serverSocket, roomId) => {
 
     serverSocket.to(roomId).emit('getRoomPlayers', {
         teamA: teamA,
-        teamB: teamB
+        teamB: teamB,
     })
 }
 
@@ -46,7 +56,6 @@ db.once('open', () => {
         let team = null;
         
         socket.on('newPlayer', (data) => {
-            console.log('newPlayer: ', GameData)
             // determine which room to join
             // find valid room
             if (GameData) {
@@ -64,7 +73,8 @@ db.once('open', () => {
                 socket.join(roomId);
                 GameData[roomId] = {
                     playersBasicInfo: [],
-                    allPlayers: []
+                    allPlayers: [],
+                    teamColor: generateColorId()
                 }
             }
 
@@ -86,7 +96,8 @@ db.once('open', () => {
             socket.emit('getPlayerBasicInfo', {
                 roomId: roomId,
                 uid: uid,
-                team: team
+                team: team,
+                teamColor: GameData[roomId].teamColor
             })
         });
 
