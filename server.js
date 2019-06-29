@@ -37,17 +37,8 @@ db.once('open', () => {
         
         socket.on('newPlayer', (data) => {
             // determine which room to join
-            // no room
-            if (!GameData) {
-                roomId = seed
-                socket.join(roomId)
-                GameData[roomId] = {
-                    playersBasicInfo: [],
-                    allPlayers: []
-                }
-            }
             // find valid room
-            else {
+            if (GameData) {
                 Object.keys(GameData).forEach(id => {
                     if (GameData[id].playersBasicInfo.length < 4) {
                         roomId = id;
@@ -57,6 +48,7 @@ db.once('open', () => {
             }
             // no valid room
             if (!roomId) {
+                console.log('hey')
                 seed = (parseInt(seed) * 1213 % 9973).toString();
                 roomId = seed;
                 socket.join(roomId);
@@ -67,8 +59,8 @@ db.once('open', () => {
             }
 
             // determine which team to join
-            if (GameData[roomId].playersBasicInfo.length === 0) team = 'A';
-            else {
+            team = 'A';
+            if (GameData[roomId].playersBasicInfo.length > 0) {
                 let numberA = GameData[roomId].playersBasicInfo.filter(p => p.team === 'A').length;
                 let numberB = GameData[roomId].playersBasicInfo.length - numberA;
                 if (numberA > numberB) team = 'B';
@@ -114,13 +106,19 @@ db.once('open', () => {
 
         socket.on('disconnect', () => {
             if (GameData[roomId]) {
+                // kick player out of room
                 GameData[roomId].playersBasicInfo = GameData[roomId].playersBasicInfo.filter(
                     p => !(p.uid === socket.id)
                 );
                 GameData[roomId].allPlayers = GameData[roomId].allPlayers.filter(
                     p => !(p.playerUid === socket.id)
                 );
+                // if the room is empty, then clear it
+                if (GameData[roomId].playersBasicInfo.length === 0) {
+                    delete GameData[roomId];
+                }
             }
+            
         });
 
     })
