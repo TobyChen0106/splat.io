@@ -197,15 +197,9 @@ class Game extends React.Component {
             } else {
                 this.setState({ playerPosition: new_playerPosition });
             }
-
-            // concate other player positions
-            var otherPlayerPosition = [];
-            for (var p=0 ; p < this.otherPlayerData.length ; ++p){
-                otherPlayerPosition.push(this.otherPlayerData[p].playerPosition);
-            }
             
             // get splat (include draw bullet)
-            var [aimPoints, inkConsumption] = getSplats(this.playerData, this.localPlayerData, otherPlayerPosition);
+            var [aimPoints, inkConsumption] = getSplats(this.playerData, this.localPlayerData, this.otherPlayerData);
 
             //get and update ink amount
             const new_inkAmount = getInkAmount(inkConsumption, this.playerData, this.localPlayerData);

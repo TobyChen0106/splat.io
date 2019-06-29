@@ -101,10 +101,10 @@ export const checkFieldCollision = (p_x, p_y, d_x, d_y) => {
 // players = [..., [pos_x, pos_y], ...]
 export const checkPlayerCollision = (p_x, p_y, c_x, c_y, players) => {
     for (var j = 0; j < players.length; ++j) {
-        const o_x1 = players[j].x - playerWidth / 2;
-        const o_y1 = players[j].x - playerHeight / 2;
-        const o_x2 = players[j].y + playerWidth / 2;
-        const o_y2 = players[j].y + playerHeight / 2;
+        const o_x1 = players[j].playerPosition.x - playerWidth / 2;
+        const o_y1 = players[j].playerPosition.x - playerHeight / 2;
+        const o_x2 = players[j].playerPosition.y + playerWidth / 2;
+        const o_y2 = players[j].playerPosition.y + playerHeight / 2;
 
         var interSections = [];
         interSections.push(getLineIntersection(p_x, p_y, c_x, c_y, o_x1, o_y1, o_x1, o_y2));
