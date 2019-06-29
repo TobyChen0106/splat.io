@@ -23,18 +23,13 @@ class Index extends Component {
         }
     }
 
-    setName = (e) => {
-        // type from input text
-        if (e) {
-            if (e.target.value !== '') { this.setState( {name: e.target.value} ); }
-        }
-        // reset name by calling setName()
-        else { 
-            this.setState( {name: 'Player'} ); 
-        }
+    
+    setRoomId = (roomId) => { this.setState( {roomId: roomId} ); }
+    setName = (name) => { 
+        if (name) this.setState( {name: name} ); 
+        else this.setState( {name: 'Player'})
     }
     setUid = (uid) => { this.setState( {uid: uid} ); }
-    setRoomId = (roomId) => { this.setState( {roomId: roomId} ); }
     setTeam = (team) => { this.setState( {team: team} ); }
     setTeamColor = (teamColor) => { this.setState( {teamColor: teamColor} ); }
 

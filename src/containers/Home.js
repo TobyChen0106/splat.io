@@ -14,6 +14,11 @@ class Home extends Component {
         }
     }
 
+    handleInputName = (e) => {
+        if (e.target.value !== '') { this.props.setName(e.target.value); }
+        if (e.key === 'Enter') { this.handlePlay() }
+    }
+
     handlePlay = () => {
         this.props.socket.emit('newPlayer', {
             name: this.props.name
@@ -56,7 +61,7 @@ class Home extends Component {
                         id="Name"
                         autoComplete="off"
                         spellCheck="false"
-                        onKeyUp={this.props.setName}
+                        onKeyUp={this.handleInputName}
                     />
                     <button className='App_button' onClick={this.handlePlay}>
                         Play!

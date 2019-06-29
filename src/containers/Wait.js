@@ -69,7 +69,6 @@ class Wait extends Component {
                         Back
                     </button>
                 </div>
-
             </div>
 
         )

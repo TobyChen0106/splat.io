@@ -68,13 +68,17 @@ db.once('open', () => {
             }
             // no valid room
             if (!roomId) {
+                let color = generateColorId();
                 seed = (parseInt(seed) * 1213 % 9973).toString();
                 roomId = seed;
                 socket.join(roomId);
                 GameData[roomId] = {
                     playersBasicInfo: [],
                     allPlayers: [],
-                    teamColor: generateColorId()
+                    teamColor: {
+                        A: color[0],
+                        B: color[1]
+                    }
                 }
             }
 
