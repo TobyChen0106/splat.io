@@ -13,6 +13,7 @@ class Home extends Component {
             signup_display: {display: "none"}
         }
     }
+    
     handlePlay = () => {
         this.props.socket.emit('newPlayer', {
             name: this.props.name
