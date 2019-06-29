@@ -1,77 +1,92 @@
 
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
+
+import greenPlayer from '../images/player/green/p-01.svg'
+import greenLeft from '../images/player/green/p-02.svg'
+import greenRight from '../images/player/green/p-03.svg'
+import greenDive from '../images/player/green/p-04.svg'
+
+import orangePlayer from '../images/player/orange/p-01.svg'
+import orangeLeft from '../images/player/orange/p-02.svg'
+import orangeRight from '../images/player/orange/p-03.svg'
+import orangeDive from'../images/player/orange/p-04.svg'
+
+import GunSVG from '../images/player/p-03.svg'
+/*
 import playerSVG from '../images/player/p-02-01.svg'
 import LeftHandSVG from '../images/player/p-02-02.svg'
 import RightHandSVG from '../images/player/p-02-03.svg'
 import gunSVG from '../images/player/p-03.svg'
 import diveSVG from '../images/player/p-02-04.svg'
+*/
 
 export const playerWidth = 50;
 export const playerHeight = 50;
 
 const handOffset = 23
-var body = new Image()
-var leftHand = new Image()
-var rightHand = new Image()
-var gun = new Image()
-var dive = new Image()
+
+var diveSVG;
+var gunSVG = GunSVG
 
 var ripple = [];
 var lastRippleTimeStamp = 0;
 var lastRipplePosition= {x:-1000, y: -1000};
 
-export const drawPlayer = (c, a, state) => {
+export const drawPlayer = (c, a, state, isSelf) => {
 
     var context = c.getContext("2d");
+
+    var team = state.playerTeam
+
     // attach the context to the canvas for easy access and to reduce complexity.
     // context.clearRect(0, 0, c.width, c.height);
     // drawPlayerNormal(context, state)
 
     switch (state.playerStatus) {
         case PLAYER_STATUS.STANDING_OWN:
-            drawPlayerNormal(context, state);
+            drawPlayerNormal(context, state, team, isSelf);
             break;
         case PLAYER_STATUS.WALKING_OWN:
-            drawPlayerNormal(context, state);
+            drawPlayerNormal(context, state, team, isSelf);
             break;
         case PLAYER_STATUS.DIVING_OWN:
-            drawPlayerDive(context, state);
+            drawPlayerDive(context, state, team, isSelf);
             break;
         case PLAYER_STATUS.SWIMMING_OWN:
-            drawPlayerDive(context, state);
+            drawPlayerDive(context, state, team, isSelf);
 
             break;
         case PLAYER_STATUS.ATTACKING_OWN:
-            drawPlayerNormal(context, state);
+            drawPlayerNormal(context, state, team, isSelf);
             break;
 
         case PLAYER_STATUS.STANDING_SPACE:
-            drawPlayerNormal(context, state);
+            drawPlayerNormal(context, state, team, isSelf);
 
             break;
         case PLAYER_STATUS.WALKING_SPACE:
-            drawPlayerNormal(context, state);
+            drawPlayerNormal(context, state, team, isSelf);
 
             break;
         case PLAYER_STATUS.DIVING_SPACE:
-            drawPlayerNormal(context, state);
+            drawPlayerNormal(context, state, team, isSelf);
 
             break;
         case PLAYER_STATUS.SWIMMING_SPACE:
-            drawPlayerNormal(context, state);
+            drawPlayerNormal(context, state, team, isSelf);
 
             break;
         case PLAYER_STATUS.ATTACKING_SPACE:
-            drawPlayerNormal(context, state);
+            drawPlayerNormal(context, state, team, isSelf);
 
             break;
 
         case PLAYER_STATUS.STANDING_ENEMY:
-            drawPlayerNormal(context, state);
+            drawPlayerNormal(context, state, team, isSelf);
 
             break;
         case PLAYER_STATUS.WALKING_ENEMY:
-            drawPlayerNormal(context, state);
+            drawPlayerNormal(context, state, team, isSelf);
 
             break;
         case PLAYER_STATUS.DIVING_ENEMY:
@@ -79,7 +94,7 @@ export const drawPlayer = (c, a, state) => {
         case PLAYER_STATUS.SWIMMING_ENEMY:
             break;
         case PLAYER_STATUS.ATTACKING_ENEMY:
-            drawPlayerNormal(context, state);
+            drawPlayerNormal(context, state, team, isSelf);
 
             break;
         default: break;
@@ -114,7 +129,7 @@ export const drawPlayer = (c, a, state) => {
 }
 
 
-const drawPlayerNormal = (context, state) => {
+const drawPlayerNormal = (context, state, team, isSelf) => {
     const playerName = state.playerName
     const playerColor = state.playerColor
     const playerPosition = state.playerPosition
@@ -134,7 +149,7 @@ const drawPlayerNormal = (context, state) => {
     context.font = "bold 12pt Freckle Face";
     const playerNameLen = context.measureText(playerName).width;
 
-    context.strokeStyle = "#FFFFFF";
+    context.strokeStyle = isSelf? "#ffd700":"#FFFFFF";
     context.lineWidth = 3;
     context.strokeText(playerName, -playerNameLen / 2, 50)
 
@@ -145,11 +160,29 @@ const drawPlayerNormal = (context, state) => {
     //end of player drawing
     context.restore();
 
+    var body = new Image()
+    var leftHand = new Image()
+    var rightHand = new Image()
+    var gun = new Image()
 
+    if(team === 'A') {
+        body.src = greenPlayer;
+        leftHand.src = greenLeft;
+        rightHand.src = greenRight;
+        gun.src = GunSVG;
+    }
+    else {
+        body.src = orangePlayer;
+        leftHand.src = orangeLeft;
+        rightHand.src = orangeRight;
+        gun.src = GunSVG;
+    }
+    /*
     body.src = playerSVG;
     leftHand.src = LeftHandSVG;
     rightHand.src = RightHandSVG;
     gun.src = gunSVG;
+    */
 
     context.translate(playerPosition.x, playerPosition.y)
     context.rotate(Math.PI / 180 * (playerAngle + 180));
@@ -185,12 +218,22 @@ const drawPlayerNormal = (context, state) => {
     
 }
 
-const drawPlayerDive = (context, state) => {
+const drawPlayerDive = (context, state, team, isSelf) => {
     const playerName = state.playerName
     const playerColor = state.playerColor
     const playerPosition = state.playerPosition
     const playerAngle = state.playerAngle
     const playerStatus = state.playerStatus
+
+
+    var dive = new Image()
+
+    if(team === 'A') {
+        dive.src = greenDive
+    }
+    else {
+        dive.src = orangeDive
+    }
 
     context.save()
 
@@ -199,7 +242,7 @@ const drawPlayerDive = (context, state) => {
     context.font = "bold 10pt Freckle Face";
     const playerNameLen = context.measureText(playerName).width;
 
-    context.strokeStyle = "#FFFFFF";
+    context.strokeStyle = isSelf? "#ffd700":"#FFFFFF";
     context.lineWidth = 3;
     context.strokeText(playerName, -playerNameLen / 2, 50)
 

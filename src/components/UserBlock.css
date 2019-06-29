@@ -5,11 +5,11 @@
     max-width: 80%;
     height: 100px;
     margin: auto;
-    padding: 20px;
+    padding:15px;
 
     border: solid 3px;
-    border-color: rgb(207, 207, 207);
-    border-radius: 10px;
+    border-color: rgb(53, 52, 52);
+    border-radius: 40px;
 
     background: rgba(61, 61, 61, 0.534)
 

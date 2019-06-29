@@ -164,7 +164,7 @@ class Game extends React.Component {
             this.setState({ inkAmount: new_inkAmount });
 
             this.otherPlayerData.push(this.playerData);
-            // console.log(this.otherPlayerData);
+            //console.log(this.otherPlayerData);
             drawAllPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
 
             /*  
