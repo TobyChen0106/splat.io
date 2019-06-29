@@ -55,7 +55,7 @@ export const battleField_1 = {
         ["rock", 750, 300, 100, 300],
     ],
     polyObjects: [
-        getRegularPolyObject("rock", 500, 500, 100, 8, 22.5),
+        // getRegularPolyObject("rock", 500, 500, 100, 8, 22.5),
     ],
     
 }

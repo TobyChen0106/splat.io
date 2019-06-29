@@ -6,6 +6,7 @@ import gunSVG from '../images/player/p-03.svg'
 
 export const playerWidth = 50;
 export const playerHeight = 50;
+
 const handOffset = 30
 var img = new Image()
 var img2 = new Image()
