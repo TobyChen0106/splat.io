@@ -80,3 +80,8 @@
 #timer {
     font-size: 70px;
 }
+
+#anouncement {
+    font-size: 30px;
+    fill: bisque;
+}

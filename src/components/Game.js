@@ -21,7 +21,7 @@ import {
 
 import InkBar from './inkBar';
 
-const GAME_INTERVAL = 12;
+const GAME_INTERVAL = 40;
 
 class Game extends React.Component {
     constructor(props) {
@@ -77,6 +77,8 @@ class Game extends React.Component {
 
             playerPosition: { x: 100, y: 100 }, // to update camera position 
             inkAmount: 100, // to update inkbar 
+
+            anouncement: ['Nothing~~', 'thissss']
         }
 
         this.props.socket.emit('enterGame', { ...this.playerData });
@@ -174,6 +176,21 @@ class Game extends React.Component {
             */
             // draw aim point
             drawAimPoint(this.aimPointRef, this.playerData.playerPosition, this.localPlayerData.mousePosition, this.playerData.playerAngle, aimPoints);
+
+            var temp = this.state.anouncement
+            if(Math.floor(Math.random() * 20) === 0/* 這邊的random只是為了方便測試，要改成if收到新訊息*/) {
+                
+                temp.push('new')
+                this.setState({ anouncement: temp })
+            
+                setTimeout(() => {
+                    this.setState((prevState) => (
+                        {anouncement: prevState.anouncement.splice(1)}
+                    ))
+                }, 1000)
+            }
+            
+
         }
         else {
             this.setState({ cameraSize: 2000 });
@@ -212,6 +229,14 @@ class Game extends React.Component {
 
     render() {
         // console.log(this.otherPlayerData)
+        var anouncement = [];
+        for(var i=0; i<this.state.anouncement.length; ++i) {
+            anouncement.push(
+                <text id="anouncement" x="50" y={40+30*i} width="300" height="200" >{this.state.anouncement[i]}</text>
+            )
+        }
+        
+
         if (this.localPlayerData.gameState === GAME_STATE.GAMING || this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             return (
                 <div id="game-container">
@@ -241,6 +266,7 @@ class Game extends React.Component {
                         height={window.innerHeight} >
                         <InkBar inkColor={this.playerData.playerColor} inkAmount={this.localPlayerData.inkAmount} />
                         <text id="timer" x="600" y="80" width="300" height="100" style={{ fill: this.localPlayerData.timeColor }}>{this.localPlayerData.gameRemainTime}</text>
+                        { anouncement }
                     </svg>
                 </div>
             )
