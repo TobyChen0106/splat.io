@@ -21,8 +21,12 @@ import {
 } from '../utils'
 
 import InkBar from './inkBar';
+import fightSound from '../sounds/Fight.mp3'
 
 const GAME_INTERVAL = 40;
+
+var audio = new Audio(fightSound);
+audio.volume = 0.5;
 
 
 class Game extends React.Component {
@@ -236,6 +240,8 @@ class Game extends React.Component {
             this.updateGame();
         }, 20);
         drawField(this.fieldRef);
+        audio.currentTime = 0;
+        audio.play();
     }
 
     render() {
@@ -295,6 +301,7 @@ class Game extends React.Component {
             )
         }
         else {
+            audio.pause();
             return (<Redirect to='/result' />);
         }
     }
