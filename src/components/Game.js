@@ -136,10 +136,12 @@ class Game extends React.Component {
                 this.playerData.playerPosition.x, this.playerData.playerPosition.y,
                 this.localPlayerData.mousePosition.x, this.localPlayerData.mousePosition.y
             );
-
+            
             // get and update new player status according field property
             getPlayerStatus(this.splatRef, this.playerData, this.localPlayerData);
-
+            
+            // get and update player health according to 
+            
             // update player speed 
             getPlayerSpeed(this.playerData, this.localPlayerData);
 
@@ -207,8 +209,8 @@ class Game extends React.Component {
             var gameResult = getGameResult( this.fieldRef, this.splatRef, this.playerData, this.localPlayerData);
             this.setState({gameResult: gameResult});
             this.calculateResultFlag = 1;
+            console.log(this.state.gameResult);
         }
-
     }
 
     componentDidMount = () => {
