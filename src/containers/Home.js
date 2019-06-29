@@ -23,7 +23,7 @@ class Home extends Component {
         this.props.socket.emit('newPlayer', {
             name: this.props.name
         })
-        this.props.socket.on('getFirstInInfo', (data) => {
+        this.props.socket.once('getFirstInInfo', (data) => {
             this.props.setRoomId(data.roomId);
             this.props.setUid(data.uid);
             this.props.setTeam(data.team);

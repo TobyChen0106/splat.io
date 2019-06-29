@@ -18,10 +18,19 @@ import {
     getPlayerSpeed,
     getInkAmount,
     getGameResult,
+    getPlayerHealth,
 } from '../utils'
 
 import InkBar from './inkBar';
+import fightSound from '../sounds/Fight.mp3'
+import whistle from '../sounds/whistle.wav'
 
+
+var audio = new Audio(fightSound);
+audio.volume = 0.5;
+
+var audio2 = new Audio(whistle);
+audio.volume = 0.3;
 
 class Game extends React.Component {
     constructor(props) {
@@ -37,7 +46,7 @@ class Game extends React.Component {
 
             playerColor: COLOR_ASSET[this.props.teamColor[this.props.team]],
             playerColorID: this.props.teamColor[this.props.team],
-            playerHealth: 100,
+
             playerPosition: { x: 100, y: 100 },
             playerAngle: 0,
             playerStatus: PLAYER_STATUS.STANDING_SPACE,
@@ -49,12 +58,15 @@ class Game extends React.Component {
 
         // data that only holded by local front end
         this.localPlayerData = {
+            spawnPosition: { x: 500, y: 500 },
+            respawnTime: 2000,
             gameState: GAME_STATE.GAMING,
             roomId: this.props.roomId,
 
             playerMoveSpeed: 5,
             playerMoveDirection: { x: 0, y: 0 },
             inkAmount: 100,
+            playerHealth: 100,
             keyStrokeState: { left: 0, right: 0, up: 0, down: 0, space: 0, g: 0 },
             mousePosition: { x: 0, y: 0 },
             mouseClient: { x: 0, y: 0 },
@@ -62,9 +74,11 @@ class Game extends React.Component {
 
             timeStamp: Date.now(), // Date.now()
             gameTime: Date.now(), // remaining time for the game
+
+            deadTime: 0, //record deadtime
             timeColor: "#FFFFFF",
 
-            enemyColor: this.props.team === 'A'? COLOR_ASSET[this.props.teamColor['B']] : COLOR_ASSET[this.props.teamColor['A']],
+            enemyColor: this.props.team === 'A' ? COLOR_ASSET[this.props.teamColor['B']] : COLOR_ASSET[this.props.teamColor['A']],
             result: { teamA: 0, teamB: 0 }
         }
 
@@ -73,6 +87,7 @@ class Game extends React.Component {
 
         this.calculateResultFlag = 0;
         this.mouseScale = 1;
+
         this.state = {
             gameBoardWidth: 1600,
             gameBoardHeight: 900,
@@ -80,8 +95,9 @@ class Game extends React.Component {
 
             playerPosition: { x: 100, y: 100 }, // to update camera position 
             inkAmount: 100, // to update inkbar 
+            healthAmount: 100,
             anouncement: ['Nothing~~', 'thissss'],
-            gameResult: {A:0, B:0},
+            gameResult: { A: 0, B: 0 },
         }
 
         this.props.socket.emit('enterGame', { ...this.playerData });
@@ -89,7 +105,7 @@ class Game extends React.Component {
         this.props.socket.on('updateGame', (data) => {
             this.otherPlayerData = data.allPlayers.filter(p => p.playerUid !== this.playerData.playerUid);
         })
-        
+
         this.props.socket.on('getGameTime', (data) => {
             this.localPlayerData.gameTime = data.gameTime;
         })
@@ -139,7 +155,27 @@ class Game extends React.Component {
             );
 
             // get and update new player status according field property
-            getPlayerStatus(this.splatRef, this.playerData, this.localPlayerData);
+            if (this.playerData.playerStatus !== PLAYER_STATUS.DEAD) {
+                getPlayerStatus(this.splatRef, this.playerData, this.localPlayerData);
+            }
+            // get and update player health according to 
+            var killed_msg = getPlayerHealth(this.playerData, this.localPlayerData, this.otherPlayerData);
+            if (killed_msg !== null) {
+                //emit killed_msg
+                // killed_msg = { killerUid: players[p].playerUid, killerName: players[p].playerName, killedUid: playerData.playerUid, killedName:playerData.playerName }
+                console.log(killed_msg);
+                this.localPlayerData.deadTime = this.localPlayerData.timeStamp;
+            }
+
+            //if dead, wait to respawn
+            // console.log(this.playerData.playerStatus)
+            if (this.playerData.playerStatus === PLAYER_STATUS.DEAD && this.localPlayerData.timeStamp - this.localPlayerData.deadTime >= this.localPlayerData.respawnTime) {
+                // respawn 
+                this.playerData.playerStatus = PLAYER_STATUS.STANDING_SPACE;
+                this.playerData.playerPosition = this.localPlayerData.spawnPosition;
+                this.localPlayerData.inkAmount = 100;
+                this.localPlayerData.playerHealth = 100;
+            }
 
             // update player speed 
             getPlayerSpeed(this.playerData, this.localPlayerData);
@@ -153,6 +189,9 @@ class Game extends React.Component {
 
                 this.setState({ cameraSize: filedWidth > filedHeight ? filedWidth : filedHeight });
                 this.setState({ playerPosition: { x: filedWidth / 2, y: filedHeight / 2 } });
+                audio.pause();
+                audio2.currentTime = 0;
+                audio2.play()
             } else {
                 this.setState({ playerPosition: new_playerPosition });
             }
@@ -160,40 +199,30 @@ class Game extends React.Component {
             // get splat (include draw bullet)
             var [aimPoints, inkConsumption] = getSplats(this.playerData, this.localPlayerData, this.otherPlayerData);
 
-            //get and update ink amount
-            const new_inkAmount = getInkAmount(inkConsumption, this.playerData, this.localPlayerData);
-            this.setState({ inkAmount: new_inkAmount });
+            //get and update ink amount  ******* and health 
+            const new_inkAmountNhealth = getInkAmount(inkConsumption, this.playerData, this.localPlayerData);
+            this.setState({ inkAmount: new_inkAmountNhealth[0], healthAmount: new_inkAmountNhealth[1] });
 
             this.otherPlayerData.push(this.playerData);
             //console.log(this.otherPlayerData);
             drawAllPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
 
-            /*  
-                    // draw splat
-                    drawSplat(this.splatRef, this.splatAnimationRef, this.playerData.splats, this.playerData.playerColor, this.playerData.playerAngle, this.playerData.playerPosition);
-            
-                    // draw bullet 
-                    drawBullet(this.bulletRef, this.playerData.bullets, this.playerData.playerColor);
-            
-                    //draw player
-                    drawPlayer(this.playerRef, this.splatAnimationRef, this.playerData);
-            */
             // draw aim point
             drawAimPoint(this.aimPointRef, this.playerData.playerPosition, this.localPlayerData.mousePosition, this.playerData.playerAngle, aimPoints);
 
-            var temp = this.state.anouncement
-            if(Math.floor(Math.random() * 20) === 0/* 這邊的random只是為了方便測試，要改成if收到新訊息*/) {
-                
-                temp.push('new')
-                this.setState({ anouncement: temp })
-            
+            var temp = this.state.anouncement;
+            if (Math.floor(Math.random() * 20) === 0/* 這邊的random只是為了方便測試，要改成if收到新訊息*/) {
+
+                temp.push('new');
+                this.setState({ anouncement: temp });
+
                 setTimeout(() => {
                     this.setState((prevState) => (
-                        {anouncement: prevState.anouncement.splice(1)}
+                        { anouncement: prevState.anouncement.splice(1) }
                     ))
-                }, 1000)
+                }, 3000);
             }
-            
+
 
         }
         else {
@@ -213,11 +242,11 @@ class Game extends React.Component {
         this.props.socket.emit('updateGame', { ...this.playerData });
         
         if (this.localPlayerData.gameState === GAME_STATE.FREEZE && this.calculateResultFlag === 0) {
-            var gameResult = getGameResult( this.fieldRef, this.splatRef, this.playerData, this.localPlayerData);
-            this.setState({gameResult: gameResult});
+            var gameResult = getGameResult(this.fieldRef, this.splatRef, this.playerData, this.localPlayerData);
+            this.setState({ gameResult: gameResult });
             this.calculateResultFlag = 1;
+            console.log(this.state.gameResult);
         }
-
     }
 
     componentDidMount = () => {
@@ -230,6 +259,8 @@ class Game extends React.Component {
             this.updateGame();
         }, 50);
         drawField(this.fieldRef);
+        audio.currentTime = 0;
+        audio.play();
     }
 
     render() {
@@ -237,22 +268,22 @@ class Game extends React.Component {
         // console.log(this.otherPlayerData)
         //turn the this.state.anouncement to <text />...
         var anouncement = [];
-        for(var i=0; i<this.state.anouncement.length; ++i) {
+        for (var i = 0; i < this.state.anouncement.length; ++i) {
             anouncement.push(
-                <text id="anouncement" x="50" y={40+30*i} width="300" height="200" >{this.state.anouncement[i]}</text>
+                <text id="anouncement" x="50" y={40 + 30 * i} width="300" height="200" >{this.state.anouncement[i]}</text>
             )
         }
-        
+
         var timesUp = ''
-        
+
         if (this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             timesUp = (
-            <div id='timesUp'>
-                <h1>Time's Up!</h1>
-            </div>
+                <div id='timesUp'>
+                    <h1>Time's Up!</h1>
+                </div>
             )
         }
-        
+
 
         if (this.localPlayerData.gameState === GAME_STATE.GAMING || this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             return (
@@ -284,12 +315,14 @@ class Game extends React.Component {
                         height={window.innerHeight} >
                         <InkBar inkColor={this.playerData.playerColor} inkAmount={this.localPlayerData.inkAmount} />
                         <text id="timer" x="600" y="80" width="300" height="100" style={{ fill: this.localPlayerData.timeColor }}>{gameTime}</text>
-                        { anouncement }
+                        {anouncement}
                     </svg>
                 </div>
             )
         }
         else {
+            this.props.socket.disconnect();
+            this.props.socket.open();
             return (<Redirect to={`/result/${this.props.roomId}`} />);
         }
     }

@@ -18,7 +18,9 @@ export const getPlayerSpeed = (playerData, localPlayerData) => {
         case PLAYER_STATUS.DIVING_ENEMY: localPlayerData.playerMoveSpeed = 1.5; break;
         case PLAYER_STATUS.SWIMMING_ENEMY: localPlayerData.playerMoveSpeed = 1.5; break;
         case PLAYER_STATUS.ATTACKING_ENEMY: localPlayerData.playerMoveSpeed = 0.5; break;
-        default: localPlayerData.playerMoveSpeed = 4; break;
+        case PLAYER_STATUS.DEAD: localPlayerData.playerMoveSpeed = 0; break;
+        
+        default: localPlayerData.playerMoveSpeed = 0; break;
     }
     switch (playerData.gameState) {
         case GAME_STATE.FREEZE: localPlayerData.playerMoveSpeed = 0; break;

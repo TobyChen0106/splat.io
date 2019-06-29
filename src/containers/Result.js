@@ -17,8 +17,6 @@ class Result extends Component {
     }
 
     handleOK = () => {
-        this.props.socket.disconnect();
-        this.props.socket.open();
         this.props.history.push(`/home`);
         // this.props.history.push(`/wait/${this.props.roomId}`);
     }

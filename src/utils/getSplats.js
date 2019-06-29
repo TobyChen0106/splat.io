@@ -27,7 +27,7 @@ export const getSplats = (playerData, localPlayerData, otherPlayers) => {
     var bullets = [];
     var inkConsumption = 0;
 
-    if (localPlayerData.gameState === GAME_STATE.GAMING) {
+    if (localPlayerData.gameState === GAME_STATE.GAMING && playerData.playerStatus !== PLAYER_STATUS.DEAD) {
         // find shoot line
         switch (playerData.playerWeapon.main.type) {
             case 0:

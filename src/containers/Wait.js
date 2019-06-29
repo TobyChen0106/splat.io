@@ -53,7 +53,6 @@ class Wait extends Component {
         this.props.socket.open()
         this.props.history.push('/home');
         this.props.setName();
-        console.log(this.props)
     }
 
     //61,67 playerRecord 的部分，如果有登入就送他的紀錄，不然就送個''，UserBlock物件裡面得到''就會印出guest
