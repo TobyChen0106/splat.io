@@ -50,7 +50,7 @@ class Game extends React.Component {
             playerUid: this.props.uid,
             playerTeam: this.props.team,
 
-            playerColor: COLOR_ASSET[3],
+            playerColor: this.props.teamColor[this.props.team],
             playerColorID: 3,
             playerHealth: 100,
             playerPosition: { x: 100, y: 100 },
