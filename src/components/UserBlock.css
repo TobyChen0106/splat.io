@@ -5,13 +5,13 @@
     max-width: 80%;
     height: 100px;
     margin: auto;
-    padding: auto;
+    padding: 20px;
 
     border: solid 3px;
-    border-color: rgb(253, 77, 136);
+    border-color: rgb(207, 207, 207);
     border-radius: 10px;
 
-    background: rgba(255, 102, 127, 0.253)
+    background: rgba(61, 61, 61, 0.534)
 
 }
 

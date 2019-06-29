@@ -18,17 +18,21 @@ class Index extends Component {
             roomId: null,
             name: 'Player',
             uid: null,
-            team: null
+            team: null,
+            teamColor: [],
         }
     }
 
-    setName = (e) => {
-        if (e.target.value !== '') { this.setState( {name: e.target.value} ); }
-        else { this.setState( {name: 'Player'} ); }
+    changeStatus = {
+        setRoomId: (roomId) => { this.setState( {roomId: roomId} ); },
+        setName: (name) => { 
+            if (name) this.setState( {name: name} ); 
+            else this.setState( {name: 'Player'})
+        },
+        setUid: (uid) => { this.setState( {uid: uid} ); },
+        setTeam: (team) => { this.setState( {team: team} ); },
+        setTeamColor: (teamColor) => { this.setState( {teamColor: teamColor} ); }
     }
-    setUid = (uid) => { this.setState( {uid: uid} ); }
-    setRoomId = (roomId) => { this.setState( {roomId: roomId} ); }
-    setTeam = (team) => { this.setState( {team: team} ); }
 
     render(){
         return (
@@ -37,14 +41,12 @@ class Index extends Component {
                     <Redirect to='/home' />} 
                 />
                 <Route path='/home' render={(props) => <Home {...props} {...this.state}
-                    socket={this.socket}
-                    setName={this.setName} 
-                    setUid={this.setUid}
-                    setRoomId={this.setRoomId}
-                    setTeam={this.setTeam} />}
+                    {...this.changeStatus}
+                    socket={this.socket} />}
                 />
                 <Route path={`/wait/${this.state.roomId}`} render={(props) => <Wait {...props} {...this.state}
-                    socket={this.socket} />}
+                    socket={this.socket}
+                    setName={this.changeStatus.setName} />}
                 />
                 <Route path={`/game/${this.state.roomId}`} render={(props) => <Game {...props} {...this.state}
                     socket={this.socket} />}

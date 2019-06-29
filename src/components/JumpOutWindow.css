@@ -1,0 +1,88 @@
+.Jump-bg {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.404);
+    width: 100%;
+    height: 100%;
+    top:0;
+}
+.Jump-container {
+    position: absolute;
+    width: 40%;
+    height: 80%;
+    background-image: url('../images/ink/n-01.svg');
+    background-repeat: no-repeat;
+    background-size:100% 100%;
+    z-index: 30;
+    margin-top: 5%;
+    margin-left: 30%;
+    margin-right: 30%;
+    box-sizing: border-box;
+    padding: 80px;
+    padding-top: 110px;
+
+    filter: drop-shadow( 0px 0px 15px rgba(20, 20, 22, 0.438))
+}
+
+.Jump-closeButton {
+    cursor: pointer;
+    position: absolute;
+    background: none;
+    width: 50px;
+    height: 50px;
+    margin-bottom: 60px;
+    margin-top: 30px;
+    font-size: 33px;
+
+    right: 20%;
+    top: 10%;
+
+    border: none;
+    color: white;
+
+
+}
+
+.Jump-container h2 {
+    font-size: 55px;
+    color: white;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.Jump-container button {
+    margin-top: 15px;
+    height: 40px;
+}
+
+.Jump-component {
+    position: relative;
+    width: 100%;
+    height: 60px;
+    float: left;
+    margin-left: 20%;
+    margin-right:20%;
+    
+}
+
+.Jump-component h3 {
+    position: absolute;
+    /*margin-top: 0px;
+    margin-bottom: 0px;*/
+    font-size: 22px;
+    margin: auto;
+    margin-right: 10px;
+
+}
+
+.Jump-component input {
+    width: 40%;
+    height: 30px;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.411);
+    border: solid 2px;
+    border-color: white;
+    box-sizing: border-box;
+    padding: 8px;
+    font-size: 12px;
+    color: white;
+}

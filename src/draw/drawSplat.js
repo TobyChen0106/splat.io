@@ -1,10 +1,31 @@
 import inkHit06 from '../sounds/inkHit/inkHit06.wav';
 
-import ink01 from '../images/ink/n-01.svg'
-import ink02 from '../images/ink/n-02.svg'
-import ink03 from '../images/ink/n-03.svg'
+import pink01 from '../images/ink/pink-01.svg'
+import pink02 from '../images/ink/pink-02.svg'
+import pink03 from '../images/ink/pink-03.svg'
 
-const ink = [ink01, ink02, ink03];
+import blue01 from '../images/ink/blue-01.svg'
+import blue02 from '../images/ink/blue-02.svg'
+import blue03 from '../images/ink/blue-03.svg'
+
+
+import green01 from '../images/ink/green-01.svg'
+import green02 from '../images/ink/green-02.svg'
+import green03 from '../images/ink/green-03.svg'
+
+
+import purple01 from '../images/ink/purple-01.svg'
+import purple02 from '../images/ink/purple-02.svg'
+import purple03 from '../images/ink/purple-03.svg'
+
+
+
+const ink = [
+    [pink01, pink02, pink03],
+    [blue01, blue02, blue03],
+    [green01, green02, green03],
+    [purple01, purple02, purple03]
+];
 var ripple = [];
 var audio = new Audio(inkHit06);
 audio.volume = 0.5;
@@ -19,6 +40,7 @@ export const drawSplat = (c, a, splat, playerColor, playerAngle, playerPosition)
 
     var context = c.getContext("2d");
     var r_context = a.getContext("2d");
+    
 
     context.save();
 
@@ -27,7 +49,7 @@ export const drawSplat = (c, a, splat, playerColor, playerAngle, playerPosition)
 
     // splat [splatShapeId, pos_x, pos_y, splatAngle, splatSize, splatDamage]
     for (var i = 0; i < splat.length; ++i) {
-
+        var colorID = splat[i][6];
         //context.fillStyle =  'rgba(' + playerColor +')';
         var aimX = splat[i][1];
         var aimY = splat[i][2];
@@ -38,7 +60,7 @@ export const drawSplat = (c, a, splat, playerColor, playerAngle, playerPosition)
         var ink_size = splat[i][4] * 3; //因為我圖畫得比較小所以先乘3
 
         var img = new Image;
-        img.src = ink[splat[i][0]];
+        img.src = ink[colorID][Math.floor(Math.random() * 3)];
         //"data:image/svg+xml;base64,"+btoa(trysvg);
         //img.style = "fill:#B0E0E6;"
         //console.log(img.style)

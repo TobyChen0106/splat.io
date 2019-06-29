@@ -97,9 +97,10 @@ export const getSplats = (playerData, localPlayerData, otherPlayers) => {
             var splatSize = playerData.playerWeapon.main.splatSize;
             var splatDamage = playerData.playerWeapon.main.splatDamage;
             var splatShapeId = playerData.playerWeapon.main.splatShapeId[Math.floor(Math.random() * playerData.playerWeapon.main.splatShapeId.length)];
+            var splatColorID = playerData.playerColorID;
 
             // splat [splatShapeId, pos_x, pos_y, splatAngle, splatSize, splatDamage]
-            splats.push([splatShapeId, lines[l][3], lines[l][4], splat_angle, splatSize, splatDamage]);
+            splats.push([splatShapeId, lines[l][3], lines[l][4], splat_angle, splatSize, splatDamage, splatColorID]);
             lines.splice(l, 1);
             --l;
             continue;

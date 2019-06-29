@@ -1,9 +1,28 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./models/user');
-const uuid = require('uuidv4')
+const uuid = require('uuidv4');
+const MAX_PLAYERS = 2
 let GameData = {};
 let seed = '1234';
+
+let generateColorId = () => {
+    let l = 4
+    let color = [];
+    while (color.length < 2) {
+        let c = Math.floor(Math.random() * l);
+        if (color.indexOf(c) === -1) color.push(c);
+    }
+    return color
+}
+
+let getRoomPlayers = (serverSocket, roomId) => {
+    serverSocket.to(roomId).emit('getRoomPlayers', {
+        teamA: GameData[roomId].playersBasicInfo.filter(p => p.team === 'A'),
+        teamB: GameData[roomId].playersBasicInfo.filter(p => p.team === 'B'),
+        isRoomFull: GameData[roomId].playersBasicInfo.length === MAX_PLAYERS
+    })
+}
 
 // Create server to serve index.html
 const app = express();
@@ -37,19 +56,10 @@ db.once('open', () => {
         
         socket.on('newPlayer', (data) => {
             // determine which room to join
-            // no room
-            if (!GameData) {
-                roomId = seed
-                socket.join(roomId)
-                GameData[roomId] = {
-                    playersBasicInfo: [],
-                    allPlayers: []
-                }
-            }
             // find valid room
-            else {
+            if (GameData) {
                 Object.keys(GameData).forEach(id => {
-                    if (GameData[id].playersBasicInfo.length < 4) {
+                    if (GameData[id].playersBasicInfo.length < MAX_PLAYERS) {
                         roomId = id;
                         socket.join(roomId);
                     }
@@ -57,18 +67,24 @@ db.once('open', () => {
             }
             // no valid room
             if (!roomId) {
+                let color = generateColorId();
                 seed = (parseInt(seed) * 1213 % 9973).toString();
                 roomId = seed;
                 socket.join(roomId);
                 GameData[roomId] = {
                     playersBasicInfo: [],
-                    allPlayers: []
+                    allPlayers: [],
+                    teamColor: {
+                        A: color[0],
+                        B: color[1]
+                    },
+                    status: 'Waiting'
                 }
             }
 
             // determine which team to join
-            if (GameData[roomId].playersBasicInfo.length === 0) team = 'A';
-            else {
+            team = 'A';
+            if (GameData[roomId].playersBasicInfo.length > 0) {
                 let numberA = GameData[roomId].playersBasicInfo.filter(p => p.team === 'A').length;
                 let numberB = GameData[roomId].playersBasicInfo.length - numberA;
                 if (numberA > numberB) team = 'B';
@@ -81,21 +97,16 @@ db.once('open', () => {
                 team: team
             })
 
-            socket.emit('getPlayerBasicInfo', {
+            socket.emit('getFirstInInfo', {
                 roomId: roomId,
                 uid: uid,
-                team: team
+                team: team,
+                teamColor: GameData[roomId].teamColor,
             })
         });
 
         socket.on('getRoomPlayers', (data) => {
-            let teamA = GameData[data.roomId].playersBasicInfo.filter(p => p.team === 'A');
-            let teamB = GameData[data.roomId].playersBasicInfo.filter(p => p.team === 'B');
-
-            serverSocket.to(data.roomId).emit('getRoomPlayers', {
-                teamA: teamA,
-                teamB: teamB
-            })
+            getRoomPlayers(serverSocket, data.roomId)
         });
 
         socket.on('enterGame', (data) => {
@@ -114,14 +125,22 @@ db.once('open', () => {
 
         socket.on('disconnect', () => {
             if (GameData[roomId]) {
+                // kick player out of room
                 GameData[roomId].playersBasicInfo = GameData[roomId].playersBasicInfo.filter(
                     p => !(p.uid === socket.id)
                 );
                 GameData[roomId].allPlayers = GameData[roomId].allPlayers.filter(
                     p => !(p.playerUid === socket.id)
                 );
+                // if the room is empty, then clear it
+                if (GameData[roomId].playersBasicInfo.length === 0) {
+                    delete GameData[roomId];
+                }
+                // else emit to other players
+                else {
+                    getRoomPlayers(serverSocket, roomId);
+                }
             }
         });
-
     })
 })

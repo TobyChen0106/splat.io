@@ -1,5 +1,5 @@
 import React from 'react'
-import temp from '../images/player/p-01.svg'
+import temp from '../images/player/p-02-01.svg'
 import './UserBlock.css'
 
 class UserBlock extends React.Component {
