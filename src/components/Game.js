@@ -21,7 +21,7 @@ import {
 
 import InkBar from './inkBar';
 
-const GAME_INTERVAL = 180;
+const GAME_INTERVAL = 12;
 // function Player(props) {
 //     this.playerName = props.name;
 //         this.playerUid = props.uid;
@@ -237,7 +237,7 @@ class Game extends React.Component {
         var t = GAME_INTERVAL - parseInt((Date.now() - this.localPlayerData.initTime) / 1000);
         this.localPlayerData.timeStamp = Date.now();
         this.localPlayerData.gameRemainTime = t;
-        if (t < 10) this.localPlayerData.timeColor = "#ff1493";
+        if (t < 10) this.localPlayerData.timeColor = "#c71585";
         if (t <= -1) {
             this.localPlayerData.gameState = GAME_STATE.FREEZE;
             // console.log("GAME FREEZE!!");

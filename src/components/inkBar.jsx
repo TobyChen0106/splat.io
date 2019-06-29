@@ -50,7 +50,7 @@ class InkBar extends React.Component {
                 <rect className="inkBar" x={this.state.inkBarPosition.x } y={this.state.inkBarPosition.y + 3.4*(100-this.props.inkAmount)}
                     width="50" height={3.4 * this.props.inkAmount} style={inkBarGlow} />
                 <svg width="1000" height="1000" style={inkBarStyle} x={this.state.inkBarPosition.x - 10} y={this.state.inkBarPosition.y-330}>
-                <image href={inkBarSVG} width="70" height="1000" style={inkBarStyle}/>
+                    <image href={inkBarSVG} width="70" height="1000" style={inkBarStyle}/>
                 </svg>
             </g>
 
