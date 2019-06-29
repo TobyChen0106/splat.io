@@ -8,3 +8,4 @@ export { getPlayerSpeed } from './getPlayerSpeed';
 export { getInkAmount } from './getInkAmount';
 export { getLineIntersection } from './getLineIntersection';
 export { checkFieldCollision,  checkPlayerCollision} from './checkCollision';
+export { getGameResult} from './getGameResult';
