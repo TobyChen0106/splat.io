@@ -39,12 +39,13 @@ class Home extends Component {
     render() {
         return(
             <div className='Home_container'>
-                <button className='App_button' onClick={() => this.handleDisplay('login')}>
-                    Log in
-                </button>
-                <button className='App_button' onClick={() => this.handleDisplay('signup')}>
+                <button className='App_button top-button' onClick={() => this.handleDisplay('signup')}>
                     Sign up
                 </button>
+                <button className='App_button top-button' onClick={() => this.handleDisplay('login')}>
+                    Log in
+                </button>
+                
                 <JumpOutWindow display={this.state.login_display} title="Log in" form={["id", "pw"]} submit="Log in!" />
                 <JumpOutWindow display={this.state.signup_display} title='Sign up' form={["email","id", "pw", "pw again"]} submit="Sign up!" />
                 <div className='Home_main'>

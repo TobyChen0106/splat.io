@@ -23,6 +23,13 @@
   color: #61dafb;
 }
 
+.top-button {
+  position: relative;
+  float: right;
+  margin: 10px;
+  height: 50px;
+  width: 150px;
+}
 
 @keyframes App-logo-spin {
   from {

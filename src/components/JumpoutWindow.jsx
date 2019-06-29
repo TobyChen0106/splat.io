@@ -43,17 +43,20 @@ class JumpOutWindow extends Component {
 
     render() {
         return(
-            <div style={this.state.show} className="Jump-container">
-                <button onClick={this.closeJumpOut} className='Jump-closeButton'>
-                    X
-                </button>
-                <h2>{this.props.title}</h2>
-                {this.props.form.map( e => {
-                    //console.log(e)
-                    return myForm(e) 
-                })}
-                <button className='App_button'>{this.props.submit}</button>
+            <div style={this.state.show} className='Jump-bg'>
+                <div className="Jump-container">
+                    <button onClick={this.closeJumpOut} className='Jump-closeButton'>
+                        X
+                    </button>
+                    <h2>{this.props.title}</h2>
+                    {this.props.form.map( e => {
+                        //console.log(e)
+                        return myForm(e) 
+                    })}
+                    <button className='App_button'>{this.props.submit}</button>
+                </div>
             </div>
+            
         )
     }
 }
