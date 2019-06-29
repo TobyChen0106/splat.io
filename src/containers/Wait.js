@@ -8,7 +8,8 @@ class Wait extends Component {
         super(props);
         this.state = {
             teamA: [],
-            teamB: []
+            teamB: [],
+            isRoomFull: []
         }
         this.props.socket.emit('getRoomPlayers', {
             roomId: this.props.roomId
@@ -16,7 +17,8 @@ class Wait extends Component {
         this.props.socket.on('getRoomPlayers', (data) => {
             this.setState({
                 teamA: data.teamA.map(p => p.name),
-                teamB: data.teamB.map(p => p.name)
+                teamB: data.teamB.map(p => p.name),
+                isRoomFull: data.isRoomFull
             })
         })
     }
@@ -30,6 +32,7 @@ class Wait extends Component {
     }
 
     render() {
+        console.log(this.state.isRoomFull)
         let teamA = this.state.teamA.map(name =>
             <li key={name}>
                 <UserBlock userName={name} />
@@ -69,7 +72,6 @@ class Wait extends Component {
                         Back
                     </button>
                 </div>
-
             </div>
 
         )

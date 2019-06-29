@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./models/user');
 const uuid = require('uuidv4');
+const MAX_PLAYERS = 2
 let GameData = {};
 let seed = '1234';
 
@@ -16,12 +17,10 @@ let generateColorId = () => {
 }
 
 let getRoomPlayers = (serverSocket, roomId) => {
-    let teamA = GameData[roomId].playersBasicInfo.filter(p => p.team === 'A');
-    let teamB = GameData[roomId].playersBasicInfo.filter(p => p.team === 'B');
-
     serverSocket.to(roomId).emit('getRoomPlayers', {
-        teamA: teamA,
-        teamB: teamB,
+        teamA: GameData[roomId].playersBasicInfo.filter(p => p.team === 'A'),
+        teamB: GameData[roomId].playersBasicInfo.filter(p => p.team === 'B'),
+        isRoomFull: GameData[roomId].playersBasicInfo.length === MAX_PLAYERS
     })
 }
 
@@ -60,7 +59,7 @@ db.once('open', () => {
             // find valid room
             if (GameData) {
                 Object.keys(GameData).forEach(id => {
-                    if (GameData[id].playersBasicInfo.length < 4) {
+                    if (GameData[id].playersBasicInfo.length < MAX_PLAYERS) {
                         roomId = id;
                         socket.join(roomId);
                     }
@@ -68,13 +67,18 @@ db.once('open', () => {
             }
             // no valid room
             if (!roomId) {
+                let color = generateColorId();
                 seed = (parseInt(seed) * 1213 % 9973).toString();
                 roomId = seed;
                 socket.join(roomId);
                 GameData[roomId] = {
                     playersBasicInfo: [],
                     allPlayers: [],
-                    teamColor: generateColorId()
+                    teamColor: {
+                        A: color[0],
+                        B: color[1]
+                    },
+                    status: 'Waiting'
                 }
             }
 
@@ -93,11 +97,11 @@ db.once('open', () => {
                 team: team
             })
 
-            socket.emit('getPlayerBasicInfo', {
+            socket.emit('getFirstInInfo', {
                 roomId: roomId,
                 uid: uid,
                 team: team,
-                teamColor: GameData[roomId].teamColor
+                teamColor: GameData[roomId].teamColor,
             })
         });
 

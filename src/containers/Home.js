@@ -14,15 +14,21 @@ class Home extends Component {
         }
     }
 
+    handleInputName = (e) => {
+        if (e.target.value !== '') { this.props.setName(e.target.value); }
+        if (e.key === 'Enter') { this.handlePlay() }
+    }
+
     handlePlay = () => {
         this.props.socket.emit('newPlayer', {
             name: this.props.name
         })
-        this.props.socket.on('getPlayerBasicInfo', (data) => {
+        this.props.socket.on('getFirstInInfo', (data) => {
             this.props.setRoomId(data.roomId);
             this.props.setUid(data.uid);
             this.props.setTeam(data.team);
             this.props.setTeamColor(data.teamColor);
+            this.props.setIsRoomFull(data.isRoomFull);
             this.props.history.push(`/wait/${this.props.roomId}`);
         })
     }
@@ -56,7 +62,7 @@ class Home extends Component {
                         id="Name"
                         autoComplete="off"
                         spellCheck="false"
-                        onKeyUp={this.props.setName}
+                        onKeyUp={this.handleInputName}
                     />
                     <button className='App_button' onClick={this.handlePlay}>
                         Play!

@@ -62,7 +62,6 @@ class Game extends React.Component {
             splats: [],
         };
 
-
         this.playerData_2 = {
             playerName: this.props.name,
             playerUid: this.props.uid,
