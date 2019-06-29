@@ -41,9 +41,6 @@ export const getGameResult = (fieldRef, splatRef, playerData, localPlayerData)=>
                 }
             }
         }   
-        console.log(space_count);
-        console.log(own_field_count);
-        console.log(enemy_field_count);
         
         const own_result  = own_field_count/(space_count+own_field_count+enemy_field_count);
         const enem_result  = enemy_field_count/(space_count+own_field_count+enemy_field_count);

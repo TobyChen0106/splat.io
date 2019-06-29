@@ -224,7 +224,7 @@ class Game extends React.Component {
     }
 
     render() {
-        // console.log(this.state.gameResult)
+        
         if (this.localPlayerData.gameState === GAME_STATE.GAMING || this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             return (
                 <div id="game-container">
