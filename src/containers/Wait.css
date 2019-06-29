@@ -3,11 +3,11 @@
     min-width: 100%;
     min-height: 100%;
     margin:0;
-    background: url(../images/waitBG.jpg),
-            linear-gradient(rgb(90, 179, 182), rgba(148, 61, 61, 0.699));
-    background-blend-mode: screen;
-    background-size: cover;
-    background-repeat: no-repeat;
+    background:rgb(129, 138, 153);/*, linear-gradient(rgb(90, 179, 182), rgba(148, 61, 61, 0.699));*/
+    background-image: url('../images/bg.png'), url('../images/cross2.png');
+    /*background-blend-mode: screen;*/
+    /*background-size: cover;
+    background-repeat: no-repeat;*/
 }
 
 .Wait_container h1{

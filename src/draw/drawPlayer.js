@@ -1,16 +1,20 @@
 
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
-import playerSVG from '../images/player/p-01.svg'
-import playerHandSVG from '../images/player/p-02.svg'
+import playerSVG from '../images/player/p-02-01.svg'
+import LeftHandSVG from '../images/player/p-02-02.svg'
+import RightHandSVG from '../images/player/p-02-03.svg'
 import gunSVG from '../images/player/p-03.svg'
+import diveSVG from '../images/player/p-02-04.svg'
 
 export const playerWidth = 50;
 export const playerHeight = 50;
 
-const handOffset = 30
-var img = new Image()
-var img2 = new Image()
-var img3 = new Image()
+const handOffset = 23
+var body = new Image()
+var leftHand = new Image()
+var rightHand = new Image()
+var gun = new Image()
+var dive = new Image()
 
 var ripple = [];
 var lastRippleTimeStamp = 0;
@@ -31,10 +35,10 @@ export const drawPlayer = (c, a, state) => {
             drawPlayerNormal(context, state);
             break;
         case PLAYER_STATUS.DIVING_OWN:
-            drawPlayerName(context, state);
+            drawPlayerDive(context, state);
             break;
         case PLAYER_STATUS.SWIMMING_OWN:
-            drawPlayerName(context, state);
+            drawPlayerDive(context, state);
 
             break;
         case PLAYER_STATUS.ATTACKING_OWN:
@@ -142,16 +146,18 @@ const drawPlayerNormal = (context, state) => {
     context.restore();
 
 
-    img.src = playerSVG;
-    img2.src = playerHandSVG;
-    img3.src = gunSVG;
+    body.src = playerSVG;
+    leftHand.src = LeftHandSVG;
+    rightHand.src = RightHandSVG;
+    gun.src = gunSVG;
 
     context.translate(playerPosition.x, playerPosition.y)
     context.rotate(Math.PI / 180 * (playerAngle + 180));
-    context.drawImage(img, -playerWidth / 2-10, -playerHeight / 2-12, playerWidth+15, playerHeight+15)
-    context.drawImage(img2, -playerWidth / 2 - 10, -playerHeight / 2 + handOffset, playerWidth, playerHeight)
-    context.drawImage(img2, -playerWidth / 2 + 10, -playerHeight / 2 + handOffset, playerWidth, playerHeight)
-    context.drawImage(img3, -playerWidth / 2, -playerHeight / 2 + 35, playerWidth, playerHeight)
+    context.drawImage(body, -playerWidth / 2-10, -playerHeight / 2-12, playerWidth+15, playerHeight+15)
+    context.drawImage(leftHand, -playerWidth / 2 - 10, -playerHeight / 2  + handOffset, playerWidth, playerHeight)
+    context.drawImage(gun, -playerWidth / 2, -playerHeight / 2 + 28, playerWidth, playerHeight)
+    context.drawImage(rightHand, -playerWidth / 2 + 10, -playerHeight / 2 + handOffset, playerWidth, playerHeight)
+
     context.rotate(- Math.PI / 180 * (playerAngle + 180))
     context.translate(-playerPosition.x, -playerPosition.y)
 
@@ -178,6 +184,39 @@ const drawPlayerNormal = (context, state) => {
 
     
 }
+
+const drawPlayerDive = (context, state) => {
+    const playerName = state.playerName
+    const playerColor = state.playerColor
+    const playerPosition = state.playerPosition
+    const playerAngle = state.playerAngle
+    const playerStatus = state.playerStatus
+
+    context.save()
+
+    context.translate(playerPosition.x, playerPosition.y)
+
+    context.font = "bold 10pt Freckle Face";
+    const playerNameLen = context.measureText(playerName).width;
+
+    context.strokeStyle = "#FFFFFF";
+    context.lineWidth = 3;
+    context.strokeText(playerName, -playerNameLen / 2, 50)
+
+    context.fillStyle = playerColor;
+    context.font = "bold 10pt Freckle Face";
+
+    context.fillText(playerName, -playerNameLen / 2, 50);
+    //end of player drawing
+    context.restore();
+
+    dive.src = diveSVG;
+
+    context.translate(playerPosition.x, playerPosition.y)
+    context.drawImage(dive, -playerWidth / 2-10, -playerHeight / 2+12, playerWidth+15, playerHeight+15)
+    context.translate(-playerPosition.x, -playerPosition.y)
+}
+
 
 const drawPlayerName = (context, state) => {
     const playerName = state.playerName
