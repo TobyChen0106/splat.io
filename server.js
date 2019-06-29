@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const User = require('./models/user');
 const uuid = require('uuidv4');
 const MAX_PLAYERS = 2;
-const GAME_TIME = 15;
+const GAME_TIME = 10;
 const WAIT_TIME = 5;
 let GameData = {};
 let seed = '1234';
@@ -22,7 +22,6 @@ let startGameTimeCountdown = (roomId) => {
     let gameIntervalId = setInterval(() => {
         if (GameData[roomId]) {
             GameData[roomId].gameTime--;
-            console.log(GameData[roomId].gameTime)
             if (GameData[roomId].gameTime <= -6) {
                 clearInterval(gameIntervalId);
             }
@@ -31,7 +30,6 @@ let startGameTimeCountdown = (roomId) => {
 }
 
 let getRoomPlayers = (serverSocket, roomId) => {
-    let waitIntervalId;
     if (GameData[roomId]) {
         serverSocket.to(roomId).emit('getRoomPlayers', {
             teamA: GameData[roomId].playersBasicInfo.filter(p => p.team === 'A'),
@@ -51,7 +49,6 @@ let getRoomPlayers = (serverSocket, roomId) => {
                     serverSocket.to(roomId).emit('getWaitTime', {
                         waitTime: GameData[roomId].waitTime
                     })
-                    console.log(GameData[roomId].waitTime)
                     GameData[roomId].waitTime--;
                     if (GameData[roomId].waitTime < 0) {
                         clearInterval(GameData[roomId].waitIntervalId);
@@ -89,11 +86,13 @@ db = mongoose.connection;
 db.on('error', error => { console.log(error) })
 db.once('open', () => {
     console.log('MongoDB connected!')
-    serverSocket.on('connection', socket => {
+    serverSocket.on('connection', socket => {        
         let uid = socket.id;
         let roomId = null;
         let team = null;
         
+        socket.on('error', (err) => { console.log(err); });
+
         socket.on('newPlayer', (data) => {
             // determine which room to join
             // find valid room

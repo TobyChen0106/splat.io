@@ -15,8 +15,15 @@ class Result extends Component {
             teamBarea: 1998
         }
     }
+
+    handleOK = () => {
+        this.props.socket.disconnect();
+        this.props.socket.open();
+        this.props.history.push(`/home`);
+        // this.props.history.push(`/wait/${this.props.roomId}`);
+    }
+
     render() {
-        console.log('result')
         const inkStyleA = {
             fill: this.state.teamAColor.main,
             filter: "drop-shadow(0px 0px 5px " + this.state.teamAColor.glow + ")"
@@ -60,9 +67,7 @@ class Result extends Component {
                 <div>
 
                 </div>
-                <NavLink to='/home'>
-                    <button className='App_button'>OK!</button>
-                </NavLink>
+                <button className='App_button' onClick={this.handleOK}>OK!</button>
             </div>
         )
     }

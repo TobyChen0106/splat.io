@@ -22,7 +22,6 @@ import {
 
 import InkBar from './inkBar';
 
-const GAME_INTERVAL = 12;
 
 class Game extends React.Component {
     constructor(props) {
@@ -62,7 +61,6 @@ class Game extends React.Component {
             mouseDownState: 0,
 
             timeStamp: Date.now(), // Date.now()
-            initTime: Date.now(), // game start time
             gameTime: Date.now(), // remaining time for the game
             timeColor: "#FFFFFF",
 
@@ -202,24 +200,17 @@ class Game extends React.Component {
             this.setState({ cameraSize: 2000 });
         }
         // update time
-        // var this.localPlayerData.gameTime = GAME_INTERVAL - parseInt((Date.now() - this.localPlayerData.initTime) / 1000);
         this.localPlayerData.timeStamp = Date.now();
-        // this.localPlayerData.gameTime = this.localPlayerData.gameTime;
         if (this.localPlayerData.gameTime < 10) this.localPlayerData.timeColor = "#c71585";
         if (this.localPlayerData.gameTime <= 0) {
             this.localPlayerData.gameState = GAME_STATE.FREEZE;
-            // console.log("GAME FREEZE!!");
 
             if (this.localPlayerData.gameTime <= -5) {
                 this.localPlayerData.gameState = GAME_STATE.FINISH;
-                // console.log("GAME FINISH!!");
             }
         }
 
         this.props.socket.emit('updateGame', { ...this.playerData });
-        // console.log(this.localPlayerData.gameTime);
-
-        //calculate result
         
         if (this.localPlayerData.gameState === GAME_STATE.FREEZE && this.calculateResultFlag === 0) {
             var gameResult = getGameResult( this.fieldRef, this.splatRef, this.playerData, this.localPlayerData);
@@ -299,7 +290,7 @@ class Game extends React.Component {
             )
         }
         else {
-            return (<Redirect to='/result' />);
+            return (<Redirect to={`/result/${this.props.roomId}`} />);
         }
     }
 }

@@ -52,7 +52,9 @@ class Index extends Component {
                 <Route path={`/game/${this.state.roomId}`} render={(props) => <Game {...props} {...this.state}
                     socket={this.socket} />}
                 />
-                <Route path='/result' render={() => <Result />} />
+                <Route path={`/result/${this.state.roomId}`} render={(props) => <Result {...props} {...this.state}
+                    socket={this.socket} />}
+                />
             </Switch>
         )
     }
