@@ -21,6 +21,14 @@ class Wait extends Component {
         })
     }
 
+    handleBack = () => {
+        // this.props.socket.emit('disconnect');
+        this.props.socket.disconnect();
+        this.props.socket.open()
+        this.props.history.push('/home');
+        this.props.setName();
+    }
+
     render() {
         let teamA = this.state.teamA.map(name =>
             <li key={name}>
@@ -57,11 +65,11 @@ class Wait extends Component {
                             Start!
                         </button>
                     </NavLink>
-                    <NavLink to='/home'>
-                        <button className='App_button'>
+                    {/* <NavLink to='/home'> */}
+                        <button className='App_button' onClick={this.handleBack}>
                             Back
                         </button>
-                    </NavLink>
+                    {/* </NavLink> */}
                 </div>
 
             </div>

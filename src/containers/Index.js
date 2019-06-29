@@ -23,8 +23,14 @@ class Index extends Component {
     }
 
     setName = (e) => {
-        if (e.target.value !== '') { this.setState( {name: e.target.value} ); }
-        else { this.setState( {name: 'Player'} ); }
+        // type from input text
+        if (e) {
+            if (e.target.value !== '') { this.setState( {name: e.target.value} ); }
+        }
+        // reset name by calling serName()
+        else { 
+            this.setState( {name: 'Player'} ); 
+        }
     }
     setUid = (uid) => { this.setState( {uid: uid} ); }
     setRoomId = (roomId) => { this.setState( {roomId: roomId} ); }
@@ -44,7 +50,8 @@ class Index extends Component {
                     setTeam={this.setTeam} />}
                 />
                 <Route path={`/wait/${this.state.roomId}`} render={(props) => <Wait {...props} {...this.state}
-                    socket={this.socket} />}
+                    socket={this.socket}
+                    setName={this.setName} />}
                 />
                 <Route path={`/game/${this.state.roomId}`} render={(props) => <Game {...props} {...this.state}
                     socket={this.socket} />}

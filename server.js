@@ -5,6 +5,16 @@ const uuid = require('uuidv4')
 let GameData = {};
 let seed = '1234';
 
+let getRoomPlayers = (serverSocket, roomId) => {
+    let teamA = GameData[roomId].playersBasicInfo.filter(p => p.team === 'A');
+    let teamB = GameData[roomId].playersBasicInfo.filter(p => p.team === 'B');
+
+    serverSocket.to(roomId).emit('getRoomPlayers', {
+        teamA: teamA,
+        teamB: teamB
+    })
+}
+
 // Create server to serve index.html
 const app = express();
 const http = require('http').Server(app);
@@ -36,6 +46,7 @@ db.once('open', () => {
         let team = null;
         
         socket.on('newPlayer', (data) => {
+            console.log('newPlayer: ', GameData)
             // determine which room to join
             // find valid room
             if (GameData) {
@@ -48,7 +59,6 @@ db.once('open', () => {
             }
             // no valid room
             if (!roomId) {
-                console.log('hey')
                 seed = (parseInt(seed) * 1213 % 9973).toString();
                 roomId = seed;
                 socket.join(roomId);
@@ -81,13 +91,7 @@ db.once('open', () => {
         });
 
         socket.on('getRoomPlayers', (data) => {
-            let teamA = GameData[data.roomId].playersBasicInfo.filter(p => p.team === 'A');
-            let teamB = GameData[data.roomId].playersBasicInfo.filter(p => p.team === 'B');
-
-            serverSocket.to(data.roomId).emit('getRoomPlayers', {
-                teamA: teamA,
-                teamB: teamB
-            })
+            getRoomPlayers(serverSocket, data.roomId)
         });
 
         socket.on('enterGame', (data) => {
@@ -117,9 +121,11 @@ db.once('open', () => {
                 if (GameData[roomId].playersBasicInfo.length === 0) {
                     delete GameData[roomId];
                 }
+                // else emit to other players
+                else {
+                    getRoomPlayers(serverSocket, roomId);
+                }
             }
-            
         });
-
     })
 })
