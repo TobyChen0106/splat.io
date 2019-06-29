@@ -22,21 +22,6 @@ import {
 import InkBar from './inkBar';
 
 const GAME_INTERVAL = 180;
-// function Player(props) {
-//     this.playerName = props.name;
-//         this.playerUid = props.uid;
-//         this.playerTeam = props.team;
-
-//         this.playerColor = COLOR_ASSET[0];
-//         this.playerHealth = 100;
-//         this.playerPosition = { x: 100, y: 100 };
-//         this.playerAngle = 0;
-//         this.playerStatus = PLAYER_STATUS.STANDING_SPACE;
-//         this.playerWeapon = weapons.splatterShot_v1;
-
-//         this.bullets = [];
-//         this.splats = [];
-// }
 
 class Game extends React.Component {
     constructor(props) {
@@ -54,38 +39,6 @@ class Game extends React.Component {
             playerColorID: this.props.teamColor[this.props.team],
             playerHealth: 100,
             playerPosition: { x: 100, y: 100 },
-            playerAngle: 0,
-            playerStatus: PLAYER_STATUS.STANDING_SPACE,
-            playerWeapon: weapons.splatterShot_v1,
-
-            bullets: [],
-            splats: [],
-        };
-
-        this.playerData_2 = {
-            playerName: this.props.name,
-            playerUid: this.props.uid,
-            playerTeam: this.props.team,
-
-            playerColor: COLOR_ASSET[1],
-            playerHealth: 100,
-            playerPosition: { x: 200, y: 200 },
-            playerAngle: 0,
-            playerStatus: PLAYER_STATUS.STANDING_SPACE,
-            playerWeapon: weapons.splatterShot_v1,
-
-            bullets: [],
-            splats: [],
-        };
-
-        this.playerData_3 = {
-            playerName: this.props.name,
-            playerUid: this.props.uid,
-            playerTeam: this.props.team,
-
-            playerColor: COLOR_ASSET[0],
-            playerHealth: 100,
-            playerPosition: { x: 300, y: 300 },
             playerAngle: 0,
             playerStatus: PLAYER_STATUS.STANDING_SPACE,
             playerWeapon: weapons.splatterShot_v1,
@@ -132,9 +85,9 @@ class Game extends React.Component {
             this.otherPlayerData = data.allPlayers.filter(p => p.playerUid !== this.playerData.playerUid);
         })
 
-        setInterval(() => {
-            this.props.socket.emit('updateGame', { ...this.playerData });
-        }, 1000);
+        // setInterval(() => {
+        //     this.props.socket.emit('updateGame', { ...this.playerData });
+        // }, 20);
     }
 
     onKeyDown = e => {
@@ -158,7 +111,6 @@ class Game extends React.Component {
 
     updateGame = () => {
         if (this.localPlayerData.gameState === GAME_STATE.GAMING || this.localPlayerData.gameState === GAME_STATE.FREEZE) {
-            this.otherPlayerData = [this.playerData_2, this.playerData_3];
             // drawOtherPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
 
             // measure and update screen scale
@@ -207,7 +159,6 @@ class Game extends React.Component {
             this.setState({ inkAmount: new_inkAmount });
 
             this.otherPlayerData.push(this.playerData);
-
             // console.log(this.otherPlayerData);
             drawAllPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
 
@@ -241,6 +192,8 @@ class Game extends React.Component {
                 // console.log("GAME FINISH!!");
             }
         }
+
+        this.props.socket.emit('updateGame', { ...this.playerData });
         // console.log(t);
 
     }

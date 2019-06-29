@@ -14,6 +14,7 @@ export const drawAllPlayers = (splatRef, bulletRef, playerRef, splatAnimationRef
     splatAnimationRefContext.clearRect(0, 0, splatAnimationRef.width, splatAnimationRef.height);
 
     // context.clearRect(0, 0, c.width, c.height);
+
     for (var p = 0; p < players.length; ++p) {
 
 

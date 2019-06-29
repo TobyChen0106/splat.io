@@ -99,30 +99,37 @@ export const checkFieldCollision = (p_x, p_y, d_x, d_y) => {
 }
 
 // players = [..., [pos_x, pos_y], ...]
-export const checkPlayerCollision = (p_x, p_y, c_x, c_y, players) => {
+export const checkPlayerCollision = (p_x, p_y, c_x, c_y, players, own_uid) => {
     for (var j = 0; j < players.length; ++j) {
-        const o_x1 = players[j].playerPosition.x - playerWidth / 2;
-        const o_y1 = players[j].playerPosition.x - playerHeight / 2;
-        const o_x2 = players[j].playerPosition.y + playerWidth / 2;
-        const o_y2 = players[j].playerPosition.y + playerHeight / 2;
+        // console.log(players.playerUid)
+        if (players[j].playerUid !== own_uid) {
+            const o_x1 = players[j].playerPosition.x - playerWidth / 2;
+            const o_y1 = players[j].playerPosition.x - playerHeight / 2;
+            const o_x2 = players[j].playerPosition.y + playerWidth / 2;
+            const o_y2 = players[j].playerPosition.y + playerHeight / 2;
 
-        var interSections = [];
-        interSections.push(getLineIntersection(p_x, p_y, c_x, c_y, o_x1, o_y1, o_x1, o_y2));
-        interSections.push(getLineIntersection(p_x, p_y, c_x, c_y, o_x1, o_y1, o_x2, o_y1));
-        interSections.push(getLineIntersection(p_x, p_y, c_x, c_y, o_x2, o_y1, o_x2, o_y2));
-        interSections.push(getLineIntersection(p_x, p_y, c_x, c_y, o_x1, o_y2, o_x2, o_y2));
+            var interSections = [];
+            interSections.push(getLineIntersection(p_x, p_y, c_x, c_y, o_x1, o_y1, o_x1, o_y2));
+            interSections.push(getLineIntersection(p_x, p_y, c_x, c_y, o_x1, o_y1, o_x2, o_y1));
+            interSections.push(getLineIntersection(p_x, p_y, c_x, c_y, o_x2, o_y1, o_x2, o_y2));
+            interSections.push(getLineIntersection(p_x, p_y, c_x, c_y, o_x1, o_y2, o_x2, o_y2));
 
-        var realShootDistance = 10000;
-        for (var i = 0; i < interSections.length; ++i) {
-            if (interSections[i] !== false) {
-                var tempShootDistance = Math.pow(Math.pow(interSections[i].x - p_x, 2) + Math.pow(interSections[i].y - p_y, 2), 0.5);
-                if (tempShootDistance < realShootDistance) {
-                    realShootDistance = tempShootDistance;
-                    c_x = interSections[i].x;
-                    c_y = interSections[i].y;
+            var realShootDistance = 10000;
+            for (var i = 0; i < interSections.length; ++i) {
+                if (interSections[i] !== false) {
+                    var tempShootDistance = Math.pow(Math.pow(interSections[i].x - p_x, 2) + Math.pow(interSections[i].y - p_y, 2), 0.5);
+                    if (tempShootDistance < realShootDistance) {
+                        realShootDistance = tempShootDistance;
+                        c_x = interSections[i].x;
+                        c_y = interSections[i].y;
+                    }
                 }
             }
+        }else{
+            // console.log("own");
         }
+
+
     }
     return [c_x, c_y];
 }

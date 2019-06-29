@@ -44,7 +44,7 @@ export const getSplats = (playerData, localPlayerData, otherPlayers) => {
                 var d_y = p_y - Math.cos(angle / 180 * Math.PI) * shootDistance;
 
                 var fieldCheckPos_a = checkFieldCollision(p_x, p_y, d_x, d_y);
-                var playerCheckPos_a = checkPlayerCollision(p_x, p_y, fieldCheckPos_a[0], fieldCheckPos_a[1], otherPlayers); 
+                var playerCheckPos_a = checkPlayerCollision(p_x, p_y, fieldCheckPos_a[0], fieldCheckPos_a[1], otherPlayers, playerData.playerUid); 
        
                 aimPoints.push([playerCheckPos_a[0], playerCheckPos_a[1]]);
 
@@ -55,7 +55,7 @@ export const getSplats = (playerData, localPlayerData, otherPlayers) => {
                 var g_y = p_y - Math.cos(angle / 180 * Math.PI) * gunLength;
 
                 var fieldCheckPos = checkFieldCollision(g_x, g_y, d_x, d_y);
-                var playerCheckPos = checkPlayerCollision(g_x, g_y, fieldCheckPos[0], fieldCheckPos[1], otherPlayers); 
+                var playerCheckPos = checkPlayerCollision(g_x, g_y, fieldCheckPos[0], fieldCheckPos[1], otherPlayers, playerData.playerUid); 
                 var c_x = playerCheckPos[0];
                 var c_y = playerCheckPos[1];
 

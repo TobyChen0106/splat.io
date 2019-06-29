@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./models/user');
 const uuid = require('uuidv4');
-const MAX_PLAYERS = 2
+const MAX_PLAYERS = 4
 let GameData = {};
 let seed = '1234';
 
