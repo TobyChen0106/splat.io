@@ -23,7 +23,7 @@ let startGameTimeCountdown = (roomId) => {
         if (GameData[roomId]) {
             GameData[roomId].gameTime--;
             console.log(GameData[roomId].gameTime)
-            if (GameData[roomId].gameTime <= 0) {
+            if (GameData[roomId].gameTime <= -6) {
                 clearInterval(gameIntervalId);
             }
         }
@@ -166,9 +166,9 @@ db.once('open', () => {
                 socket.broadcast.to(data.roomId).emit('updateGame', {
                     allPlayers: GameData[data.roomId].allPlayers,
                 });
-                // socket.emit('getGameTime', {
-                //     gameTime: GameData[data.roomId].gameTime
-                // }) 
+                socket.emit('getGameTime', {
+                    gameTime: GameData[data.roomId].gameTime
+                }) 
             }
 
         });
