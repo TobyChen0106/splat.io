@@ -9,3 +9,4 @@ export { getInkAmount } from './getInkAmount';
 export { getLineIntersection } from './getLineIntersection';
 export { checkFieldCollision,  checkPlayerCollision} from './checkCollision';
 export { getGameResult} from './getGameResult';
+export { getPlayerHealth} from './getPlayerHealth';

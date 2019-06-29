@@ -103,8 +103,8 @@ export const checkPlayerCollision = (p_x, p_y, c_x, c_y, players, own_uid) => {
     for (var j = 0; j < players.length; ++j) {
         if (players[j].playerUid !== own_uid) {
             const o_x1 = players[j].playerPosition.x - playerWidth / 2;
-            const o_y1 = players[j].playerPosition.x - playerHeight / 2;
-            const o_x2 = players[j].playerPosition.y + playerWidth / 2;
+            const o_y1 = players[j].playerPosition.y - playerHeight / 2;
+            const o_x2 = players[j].playerPosition.x + playerWidth / 2;
             const o_y2 = players[j].playerPosition.y + playerHeight / 2;
 
             var interSections = [];

@@ -16,4 +16,6 @@ export const PLAYER_STATUS = {
   DIVING_ENEMY: 12,
   SWIMMING_ENEMY: 13,
   ATTACKING_ENEMY: 14,
+
+  DEAD: 15,
 };

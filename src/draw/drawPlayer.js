@@ -95,7 +95,9 @@ export const drawPlayer = (c, a, state, isSelf) => {
             break;
         case PLAYER_STATUS.ATTACKING_ENEMY:
             drawPlayerNormal(context, state, team, isSelf);
-
+            break;
+        case PLAYER_STATUS.DEAD:
+            drawPlayerDead(context, state, team, isSelf);
             break;
         default: break;
     }
@@ -260,6 +262,45 @@ const drawPlayerDive = (context, state, team, isSelf) => {
     context.translate(-playerPosition.x, -playerPosition.y)
 }
 
+const drawPlayerDead = (context, state, team, isSelf) => {
+    const playerName = state.playerName
+    const playerColor = state.playerColor
+    const playerPosition = state.playerPosition
+    const playerAngle = state.playerAngle
+    const playerStatus = state.playerStatus
+
+
+    context.save()
+
+    context.translate(playerPosition.x, playerPosition.y)
+    
+    // draw X
+    context.beginPath();
+    context.moveTo(-25, -25);
+    context.lineTo(25, 25);
+    context.moveTo(25, -25);
+    context.lineTo(-25, 25);
+    context.closePath();
+
+    context.lineWidth = 10;
+    context.stroke();
+    // end of draw X
+
+    context.font = "bold 10pt Freckle Face";
+    const playerNameLen = context.measureText(playerName).width;
+
+    context.strokeStyle = isSelf? "#ffd700":"#FFFFFF";
+    context.lineWidth = 3;
+    context.strokeText(playerName, -playerNameLen / 2, 50)
+
+    context.fillStyle = playerColor;
+    context.font = "bold 10pt Freckle Face";
+
+    context.fillText(playerName, -playerNameLen / 2, 50);
+    
+    //end of player drawing
+    context.restore();
+}
 
 const drawPlayerName = (context, state) => {
     const playerName = state.playerName
