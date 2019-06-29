@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {NavLink} from 'react-router-dom'
+import React, { Component } from 'react'
+import { NavLink } from 'react-router-dom'
 import './Wait.css'
 import UserBlock from '../components/UserBlock'
 
@@ -22,18 +22,18 @@ class Wait extends Component {
     }
 
     render() {
-        let teamA = this.state.teamA.map(name => 
-                <li>
-                    <UserBlock userName={name} />
-                </li>
-            );
+        let teamA = this.state.teamA.map(name =>
+            <li key={name}>
+                <UserBlock userName={name} />
+            </li>
+        );
         let teamB = this.state.teamB.map(name =>
-            <li>
-                    <UserBlock userName={name} />
-                </li>
-            );
+            <li key={name}>
+                <UserBlock userName={name} />
+            </li>
+        );
 
-        return(
+        return (
             <div className='Wait_container'>
                 <h1>Game Lobby</h1>
                 <h3 id='Wait_message'>waiting for teammates...</h3>
@@ -63,9 +63,9 @@ class Wait extends Component {
                         </button>
                     </NavLink>
                 </div>
-                
+
             </div>
-            
+
         )
     }
 }

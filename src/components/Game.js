@@ -1,9 +1,9 @@
 import React from 'react';
 import './Game.css';
-import { drawPlayer, drawField, drawSplat, drawAimPoint, drawBullet, drawOtherPlayers, } from '../draw'
+import { drawPlayer, drawField, drawSplat, drawAimPoint, drawBullet, drawAllPlayers, } from '../draw'
 import { COLOR_ASSET } from './ColorAssets'
 import { weapons } from '../weapons'
-import {Redirect} from 'react-router'
+import { Redirect } from 'react-router'
 
 import { GAME_STATE, PLAYER_STATUS } from '../enum'
 import {
@@ -102,8 +102,10 @@ class Game extends React.Component {
             mousePosition: { x: 0, y: 0 },
             mouseClient: { x: 0, y: 0 },
             mouseDownState: 0,
-            initTime: Date.now(),
-            timeStamp: Date.now(),
+
+            timeStamp: Date.now(), // Date.now()
+            initTime: Date.now(), // game start time
+            gameRemainTime: Date.now(), // remaining time for the game
             timeColor: "#FFFFFF"
         }
 
@@ -195,28 +197,34 @@ class Game extends React.Component {
 
         this.otherPlayerData.push(this.playerData);
         // console.log(this.otherPlayerData);
-        drawOtherPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
+        drawAllPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
 
-/*  
-        // draw splat
-        drawSplat(this.splatRef, this.splatAnimationRef, this.playerData.splats, this.playerData.playerColor, this.playerData.playerAngle, this.playerData.playerPosition);
-
-        // draw bullet 
-        drawBullet(this.bulletRef, this.playerData.bullets, this.playerData.playerColor);
-
-        //draw player
-        drawPlayer(this.playerRef, this.splatAnimationRef, this.playerData);
-*/
+        /*  
+                // draw splat
+                drawSplat(this.splatRef, this.splatAnimationRef, this.playerData.splats, this.playerData.playerColor, this.playerData.playerAngle, this.playerData.playerPosition);
+        
+                // draw bullet 
+                drawBullet(this.bulletRef, this.playerData.bullets, this.playerData.playerColor);
+        
+                //draw player
+                drawPlayer(this.playerRef, this.splatAnimationRef, this.playerData);
+        */
         // draw aim point
         drawAimPoint(this.aimPointRef, this.playerData.playerPosition, this.localPlayerData.mousePosition, this.playerData.playerAngle, aimPoints);
 
         // update time
-        var t = GAME_INTERVAL - parseInt((Date.now() - this.localPlayerData.initTime)/1000);
-        this.localPlayerData.timeStamp = t
-        if(t < 10) this.localPlayerData.timeColor = "#ff1493";
-        if(t === -1) {
-            console.log("GAME END!!");
+        var t = GAME_INTERVAL - parseInt((Date.now() - this.localPlayerData.initTime) / 1000);
+        this.localPlayerData.timeStamp = Date.now();
+        this.localPlayerData.gameRemainTime = t;
+        if (t < 10) this.localPlayerData.timeColor = "#ff1493";
+        if (t <= -1) {
+            this.localPlayerData.gameState = GAME_STATE.FREEZE;
+            console.log("GAME FREEZE!!");
 
+            if (t <= -5) {
+                this.localPlayerData.gameState = GAME_STATE.FINISH;
+                console.log("GAME FINISH!!");
+            }
         }
     }
 
@@ -233,41 +241,41 @@ class Game extends React.Component {
     }
 
     render() {
-        if(this.localPlayerData.timeStamp > -1) {
+        if (this.localPlayerData.gameState !== GAME_STATE.FINISH) {
             return (
-            <div id="game-container">
-                <svg id="svg-container"
-                    width={Math.max(window.innerWidth, window.innerHeight)}
-                    height={Math.max(window.innerWidth, window.innerHeight)}
-                    preserveAspectRatio="xMidYMid slice"
-                    viewBox={
-                        [this.state.cameraSize / -2 + this.state.playerPosition.x,
-                        this.state.cameraSize / -4 + this.state.playerPosition.y,
-                        this.state.cameraSize,
-                        this.state.cameraSize]}>
-                    <foreignObject x="0" y="0" width="10000" height="10000">
-                        <canvas id="groundLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.groundRef = el} />
-                        <canvas id="splatLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.splatRef = el} />
-                        <canvas id="splatAnimationLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.splatAnimationRef = el} />
-                        <canvas id="fieldLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.fieldRef = el} />
-                        <canvas id="playerLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.playerRef = el} />
-                        {/* <canvas id="otherPlayerLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.playerRef = el} /> */}
-                        <canvas id="itemLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.itemRef = el} />
-                        <canvas id="bulletLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.bulletRef = el} />
-                        <canvas id="aimPointLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.aimPointRef = el} />
-                    </foreignObject>
-                </svg>
-                <svg id="info-container"
-                    x="0" y="0"
-                    width={window.innerWidth}
-                    height={window.innerHeight} >
-                    <InkBar inkColor={this.playerData.playerColor} inkAmount={this.localPlayerData.inkAmount} />
-                    <text id="timer" x="600" y="80" width="300" height="100" style={{fill: this.localPlayerData.timeColor}}>{this.localPlayerData.timeStamp}</text>
-                </svg>
-            </div>
-        )}
+                <div id="game-container">
+                    <svg id="svg-container"
+                        width={Math.max(window.innerWidth, window.innerHeight)}
+                        height={Math.max(window.innerWidth, window.innerHeight)}
+                        preserveAspectRatio="xMidYMid slice"
+                        viewBox={
+                            [this.state.cameraSize / -2 + this.state.playerPosition.x,
+                            this.state.cameraSize / -4 + this.state.playerPosition.y,
+                            this.state.cameraSize,
+                            this.state.cameraSize]}>
+                        <foreignObject x="0" y="0" width="10000" height="10000">
+                            <canvas id="groundLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.groundRef = el} />
+                            <canvas id="splatLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.splatRef = el} />
+                            <canvas id="splatAnimationLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.splatAnimationRef = el} />
+                            <canvas id="fieldLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.fieldRef = el} />
+                            <canvas id="playerLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.playerRef = el} />
+                            <canvas id="itemLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.itemRef = el} />
+                            <canvas id="bulletLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.bulletRef = el} />
+                            <canvas id="aimPointLayer" width={this.state.gameBoardWidth} height={this.state.gameBoardHeight} ref={el => this.aimPointRef = el} />
+                        </foreignObject>
+                    </svg>
+                    <svg id="info-container"
+                        x="0" y="0"
+                        width={window.innerWidth}
+                        height={window.innerHeight} >
+                        <InkBar inkColor={this.playerData.playerColor} inkAmount={this.localPlayerData.inkAmount} />
+                        <text id="timer" x="600" y="80" width="300" height="100" style={{ fill: this.localPlayerData.timeColor }}>{this.localPlayerData.gameRemainTime}</text>
+                    </svg>
+                </div>
+            )
+        }
         else {
-            return( <Redirect to='/result' />);
+            return (<Redirect to='/result' />);
         }
     }
 }

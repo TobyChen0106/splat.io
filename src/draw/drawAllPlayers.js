@@ -1,6 +1,6 @@
 import { drawPlayer, drawSplat, drawBullet, } from '../draw'
 
-export const drawOtherPlayers = (splatRef, bulletRef, playerRef, splatAnimationRef, players) => {
+export const drawAllPlayers = (splatRef, bulletRef, playerRef, splatAnimationRef, players) => {
     // var splatRefContext = splatRef.getContext("2d");
     // splatRefContext.clearRect(0, 0, splatRef.width, splatRef.height);
 
