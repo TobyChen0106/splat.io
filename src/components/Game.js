@@ -21,7 +21,7 @@ import {
 
 import InkBar from './inkBar';
 
-const GAME_INTERVAL = 40;
+const GAME_INTERVAL = 180;
 // function Player(props) {
 //     this.playerName = props.name;
 //         this.playerUid = props.uid;
