@@ -39,9 +39,12 @@ class Wait extends Component {
                 waitTime: data.waitTime,
                 waitingMessage: `left ${data.waitTime} seconds to begin...`
             })
+            if (data.waitTime <= 0) {
+                this.props.socket.off('getWaitTime');
+            }
         })
 
-        this.props.socket.on('startGaming', () => {
+        this.props.socket.once('startGaming', () => {
             this.props.history.push(`/game/${this.props.roomId}`);
         })
     }
