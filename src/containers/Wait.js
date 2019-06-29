@@ -56,16 +56,18 @@ class Wait extends Component {
         this.props.setName();
     }
 
+    //61,67 playerRecord 的部分，如果有登入就送他的紀錄，不然就送個''，UserBlock物件裡面得到''就會印出guest
+
     render() {
         let teamA = this.state.teamA.map(name =>
             <li key={name}>
-                <UserBlock userName={name} team='A' />
+                <UserBlock userName={name} playerRecord=''/*playerRecord={ isLoggin? this.props.playerRecord : ''}*/ team='A' />
             </li>
         );
 
         let teamB = this.state.teamB.map(name =>
             <li key={name}>
-                <UserBlock userName={name} team='B' />
+                <UserBlock userName={name} playerRecord='' team='B' />
             </li>
         );
 

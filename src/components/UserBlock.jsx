@@ -9,7 +9,7 @@ class UserBlock extends React.Component {
             <div className='UserBlock-container'>
                 <img src={this.props.team === 'A'? green:orange} />
                 <h3>{this.props.userName}</h3>
-                <h4>STATUS</h4>
+                <h4>{this.props.playerRecord || 'guest'}</h4>
             </div>
         )
     }
