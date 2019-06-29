@@ -22,12 +22,15 @@ import {
 
 import InkBar from './inkBar';
 import fightSound from '../sounds/Fight.mp3'
+import whistle from '../sounds/whistle.wav'
 
-const GAME_INTERVAL = 40;
+const GAME_INTERVAL = 12;
 
 var audio = new Audio(fightSound);
 audio.volume = 0.5;
 
+var audio2 = new Audio(whistle);
+audio.volume = 0.3;
 
 class Game extends React.Component {
     constructor(props) {
@@ -156,6 +159,9 @@ class Game extends React.Component {
 
                 this.setState({ cameraSize: filedWidth > filedHeight ? filedWidth : filedHeight });
                 this.setState({ playerPosition: { x: filedWidth / 2, y: filedHeight / 2 } });
+                audio.pause();
+                audio2.currentTime = 0;
+                audio2.play()
             } else {
                 this.setState({ playerPosition: new_playerPosition });
             }
@@ -301,7 +307,7 @@ class Game extends React.Component {
             )
         }
         else {
-            audio.pause();
+            
             return (<Redirect to='/result' />);
         }
     }
