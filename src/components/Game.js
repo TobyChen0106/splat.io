@@ -22,9 +22,16 @@ import {
 } from '../utils'
 
 import InkBar from './inkBar';
+import fightSound from '../sounds/Fight.mp3'
+import whistle from '../sounds/whistle.wav'
 
-const GAME_INTERVAL = 40;
+const GAME_INTERVAL = 12;
 
+var audio = new Audio(fightSound);
+audio.volume = 0.5;
+
+var audio2 = new Audio(whistle);
+audio.volume = 0.3;
 
 class Game extends React.Component {
     constructor(props) {
@@ -67,7 +74,7 @@ class Game extends React.Component {
 
             timeStamp: Date.now(), // Date.now()
             initTime: Date.now(), // game start time
-            gameRemainTime: Date.now(), // remaining time for the game
+            gameTime: Date.now(), // remaining time for the game
             timeColor: "#FFFFFF",
 
             enemyColor: this.props.team === 'A' ? COLOR_ASSET[this.props.teamColor['B']] : COLOR_ASSET[this.props.teamColor['A']],
@@ -96,6 +103,10 @@ class Game extends React.Component {
 
         this.props.socket.on('updateGame', (data) => {
             this.otherPlayerData = data.allPlayers.filter(p => p.playerUid !== this.playerData.playerUid);
+        })
+        
+        this.props.socket.on('getGameTime', (data) => {
+            this.localPlayerData.gameTime = data.gameTime;
         })
 
     }
@@ -164,6 +175,9 @@ class Game extends React.Component {
 
                 this.setState({ cameraSize: filedWidth > filedHeight ? filedWidth : filedHeight });
                 this.setState({ playerPosition: { x: filedWidth / 2, y: filedHeight / 2 } });
+                audio.pause();
+                audio2.currentTime = 0;
+                audio2.play()
             } else {
                 this.setState({ playerPosition: new_playerPosition });
             }
@@ -201,22 +215,22 @@ class Game extends React.Component {
             this.setState({ cameraSize: 2000 });
         }
         // update time
-        var t = GAME_INTERVAL - parseInt((Date.now() - this.localPlayerData.initTime) / 1000);
+        // var this.localPlayerData.gameTime = GAME_INTERVAL - parseInt((Date.now() - this.localPlayerData.initTime) / 1000);
         this.localPlayerData.timeStamp = Date.now();
-        this.localPlayerData.gameRemainTime = t;
-        if (t < 10) this.localPlayerData.timeColor = "#c71585";
-        if (t <= -1) {
+        // this.localPlayerData.gameTime = this.localPlayerData.gameTime;
+        if (this.localPlayerData.gameTime < 10) this.localPlayerData.timeColor = "#c71585";
+        if (this.localPlayerData.gameTime <= 0) {
             this.localPlayerData.gameState = GAME_STATE.FREEZE;
             // console.log("GAME FREEZE!!");
 
-            if (t <= -5) {
+            if (this.localPlayerData.gameTime <= -5) {
                 this.localPlayerData.gameState = GAME_STATE.FINISH;
                 // console.log("GAME FINISH!!");
             }
         }
 
         this.props.socket.emit('updateGame', { ...this.playerData });
-        // console.log(t);
+        // console.log(this.localPlayerData.gameTime);
 
         //calculate result
         if (this.localPlayerData.gameState === GAME_STATE.FREEZE && this.calculateResultFlag === 0) {
@@ -235,11 +249,14 @@ class Game extends React.Component {
         window.addEventListener("mouseup", this.mouseUp);
         setInterval(() => {
             this.updateGame();
-        }, 20);
+        }, 50);
         drawField(this.fieldRef);
+        audio.currentTime = 0;
+        audio.play();
     }
 
     render() {
+        let gameTime = this.localPlayerData.gameTime > 0 ? this.localPlayerData.gameTime : 0;
         // console.log(this.otherPlayerData)
         //turn the this.state.anouncement to <text />...
         var anouncement = [];
@@ -248,11 +265,22 @@ class Game extends React.Component {
                 <text id="anouncement" x="50" y={40 + 30 * i} width="300" height="200" >{this.state.anouncement[i]}</text>
             )
         }
-
+        
+        var timesUp = ''
+        
+        if (this.localPlayerData.gameState === GAME_STATE.FREEZE) {
+            timesUp = (
+            <div id='timesUp'>
+                <h1>Time's Up!</h1>
+            </div>
+            )
+        }
+        
 
         if (this.localPlayerData.gameState === GAME_STATE.GAMING || this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             return (
                 <div id="game-container">
+                    {timesUp}
                     <svg id="svg-container"
                         width={Math.max(window.innerWidth, window.innerHeight)}
                         height={Math.max(window.innerWidth, window.innerHeight)}
@@ -278,13 +306,14 @@ class Game extends React.Component {
                         width={window.innerWidth}
                         height={window.innerHeight} >
                         <InkBar inkColor={this.playerData.playerColor} inkAmount={this.localPlayerData.inkAmount} />
-                        <text id="timer" x="600" y="80" width="300" height="100" style={{ fill: this.localPlayerData.timeColor }}>{this.localPlayerData.gameRemainTime}</text>
-                        {anouncement}
+                        <text id="timer" x="600" y="80" width="300" height="100" style={{ fill: this.localPlayerData.timeColor }}>{gameTime}</text>
+                        { anouncement }
                     </svg>
                 </div>
             )
         }
         else {
+            
             return (<Redirect to='/result' />);
         }
     }
