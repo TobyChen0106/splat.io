@@ -248,10 +248,21 @@ class Game extends React.Component {
             )
         }
         
+        var timesUp = ''
+        
+        if (this.localPlayerData.gameState === GAME_STATE.FREEZE) {
+            timesUp = (
+            <div id='timesUp'>
+                <h1>Time's Up!</h1>
+            </div>
+            )
+        }
+        
 
         if (this.localPlayerData.gameState === GAME_STATE.GAMING || this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             return (
                 <div id="game-container">
+                    {timesUp}
                     <svg id="svg-container"
                         width={Math.max(window.innerWidth, window.innerHeight)}
                         height={Math.max(window.innerWidth, window.innerHeight)}
