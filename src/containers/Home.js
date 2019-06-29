@@ -2,9 +2,17 @@ import React, {Component} from 'react'
 import {NavLink} from 'react-router-dom'
 import temp from '../images/temp.gif'
 import logo from '../images/logo.png'
+import JumpOutWindow from '../components/JumpoutWindow'
 import './Home.css'
 
 class Home extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            login_display : {display: "none"},
+            signup_display: {display: "none"}
+        }
+    }
     handlePlay = () => {
         this.props.socket.emit('newPlayer', {
             name: this.props.name
@@ -17,9 +25,28 @@ class Home extends Component {
         })
     }
 
+    handleDisplay(id) {
+        if(id === 'login'){
+            this.setState({login_display: {display: "block"}})
+            //console.log("login")
+        }
+        else if(id === 'signup') {
+            this.setState({signup_display: {display: "block"}})
+            //console.log('signup')
+        } 
+    }
+
     render() {
         return(
             <div className='Home_container'>
+                <button className='App_button' onClick={() => this.handleDisplay('login')}>
+                    Log in
+                </button>
+                <button className='App_button' onClick={() => this.handleDisplay('signup')}>
+                    Sign up
+                </button>
+                <JumpOutWindow display={this.state.login_display} title="Log in" form={["id", "pw"]} submit="Log in!" />
+                <JumpOutWindow display={this.state.signup_display} title='Sign up' form={["email","id", "pw", "pw again"]} submit="Sign up!" />
                 <div className='Home_main'>
                     <img src={logo}></img>
                     <input 
