@@ -156,7 +156,7 @@ class Game extends React.Component {
     }
 
     updateGame = () => {
-        if (this.localPlayerData.gameState === GAME_STATE.GAMING) {
+        if (this.localPlayerData.gameState === GAME_STATE.GAMING || this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             this.otherPlayerData = [this.playerData_2, this.playerData_3];
             // drawOtherPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
 
@@ -187,17 +187,32 @@ class Game extends React.Component {
 
             // get player position
             const new_playerPosition = updatePlayerPosition(this.playerData, this.localPlayerData);
-            this.setState({ playerPosition: new_playerPosition });
+            
+            if (this.localPlayerData.gameState === GAME_STATE.FREEZE) {
+                var filedWidth = this.state.gameBoardWidth;
+                var filedHeight = this.state.gameBoardHeight;
 
+                this.setState({ cameraSize: filedWidth > filedHeight ? filedWidth : filedHeight });
+                this.setState({ playerPosition: { x: filedWidth / 2, y: filedHeight / 2 } });
+            } else {
+                this.setState({ playerPosition: new_playerPosition });
+            }
+
+            // concate other player positions
+            var otherPlayerPosition = [];
+            for (var p=0 ; p < this.otherPlayerData.length ; ++p){
+                otherPlayerPosition.push(this.otherPlayerData[p].playerPosition);
+            }
+            
             // get splat (include draw bullet)
-            var [aimPoints, inkConsumption] = getSplats(this.playerData, this.localPlayerData);
+            var [aimPoints, inkConsumption] = getSplats(this.playerData, this.localPlayerData, otherPlayerPosition);
 
             //get and update ink amount
             const new_inkAmount = getInkAmount(inkConsumption, this.playerData, this.localPlayerData);
             this.setState({ inkAmount: new_inkAmount });
 
             this.otherPlayerData.push(this.playerData);
-            
+
             // console.log(this.otherPlayerData);
             drawAllPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
 
@@ -214,13 +229,7 @@ class Game extends React.Component {
             // draw aim point
             drawAimPoint(this.aimPointRef, this.playerData.playerPosition, this.localPlayerData.mousePosition, this.playerData.playerAngle, aimPoints);
         }
-        else if (this.localPlayerData.gameState === GAME_STATE.FREEZE) {
-            var filedWidth = this.state.gameBoardWidth;
-            var filedHeight =  this.state.gameBoardHeight;
-
-            this.setState({ cameraSize: filedWidth > filedHeight ? filedWidth : filedHeight });
-            this.setState({ playerPosition: { x: filedWidth / 2, y: filedHeight / 2 } });
-        } else {
+        else {
             this.setState({ cameraSize: 2000 });
         }
         // update time
