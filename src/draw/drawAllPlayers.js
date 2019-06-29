@@ -18,7 +18,7 @@ export const drawAllPlayers = (splatRef, bulletRef, playerRef, splatAnimationRef
     for (var p = 0; p < players.length; ++p) {
 
 
-        drawPlayer(playerRef, splatAnimationRef, players[p]);
+        drawPlayer(playerRef, splatAnimationRef, players[p], players[p].playerTeam);
         // drawSplat(this.splatRef, this.splatAnimationRef, this.playerData.splats, this.playerData.playerColor, this.playerData.playerAngle, this.playerData.playerPosition);
         drawSplat(splatRef, splatAnimationRef, players[p].splats, players[p].playerColor,  players[p].playerAngle,  players[p].playerPosition);
 

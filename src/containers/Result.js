@@ -32,8 +32,15 @@ class Result extends Component {
             <div className='Result-container'>
                 <h1>Result</h1>
                     <div>
-                        <h2>Team A {Apercentage}%</h2>
-                        <h2>Team B {100-Apercentage}%</h2>
+                        <div>
+                            <h2>Team A</h2>
+                            <h3>{Apercentage}%</h3>
+                        </div>
+                        <div>
+                            <h2>Team B</h2>
+                            <h3>{100-Apercentage}%</h3>
+                        </div>
+                        
                     </div>
                     <div>
                         <svg width="1200" height="100" x="200" y="200">

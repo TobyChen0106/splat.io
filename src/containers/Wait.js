@@ -49,12 +49,12 @@ class Wait extends Component {
         console.log(this.state.isRoomFull)
         let teamA = this.state.teamA.map(name =>
             <li key={name}>
-                <UserBlock userName={name} />
+                <UserBlock userName={name} team='A' />
             </li>
         );
         let teamB = this.state.teamB.map(name =>
             <li key={name}>
-                <UserBlock userName={name} />
+                <UserBlock userName={name} team='B' />
             </li>
         );
         return (
