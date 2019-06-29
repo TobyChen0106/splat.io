@@ -50,6 +50,7 @@ export const drawSplat = (c, a, splat, playerColor, playerAngle, playerPosition)
     // splat [splatShapeId, pos_x, pos_y, splatAngle, splatSize, splatDamage]
     for (var i = 0; i < splat.length; ++i) {
         var colorID = splat[i][6];
+        var inkID = splat[i][0]; // shape of the splat
         //context.fillStyle =  'rgba(' + playerColor +')';
         var aimX = splat[i][1];
         var aimY = splat[i][2];
@@ -60,7 +61,7 @@ export const drawSplat = (c, a, splat, playerColor, playerAngle, playerPosition)
         var ink_size = splat[i][4] * 3; //因為我圖畫得比較小所以先乘3
 
         var img = new Image;
-        img.src = ink[colorID][Math.floor(Math.random() * 3)];
+        img.src = ink[colorID][inkID];
         //"data:image/svg+xml;base64,"+btoa(trysvg);
         //img.style = "fill:#B0E0E6;"
         //console.log(img.style)

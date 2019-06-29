@@ -17,9 +17,12 @@ import {
     getPlayerStatus,
     getPlayerSpeed,
     getInkAmount,
+    getGameResult,
 } from '../utils'
 
 import InkBar from './inkBar';
+
+
 
 const GAME_INTERVAL = 12;
 
@@ -63,12 +66,16 @@ class Game extends React.Component {
             timeStamp: Date.now(), // Date.now()
             initTime: Date.now(), // game start time
             gameRemainTime: Date.now(), // remaining time for the game
-            timeColor: "#FFFFFF"
+            timeColor: "#FFFFFF",
+
+            enemyColor: this.props.team === 'A'? COLOR_ASSET[this.props.teamColor['B']] : COLOR_ASSET[this.props.teamColor['A']],
+            result: { teamA: 0, teamB: 0 }
         }
 
         //data that recieved from the server
         this.otherPlayerData = [];
 
+        this.calculateResultFlag = 0;
         this.mouseScale = 1;
         this.state = {
             gameBoardWidth: 1600,
@@ -77,17 +84,15 @@ class Game extends React.Component {
 
             playerPosition: { x: 100, y: 100 }, // to update camera position 
             inkAmount: 100, // to update inkbar 
+            gameResult: {A:0, B:0},
         }
 
         this.props.socket.emit('enterGame', { ...this.playerData });
 
-        this.props.socket.on('updateGame', (data) => {            
+        this.props.socket.on('updateGame', (data) => {
             this.otherPlayerData = data.allPlayers.filter(p => p.playerUid !== this.playerData.playerUid);
         })
 
-        // setInterval(() => {
-        //     this.props.socket.emit('updateGame', { ...this.playerData });
-        // }, 20);
     }
 
     onKeyDown = e => {
@@ -140,7 +145,7 @@ class Game extends React.Component {
 
             // get player position
             const new_playerPosition = updatePlayerPosition(this.playerData, this.localPlayerData);
-            
+
             if (this.localPlayerData.gameState === GAME_STATE.FREEZE) {
                 var filedWidth = this.state.gameBoardWidth;
                 var filedHeight = this.state.gameBoardHeight;
@@ -150,7 +155,7 @@ class Game extends React.Component {
             } else {
                 this.setState({ playerPosition: new_playerPosition });
             }
-            
+
             // get splat (include draw bullet)
             var [aimPoints, inkConsumption] = getSplats(this.playerData, this.localPlayerData, this.otherPlayerData);
 
@@ -196,6 +201,14 @@ class Game extends React.Component {
         this.props.socket.emit('updateGame', { ...this.playerData });
         // console.log(t);
 
+        //calculate result
+        
+        if (this.localPlayerData.gameState === GAME_STATE.FREEZE && this.calculateResultFlag === 0) {
+            var gameResult = getGameResult( this.fieldRef, this.splatRef, this.playerData, this.localPlayerData);
+            this.setState({gameResult: gameResult});
+            this.calculateResultFlag = 1;
+        }
+
     }
 
     componentDidMount = () => {
@@ -211,7 +224,7 @@ class Game extends React.Component {
     }
 
     render() {
-        // console.log(this.otherPlayerData)
+        
         if (this.localPlayerData.gameState === GAME_STATE.GAMING || this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             return (
                 <div id="game-container">
