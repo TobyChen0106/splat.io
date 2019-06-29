@@ -2,7 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./models/user');
 const uuid = require('uuidv4');
-const MAX_PLAYERS = 4
+const MAX_PLAYERS = 2;
+const GAME_TIME = 15;
+const WAIT_TIME = 10;
 let GameData = {};
 let seed = '1234';
 
@@ -13,15 +15,52 @@ let generateColorId = () => {
         let c = Math.floor(Math.random() * l);
         if (color.indexOf(c) === -1) color.push(c);
     }
-    return color
+    return color;
+}
+
+let startGameTimeCountdown = (roomId) => {
+    let gameIntervalId = setInterval(() => {
+        if (GameData[roomId]) {
+            GameData[roomId].gameTime--;
+            console.log(GameData[roomId].gameTime)
+            if (GameData[roomId].gameTime <= 0) {
+                clearInterval(gameIntervalId);
+            }
+        }
+    }, 1000)   
 }
 
 let getRoomPlayers = (serverSocket, roomId) => {
-    serverSocket.to(roomId).emit('getRoomPlayers', {
-        teamA: GameData[roomId].playersBasicInfo.filter(p => p.team === 'A'),
-        teamB: GameData[roomId].playersBasicInfo.filter(p => p.team === 'B'),
-        isRoomFull: GameData[roomId].playersBasicInfo.length === MAX_PLAYERS
-    })
+    let waitIntervalId;
+    if (GameData[roomId]) {
+        serverSocket.to(roomId).emit('getRoomPlayers', {
+            teamA: GameData[roomId].playersBasicInfo.filter(p => p.team === 'A'),
+            teamB: GameData[roomId].playersBasicInfo.filter(p => p.team === 'B'),
+            isRoomFull: GameData[roomId].playersBasicInfo.length === MAX_PLAYERS,
+            maxPlayers: MAX_PLAYERS,
+            waitTime: GameData[roomId].waitTime
+        })
+        
+        if (GameData[roomId].playersBasicInfo.length < MAX_PLAYERS) {
+            clearInterval(GameData[roomId].waitIntervalId)
+            GameData[roomId].waitTime = WAIT_TIME;
+        }
+        else if (GameData[roomId].playersBasicInfo.length === MAX_PLAYERS) {
+            GameData[roomId].waitIntervalId = setInterval(() => {
+                if (GameData[roomId]) {
+                    serverSocket.to(roomId).emit('getWaitTime', {
+                        waitTime: GameData[roomId].waitTime
+                    })
+                    GameData[roomId].waitTime--;
+                    if (GameData[roomId].waitTime <= 0) {
+                        clearInterval(GameData[roomId].waitIntervalId);
+                        serverSocket.to(roomId).emit('startGaming');
+                        startGameTimeCountdown(roomId);
+                    }
+                }
+            }, 1000)       
+        }
+    }
 }
 
 // Create server to serve index.html
@@ -78,7 +117,9 @@ db.once('open', () => {
                         A: color[0],
                         B: color[1]
                     },
-                    status: 'Waiting'
+                    status: 'Waiting',
+                    gameTime: GAME_TIME,
+                    waitTime: WAIT_TIME
                 }
             }
 
@@ -110,17 +151,25 @@ db.once('open', () => {
         });
 
         socket.on('enterGame', (data) => {
-            GameData[data.roomId].allPlayers.push(data);
+            if (GameData[data.roomId]) {
+                GameData[data.roomId].allPlayers.push(data);
+            }
         });
 
         socket.on('updateGame', (data) => {
-            GameData[data.roomId].allPlayers = GameData[data.roomId].allPlayers.map(p => {
-                if (p.playerUid === data.playerUid) { return data; }
-                else { return p; }
-            });
-            socket.broadcast.to(data.roomId).emit('updateGame', {
-                allPlayers: GameData[data.roomId].allPlayers
-            });
+            if (GameData[data.roomId]) {
+                GameData[data.roomId].allPlayers = GameData[data.roomId].allPlayers.map(p => {
+                    if (p.playerUid === data.playerUid) { return data; }
+                    else { return p; }
+                });
+                socket.broadcast.to(data.roomId).emit('updateGame', {
+                    allPlayers: GameData[data.roomId].allPlayers,
+                });
+                // socket.emit('getGameTime', {
+                //     gameTime: GameData[data.roomId].gameTime
+                // }) 
+            }
+
         });
 
         socket.on('disconnect', () => {
