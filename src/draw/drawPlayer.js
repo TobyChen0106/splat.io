@@ -4,8 +4,8 @@ import playerSVG from '../images/player/p-01.svg'
 import playerHandSVG from '../images/player/p-02.svg'
 import gunSVG from '../images/player/p-03.svg'
 
-export const playerWidth = 80;
-export const playerHeight = 80;
+export const playerWidth = 50;
+export const playerHeight = 50;
 const handOffset = 30
 var img = new Image()
 var img2 = new Image()
@@ -126,7 +126,7 @@ const drawPlayerNormal = (context, state) => {
 
     context.translate(playerPosition.x, playerPosition.y)
 
-    context.font = "bold 10pt Freckle Face";
+    context.font = "bold 12pt Freckle Face";
     const playerNameLen = context.measureText(playerName).width;
 
     context.strokeStyle = "#FFFFFF";
@@ -134,7 +134,7 @@ const drawPlayerNormal = (context, state) => {
     context.strokeText(playerName, -playerNameLen / 2, 50)
 
     context.fillStyle = playerColor;
-    context.font = "bold 10pt Freckle Face";
+    context.font = "bold 12pt Freckle Face";
 
     context.fillText(playerName, -playerNameLen / 2, 50);
     //end of player drawing
@@ -147,10 +147,10 @@ const drawPlayerNormal = (context, state) => {
 
     context.translate(playerPosition.x, playerPosition.y)
     context.rotate(Math.PI / 180 * (playerAngle + 180));
-    context.drawImage(img, -playerWidth / 2, -playerHeight / 2, playerWidth, playerHeight)
+    context.drawImage(img, -playerWidth / 2-10, -playerHeight / 2-12, playerWidth+15, playerHeight+15)
     context.drawImage(img2, -playerWidth / 2 - 10, -playerHeight / 2 + handOffset, playerWidth, playerHeight)
     context.drawImage(img2, -playerWidth / 2 + 10, -playerHeight / 2 + handOffset, playerWidth, playerHeight)
-    context.drawImage(img3, -playerWidth / 2, -playerHeight / 2 + 40, playerWidth, playerHeight)
+    context.drawImage(img3, -playerWidth / 2, -playerHeight / 2 + 35, playerWidth, playerHeight)
     context.rotate(- Math.PI / 180 * (playerAngle + 180))
     context.translate(-playerPosition.x, -playerPosition.y)
 

@@ -116,16 +116,16 @@ class Game extends React.Component {
             inkAmount: 100, // to update inkbar 
         }
 
-        this.props.socket.emit('enterGame', {
-            ...this.playerData,
-        });
+        // this.props.socket.emit('enterGame', {
+        //     ...this.playerData,
+        // });
 
-        this.props.socket.on('updateGame', (data) => {
-            this.otherPlayerData = data;
-        })
+        // this.props.socket.on('updateGame', (data) => {
+        //     this.otherPlayerData = data;
+        // })
 
         setInterval(() => {
-            this.props.socket.emit('updateGame', { ...this.playerData });
+            // this.props.socket.emit('updateGame', { ...this.playerData });
         }, 100);
     }
 
