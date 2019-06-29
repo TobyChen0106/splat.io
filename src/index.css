@@ -34,6 +34,9 @@ code {
 
   font-size: 22px;
 
+  cursor: pointer;
+
+  
   animation: border-size-transform 1.5s infinite;
 }
 
