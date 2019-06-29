@@ -1,6 +1,7 @@
 import { playerWidth, playerHeight } from '../draw'
 import { getLineIntersection } from './getLineIntersection'
 import { battleField_1 } from '../field'
+import { GAME_STATE, PLAYER_STATUS } from '../enum'
 
 export const checkFieldCollision = (p_x, p_y, d_x, d_y) => {
     const field = battleField_1;
@@ -101,7 +102,7 @@ export const checkFieldCollision = (p_x, p_y, d_x, d_y) => {
 // players = [..., [pos_x, pos_y], ...]
 export const checkPlayerCollision = (p_x, p_y, c_x, c_y, players, own_uid) => {
     for (var j = 0; j < players.length; ++j) {
-        if (players[j].playerUid !== own_uid) {
+        if (players[j].playerUid !== own_uid && players[j].playerStatus !== PLAYER_STATUS.DEAD) {
             const o_x1 = players[j].playerPosition.x - playerWidth / 2;
             const o_y1 = players[j].playerPosition.y - playerHeight / 2;
             const o_x2 = players[j].playerPosition.x + playerWidth / 2;

@@ -47,7 +47,7 @@ class Game extends React.Component {
 
             playerColor: COLOR_ASSET[this.props.teamColor[this.props.team]],
             playerColorID: this.props.teamColor[this.props.team],
-            
+
             playerPosition: { x: 100, y: 100 },
             playerAngle: 0,
             playerStatus: PLAYER_STATUS.STANDING_SPACE,
@@ -59,7 +59,8 @@ class Game extends React.Component {
 
         // data that only holded by local front end
         this.localPlayerData = {
-            spawnPosition:{ x: 500, y: 500 },
+            spawnPosition: { x: 500, y: 500 },
+            respawnTime: 2000,
             gameState: GAME_STATE.GAMING,
             roomId: this.props.roomId,
 
@@ -75,6 +76,8 @@ class Game extends React.Component {
             timeStamp: Date.now(), // Date.now()
             initTime: Date.now(), // game start time
             gameTime: Date.now(), // remaining time for the game
+
+            deadTime: 0, //record deadtime
             timeColor: "#FFFFFF",
 
             enemyColor: this.props.team === 'A' ? COLOR_ASSET[this.props.teamColor['B']] : COLOR_ASSET[this.props.teamColor['A']],
@@ -104,7 +107,7 @@ class Game extends React.Component {
         this.props.socket.on('updateGame', (data) => {
             this.otherPlayerData = data.allPlayers.filter(p => p.playerUid !== this.playerData.playerUid);
         })
-        
+
         this.props.socket.on('getGameTime', (data) => {
             this.localPlayerData.gameTime = data.gameTime;
         })
@@ -154,13 +157,26 @@ class Game extends React.Component {
             );
 
             // get and update new player status according field property
-            getPlayerStatus(this.splatRef, this.playerData, this.localPlayerData);
-
+            if (this.playerData.playerStatus !== PLAYER_STATUS.DEAD) {
+                getPlayerStatus(this.splatRef, this.playerData, this.localPlayerData);
+            }
             // get and update player health according to 
             var killed_msg = getPlayerHealth(this.playerData, this.localPlayerData, this.otherPlayerData);
-            if (killed_msg != null) {
+            if (killed_msg !== null) {
                 //emit killed_msg
                 // killed_msg = { killerUid: players[p].playerUid, killerName: players[p].playerName, killedUid: playerData.playerUid, killedName:playerData.playerName }
+                console.log(killed_msg);
+                this.localPlayerData.deadTime = this.localPlayerData.timeStamp;
+            }
+
+            //if dead, wait to respawn
+            // console.log(this.playerData.playerStatus)
+            if (this.playerData.playerStatus === PLAYER_STATUS.DEAD && this.localPlayerData.timeStamp - this.localPlayerData.deadTime >= this.localPlayerData.respawnTime) {
+                // respawn 
+                this.playerData.playerStatus = PLAYER_STATUS.STANDING_SPACE;
+                this.playerData.playerPosition = this.localPlayerData.spawnPosition;
+                this.localPlayerData.inkAmount = 100;
+                this.localPlayerData.playerHealth = 100;
             }
 
             // update player speed 
@@ -265,17 +281,17 @@ class Game extends React.Component {
                 <text id="anouncement" x="50" y={40 + 30 * i} width="300" height="200" >{this.state.anouncement[i]}</text>
             )
         }
-        
+
         var timesUp = ''
-        
+
         if (this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             timesUp = (
-            <div id='timesUp'>
-                <h1>Time's Up!</h1>
-            </div>
+                <div id='timesUp'>
+                    <h1>Time's Up!</h1>
+                </div>
             )
         }
-        
+
 
         if (this.localPlayerData.gameState === GAME_STATE.GAMING || this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             return (
@@ -307,13 +323,13 @@ class Game extends React.Component {
                         height={window.innerHeight} >
                         <InkBar inkColor={this.playerData.playerColor} inkAmount={this.localPlayerData.inkAmount} />
                         <text id="timer" x="600" y="80" width="300" height="100" style={{ fill: this.localPlayerData.timeColor }}>{gameTime}</text>
-                        { anouncement }
+                        {anouncement}
                     </svg>
                 </div>
             )
         }
         else {
-            
+
             return (<Redirect to='/result' />);
         }
     }
