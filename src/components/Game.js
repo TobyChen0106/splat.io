@@ -48,7 +48,8 @@ class Game extends React.Component {
             playerUid: this.props.uid,
             playerTeam: this.props.team,
 
-            playerColor: COLOR_ASSET[0],
+            playerColor: COLOR_ASSET[3],
+            playerColorID: 3,
             playerHealth: 100,
             playerPosition: { x: 100, y: 100 },
             playerAngle: 0,
@@ -59,12 +60,13 @@ class Game extends React.Component {
             splats: [],
         };
 
+
         this.playerData_2 = {
             playerName: this.props.name,
             playerUid: this.props.uid,
             playerTeam: this.props.team,
 
-            playerColor: COLOR_ASSET[0],
+            playerColor: COLOR_ASSET[1],
             playerHealth: 100,
             playerPosition: { x: 200, y: 200 },
             playerAngle: 0,

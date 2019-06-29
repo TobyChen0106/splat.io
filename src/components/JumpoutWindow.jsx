@@ -20,18 +20,10 @@ class JumpOutWindow extends Component {
         this.state = {
             show: this.props.display
         }
-        console.log("constr", this.state.show)
     }
-/*
-    componentWillMount() {
-        console.log("mount", this.state.show)
-        this.setState({show: this.props.display})
-    }
-*/
+
     componentDidUpdate(prevProps) {
-        //console.log(this.props, prevProps)
         if (this.props.display !== prevProps.display) {
-          //this.fetchData(this.props.userID);
           this.setState({show: this.props.display})
         }
     }
