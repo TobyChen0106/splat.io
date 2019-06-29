@@ -4,7 +4,7 @@ const User = require('./models/user');
 const uuid = require('uuidv4');
 const MAX_PLAYERS = 2;
 const GAME_TIME = 15;
-const WAIT_TIME = 10;
+const WAIT_TIME = 5;
 let GameData = {};
 let seed = '1234';
 
@@ -51,8 +51,9 @@ let getRoomPlayers = (serverSocket, roomId) => {
                     serverSocket.to(roomId).emit('getWaitTime', {
                         waitTime: GameData[roomId].waitTime
                     })
+                    console.log(GameData[roomId].waitTime)
                     GameData[roomId].waitTime--;
-                    if (GameData[roomId].waitTime <= 0) {
+                    if (GameData[roomId].waitTime < 0) {
                         clearInterval(GameData[roomId].waitIntervalId);
                         serverSocket.to(roomId).emit('startGaming');
                         startGameTimeCountdown(roomId);

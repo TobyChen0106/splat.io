@@ -85,11 +85,6 @@ class Wait extends Component {
                     </div>
                 </div>
                 <div id='Wait_button'>
-                    <NavLink to={`/game/${this.props.roomId}`}>
-                        <button className='App_button'>
-                            Start!
-                        </button>
-                    </NavLink>
                     <button className='App_button' onClick={this.handleBack}>
                         Back
                     </button>
