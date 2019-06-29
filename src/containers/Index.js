@@ -5,6 +5,7 @@ import io from 'socket.io-client';
 import Game from '../components/Game'
 import Home from './Home'
 import Wait from './Wait'
+import Result from './Result'
 
 let host = '140.112.244.155:8080' // server ip (andyh0913 for temporary use)
 
@@ -48,6 +49,7 @@ class Index extends Component {
                 <Route path={`/game/${this.state.roomId}`} render={(props) => <Game {...props} {...this.state}
                     socket={this.socket} />}
                 />
+                <Route path='/result' render={() => <Result />} />
             </Switch>
         )
     }

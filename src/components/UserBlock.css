@@ -1,0 +1,33 @@
+.UserBlock-container {
+    display: block;
+    position: relative;
+    min-width: 70%;
+    max-width: 80%;
+    height: 100px;
+    margin: auto;
+    padding: auto;
+
+    border: solid 3px;
+    border-color: rgb(253, 77, 136);
+    border-radius: 10px;
+
+    background: rgba(255, 102, 127, 0.253)
+
+}
+
+.UserBlock-container img{
+    position: relative;
+    max-width: 30%;
+    max-height: 100px;
+    float: left;
+    margin-left: 10%;
+}
+.UserBlock-container h3 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+
+}
+.UserBlock-container h4 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}

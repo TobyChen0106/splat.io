@@ -3,7 +3,9 @@
     left: 0; 
     top: 0; 
     z-index: 0;
-    background: rgb(27, 27, 27)
+    background: rgb(74, 75, 85);
+    background-image: url('../images/bg.png'), url('../images/cross.png');
+    
 }
 #info-container{
     position: absolute; 
@@ -76,5 +78,5 @@
 }
 
 #timer {
-    font-size: 50px;
+    font-size: 70px;
 }

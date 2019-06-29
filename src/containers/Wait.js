@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {NavLink} from 'react-router-dom'
 import './Wait.css'
+import UserBlock from '../components/UserBlock'
 
 class Wait extends Component {
     constructor(props) {
@@ -21,8 +22,16 @@ class Wait extends Component {
     }
 
     render() {
-        let teamA = this.state.teamA.map(name => <li>{name}</li>);
-        let teamB = this.state.teamB.map(name => <li>{name}</li>);
+        let teamA = this.state.teamA.map(name => 
+                <li>
+                    <UserBlock userName={name} />
+                </li>
+            );
+        let teamB = this.state.teamB.map(name =>
+            <li>
+                    <UserBlock userName={name} />
+                </li>
+            );
 
         return(
             <div className='Wait_container'>
@@ -48,7 +57,7 @@ class Wait extends Component {
                             Start!
                         </button>
                     </NavLink>
-                    <NavLink to={`/home`}>
+                    <NavLink to='/home'>
                         <button className='App_button'>
                             Back
                         </button>
