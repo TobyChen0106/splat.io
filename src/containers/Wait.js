@@ -1,11 +1,8 @@
 import React, { Component } from 'react'
 import { NavLink } from 'react-router-dom'
-import { Redirect } from 'react-router'
 import './Wait.css'
 import UserBlock from '../components/UserBlock'
 import { COLOR_ASSET } from '../components/ColorAssets'
-
-const player_number = 4;
 
 class Wait extends Component {
     constructor(props) {
@@ -15,22 +12,41 @@ class Wait extends Component {
             teamB: [],
             isRoomFull: [],
             teamAColor: COLOR_ASSET[this.props.teamColor['A']].shadow,
-            teamBColor: COLOR_ASSET[this.props.teamColor['B']].shadow
+            teamBColor: COLOR_ASSET[this.props.teamColor['B']].shadow,
+            waitTime: 10,
+            waitingMessage: ''
         }
+
         this.props.socket.emit('getRoomPlayers', {
             roomId: this.props.roomId
         });
+
         this.props.socket.on('getRoomPlayers', (data) => {
+            let waitingForPlayer = data.maxPlayers - data.teamA.length - data.teamB.length;
+
             this.setState({
                 teamA: data.teamA.map(p => p.name),
                 teamB: data.teamB.map(p => p.name),
-                isRoomFull: data.isRoomFull
+                isRoomFull: data.isRoomFull,
+                maxPlayers: data.maxPlayers,
+                waitTime: data.waitTime,
+                waitingMessage: `waiting for ${waitingForPlayer} more players to join...`
+            });
+        });
+        
+        this.props.socket.on('getWaitTime', (data) => {
+            this.setState({
+                waitTime: data.waitTime,
+                waitingMessage: `left ${data.waitTime} seconds to begin...`
             })
+        })
+
+        this.props.socket.on('startGaming', () => {
+            this.props.history.push(`/game/${this.props.roomId}`);
         })
     }
 
     handleBack = () => {
-        // this.props.socket.emit('disconnect');
         this.props.socket.disconnect();
         this.props.socket.open()
         this.props.history.push('/home');
@@ -38,29 +54,22 @@ class Wait extends Component {
     }
 
     render() {
-        var waitingforplayer = player_number - this.state.teamA.length - this.state.teamB.length
-
-        if(waitingforplayer === 0) {
-            return(
-                <Redirect to={`/game/${this.props.roomId}`} />
-            )
-        }
-
-        console.log(this.state.isRoomFull)
         let teamA = this.state.teamA.map(name =>
             <li key={name}>
                 <UserBlock userName={name} team='A' />
             </li>
         );
+
         let teamB = this.state.teamB.map(name =>
             <li key={name}>
                 <UserBlock userName={name} team='B' />
             </li>
         );
+
         return (
             <div className='Wait_container'>
                 <h1>Game Lobby</h1>
-                <h3 id='Wait_message'>waiting for {waitingforplayer} more players to join...</h3>
+                <h3 id='Wait_message'>{this.state.waitingMessage}</h3>
                 <div id='Wait_wrapper'>
                     <div className='Wait_group' style={{background: this.state.teamAColor}} >
                         <h3 className='Wait_grouptitle' >TEAM A</h3>
@@ -76,13 +85,6 @@ class Wait extends Component {
                     </div>
                 </div>
                 <div id='Wait_button'>
-                    {/* 這邊之後註掉 */}
-                    <NavLink to={`/game/${this.props.roomId}`}>
-                        <button className='App_button'>
-                            Start!
-                        </button>
-                    </NavLink>
-
                     <button className='App_button' onClick={this.handleBack}>
                         Back
                     </button>
