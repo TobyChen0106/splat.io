@@ -86,3 +86,9 @@
     82%{color: rgb(255, 189, 189);}
     
 }
+
+#Wait-info {
+    animation: waiting 6s infinite;
+    font-size: 28px;
+    margin-bottom: 15px;
+}

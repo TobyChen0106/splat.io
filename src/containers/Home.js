@@ -28,7 +28,7 @@ class Home extends Component {
             this.props.setUid(data.uid);
             this.props.setTeam(data.team);
             this.props.setTeamColor(data.teamColor);
-            this.props.setIsRoomFull(data.isRoomFull);
+            //this.props.setIsRoomFull(data.isRoomFull);
             this.props.history.push(`/wait/${this.props.roomId}`);
         })
     }
