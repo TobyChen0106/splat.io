@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { Redirect } from 'react-router'
 import './Wait.css'
 import UserBlock from '../components/UserBlock'
+import { COLOR_ASSET } from '../components/ColorAssets'
 
 const player_number = 4;
 
@@ -12,7 +13,9 @@ class Wait extends Component {
         this.state = {
             teamA: [],
             teamB: [],
-            isRoomFull: []
+            isRoomFull: [],
+            teamAColor: COLOR_ASSET[this.props.teamColor['A']].shadow,
+            teamBColor: COLOR_ASSET[this.props.teamColor['B']].shadow
         }
         this.props.socket.emit('getRoomPlayers', {
             roomId: this.props.roomId
@@ -54,19 +57,18 @@ class Wait extends Component {
                 <UserBlock userName={name} />
             </li>
         );
-
         return (
             <div className='Wait_container'>
                 <h1>Game Lobby</h1>
                 <h3 id='Wait_message'>waiting for {waitingforplayer} more players to join...</h3>
                 <div id='Wait_wrapper'>
-                    <div className='Wait_group'>
-                        <h3 className='Wait_grouptitle'>TEAM A</h3>
+                    <div className='Wait_group' style={{background: this.state.teamAColor}} >
+                        <h3 className='Wait_grouptitle' >TEAM A</h3>
                         <ul>
                             {teamA}
                         </ul>
                     </div>
-                    <div className='Wait_group'>
+                    <div className='Wait_group' style={{background: this.state.teamBColor}}>
                         <h3>TEAM B</h3>
                         <ul>
                             {teamB}
@@ -74,11 +76,13 @@ class Wait extends Component {
                     </div>
                 </div>
                 <div id='Wait_button'>
-                    {/*<NavLink style={{display: "none"}} to={`/game/${this.props.roomId}`}>
+                    {/* 這邊之後註掉 */}
+                    <NavLink to={`/game/${this.props.roomId}`}>
                         <button className='App_button'>
                             Start!
                         </button>
-        </NavLink>*/}
+                    </NavLink>
+
                     <button className='App_button' onClick={this.handleBack}>
                         Back
                     </button>

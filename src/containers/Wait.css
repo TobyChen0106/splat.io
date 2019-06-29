@@ -41,8 +41,7 @@
     width: 44%;
     margin: 3%;
     height: 80%;
-    background: rgba(0, 0, 0, 0.295);
-
+    border-radius: 30px;
 }
 
 .Wait_group h3 {
