@@ -4,7 +4,8 @@ const User = require('./models/user');
 const uuid = require('uuidv4');
 const MAX_PLAYERS = 4;
 const GAME_TIME = 60;
-const WAIT_TIME = 15;
+const WAIT_TIME = 10;
+const AUTO_KICK_TIME = 30;
 let GameData = {};
 let SEED = '1234';
 const GAME_STATE = {
@@ -284,7 +285,7 @@ db.once('open', () => {
                         p.autoKick = 1;
                         setTimeout(() => {
                             if (p.autoKick) socket.emit('kickOut');
-                        }, 10 * 1000)
+                        }, AUTO_KICK_TIME * 1000)
                     }
 
                 })
