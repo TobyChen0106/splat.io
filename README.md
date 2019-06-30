@@ -5,6 +5,7 @@ A fun IO game, splashing colors and battling with others!
 
 - [Github](https://github.com/TobyChen0106/splat.io)
 - [Deployed🎮](https://splat-io.herokuapp.com/home) 
+- [Demo Video](https://youtu.be/wjSXyLHqDho)
 
 ## How to Play
 ![](https://i.imgur.com/tATxxUr.jpg)
