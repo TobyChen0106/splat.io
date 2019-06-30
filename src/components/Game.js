@@ -22,6 +22,7 @@ import {
 } from '../utils'
 
 import InkBar from './inkBar';
+import HP from './HP'
 import fightSound from '../sounds/Fight.mp3'
 import whistle from '../sounds/whistle.wav'
 
@@ -97,7 +98,7 @@ class Game extends React.Component {
             playerPosition: { x: 100, y: 100 }, // to update camera position 
             inkAmount: 100, // to update inkbar 
             healthAmount: 100,
-            anouncement: ['Nothing~~', 'thissss'],
+            anouncement: ['Nothing~~', 'thissss'], //到時候再刪掉
             gameResult: { A: 0, B: 0 },
         }
     }
@@ -192,7 +193,7 @@ class Game extends React.Component {
                 this.setState({ cameraSize: filedWidth > filedHeight ? filedWidth : filedHeight });
                 this.setState({ playerPosition: { x: filedWidth / 2, y: filedHeight / 2 } });
                 audio.pause();
-                audio2.currentTime = 0;
+                // audio2.currentTime = 0;
                 audio2.play()
             } else {
                 this.setState({ playerPosition: new_playerPosition });
@@ -207,7 +208,8 @@ class Game extends React.Component {
 
             this.otherPlayerData.push(this.playerData);
             //console.log(this.otherPlayerData);
-            drawAllPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
+            drawAllPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData, 
+                this.playerData.playerPosition.x, this.playerData.playerPosition.y, this.playerData.playerTeam);
 
             // draw aim point
             drawAimPoint(this.aimPointRef, this.playerData.playerPosition, this.localPlayerData.mousePosition, this.playerData.playerAngle, aimPoints);
@@ -257,7 +259,7 @@ class Game extends React.Component {
         window.addEventListener("mouseup", this.mouseUp);
         this.localPlayerData.updateIntervalId = setInterval(() => {
             this.updateGame();
-        }, 1000);
+        }, 50);
         drawField(this.fieldRef);
         audio.currentTime = 0;
         audio.play();
@@ -315,6 +317,7 @@ class Game extends React.Component {
                         height={window.innerHeight} >
                         <InkBar inkColor={this.playerData.playerColor} inkAmount={this.localPlayerData.inkAmount} />
                         <text id="timer" x="600" y="80" width="300" height="100" style={{ fill: this.localPlayerData.timeColor }}>{gameTime}</text>
+                        <HP hp={this.localPlayerData.playerHealth} />
                         {anouncement}
                     </svg>
                 </div>

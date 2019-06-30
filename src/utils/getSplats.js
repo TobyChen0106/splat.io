@@ -61,15 +61,15 @@ export const getSplats = (playerData, localPlayerData, otherPlayers) => {
 
                 var bullet_length = Math.pow(Math.pow(c_x - g_x, 2) + Math.pow(c_y - g_y, 2), 0.5);
 
-                // line (type, current_point_x, current_point_y, end_point_x, end_point_y, d_x, d_y)
+                // line (type, current_point_x, current_point_y, end_point_x, end_point_y, d_x, d_y, fireFlag)
                 if (localPlayerData.keyStrokeState.space === 0 && localPlayerData.mouseDownState === 1 && localPlayerData.timeStamp - timeLog > fireSpeed) {
                     timeLog = localPlayerData.timeStamp;
                     if (localPlayerData.inkAmount - fireInkCost >= 0) {
                         inkConsumption = fireInkCost;
                         lines.push([0, g_x, g_y, c_x, c_y,
-                            (c_x - g_x) / bullet_length * bulletSpeed, (c_y - g_y) / bullet_length * bulletSpeed]);
-                        fireAudio.currentTime = 0;
-                        fireAudio.play();
+                            (c_x - g_x) / bullet_length * bulletSpeed, (c_y - g_y) / bullet_length * bulletSpeed, 1]);
+                        // fireAudio.currentTime = 0;
+                        // fireAudio.play();
                     } else {
                         noInkAudio.currentTime = 0;
                         noInkAudio.play();
@@ -88,8 +88,14 @@ export const getSplats = (playerData, localPlayerData, otherPlayers) => {
         lines[l][1] += lines[l][5];
         lines[l][2] += lines[l][6];
 
-        // bullet = [type, x, y]
-        bullets.push([0, lines[l][1], lines[l][2]]);
+        // bullet = [type, x, y, fireFlag]
+        
+        if(lines[l][7] === 1){
+            bullets.push([0, lines[l][1], lines[l][2], 1]);
+            lines[l][7] = 0;
+        }else{
+            bullets.push([0, lines[l][1], lines[l][2], 0]);
+        }
 
         // check if create splat
         if (Math.abs(lines[l][1] - lines[l][3]) < Math.abs(lines[l][5]) || Math.abs(lines[l][2] - lines[l][4]) < Math.abs(lines[l][6])) {
