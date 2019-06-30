@@ -1,5 +1,5 @@
 import { battleField_1 } from '../field'
-import { GAME_STATE, PLAYER_STATUS } from '../enum'
+import { GAME_STATE } from '../enum'
 
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);

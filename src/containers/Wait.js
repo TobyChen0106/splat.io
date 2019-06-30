@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { NavLink } from 'react-router-dom'
 import './Wait.css'
 import UserBlock from '../components/UserBlock'
 import { COLOR_ASSET } from '../components/ColorAssets'

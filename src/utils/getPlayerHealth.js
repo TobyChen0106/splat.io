@@ -1,5 +1,5 @@
-import { playerWidth, playerHeight } from '../draw'
-import { GAME_STATE, PLAYER_STATUS } from '../enum'
+import { playerWidth } from '../draw'
+import {  PLAYER_STATUS } from '../enum'
 
 export const getPlayerHealth = (playerData, localPlayerData, players) => {
     if (playerData.playerStatus !== PLAYER_STATUS.DEAD) {

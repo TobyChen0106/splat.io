@@ -59,7 +59,7 @@ export const drawSplat = (c, a, splat, playerColor, playerAngle, playerPosition)
         // playerAngle< 0 ? playerAngle + 270 : playerAngle - 90;
         var ink_size = splat[i][4] * 2; //因為我圖畫得比較小所以先乘3
 
-        var img = new Image;
+        var img = new Image();
         img.src = ink[colorID][inkID];
         //"data:image/svg+xml;base64,"+btoa(trysvg);
         //img.style = "fill:#B0E0E6;"

@@ -1,5 +1,4 @@
 import { battleField_1 } from '../field'
-import rock from '../images/rock1.svg'
 
 const outerColor = "#525C63"
 const middleColor = "#3B4349"
