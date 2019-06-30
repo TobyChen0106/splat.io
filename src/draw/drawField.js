@@ -8,7 +8,7 @@ const innerColor = "#21292D"
 
 export const drawField = (c) => {
     const field = battleField_1;
-    var objects = field.rectObjects;
+    var objects = field.polyObjects; 
     var xMin = field.fieldRange.xMin
     var yMin = field.fieldRange.yMin
     var xMax = field.fieldRange.xMax
@@ -37,10 +37,37 @@ export const drawField = (c) => {
     context.lineWidth = 8;
     context.stroke(path)
 
+    //draw polygon objects
+    
+    for (var i = 0; i < objects.length; ++i) {
+        switch (objects[i][0]) {
+            case "white":
+
+
+                //最外圈
+                context.fillStyle = "#EEEEEE";
+                var obj_path = drawPolyUsingArc(objects[i])
+                context.fill(obj_path)
+
+                // //中間
+                // context.fillStyle = middleColor;
+                // var obj_path = drawPolyUsingArc(objects[i])
+                // context.fill(obj_path)
+
+                // //最內圈
+                // context.fillStyle = innerColor;
+                // var obj_path = drawPolyUsingArc(objects[i])                
+                // context.fill(obj_path)
+
+                break;
+            default: break;
+        }
+    }
 
     //context.strokeRect(field.fieldRange.xMin, field.fieldRange.yMin, 
     //field.fieldRange.xMax-field.fieldRange.xMin, field.fieldRange.yMax-field.fieldRange.yMin);
     // draw the objects
+    objects = field.rectObjects;
     for (var i = 0; i < objects.length; ++i) {
         var obj = { x: objects[i][1], y: objects[i][2], w: objects[i][3], h: objects[i][4] }
 
@@ -81,32 +108,7 @@ export const drawField = (c) => {
         //context.fillRect(objects[i][1], objects[i][2], objects[i][3], objects[i][4]);
     }
 
-    //draw polygon objects
-    objects = field.polyObjects;
-    for (var i = 0; i < objects.length; ++i) {
-        switch (objects[i][0]) {
-            case "rock":
-
-
-                //最外圈
-                context.fillStyle = outerColor;
-                var obj_path = drawPolyUsingArc(objects[i])
-                context.fill(obj_path)
-
-                // //中間
-                // context.fillStyle = middleColor;
-                // var obj_path = drawPolyUsingArc(objects[i])
-                // context.fill(obj_path)
-
-                // //最內圈
-                // context.fillStyle = innerColor;
-                // var obj_path = drawPolyUsingArc(objects[i])                
-                // context.fill(obj_path)
-
-                break;
-            default: break;
-        }
-    }
+    
     context.restore();
 }
 

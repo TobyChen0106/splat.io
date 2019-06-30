@@ -7,11 +7,12 @@
     margin: auto;
     padding:15px;
 
-    border: solid 3px;
-    border-color: rgb(53, 52, 52);
+    /*border: solid 3px;
+    border-color: rgb(53, 52, 52);*/
     border-radius: 40px;
 
     background: rgba(61, 61, 61, 0.534)
+
 
 }
 

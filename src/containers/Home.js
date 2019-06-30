@@ -3,6 +3,8 @@ import temp from '../images/temp.gif'
 import logo from '../images/logo.png'
 import JumpOutWindow from '../components/JumpoutWindow'
 import './Home.css'
+import How2Play from '../images/rule1.png'
+import How2Win from '../images/rule2.png'
 
 class Home extends Component {
     constructor(props) {
@@ -108,9 +110,19 @@ class Home extends Component {
                         Play!
                     </button>
                 </div>
+
+                <div className='Home-intro'>
+                    <div id='how2play'>
+                        <img src={How2Play} alt="how to play"></img>
+                    </div>
+                    <div id='how2win'>
+                        <img src={How2Win} alt="how to wing"></img>
+                    </div>
+                </div>
+
                 <div className='Home_mask'></div>
                 <div id='bg_wrapper'>
-                    <img src={temp} id='bg_img'></img>
+                    {/*<img src={temp} id='bg_img'></img>*/}
                 </div>
             </div>
         )
