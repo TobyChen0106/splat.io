@@ -39,7 +39,7 @@ class Wait extends Component {
         this.props.socket.on('getWaitTime', (data) => {
             this.setState({
                 waitTime: data.waitTime,
-                waitingMessage: `${data.waitTime} Seconds Left Before Game Starts...`
+                waitingMessage: `${data.waitTime} seconds before starts...`
             })
             if (data.waitTime <= 0) {
                 this.props.socket.off('getWaitTime');

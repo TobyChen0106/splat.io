@@ -110,6 +110,7 @@ db.once('open', () => {
         
         socket.on('error', (err) => { console.log(err); });
 
+        
         socket.on('newPlayer', (data) => {
             // determine which room to join
             // find valid room
