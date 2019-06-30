@@ -10,21 +10,36 @@ class Home extends Component {
         this.state = {
             login_display : {display: "none"},
             signup_display: {display: "none"},
-            isLoggedin: false,
+            isLoggediI: false,
             userName: 'Player',
             userStatus: 'Guest'
         }
     }
 
     componentWillMount() {
-        this.props.socket.once('recievedlogin', (data) => {
-            console.log("home", data)
+        this.props.socket.on('recievedlogin', (data) => {
             if (data.message === 'OK'){
                 this.setState({
-                    isLoggedin: true,
+                    isLoggedIn: true,
                     userName: data.userName,
                     userStatus: data.userStatus
                 })
+            }
+            else {
+                console.log(data.message);
+            }
+        })
+
+        this.props.socket.on('recievedsignup', (data) => {
+            if (data.message === 'OK'){
+                this.setState({
+                    isLoggedIn: true,
+                    userName: data.userName,
+                    userStatus: data.userStatus
+                })
+            }
+            else {
+                console.log(data.message);
             }
             
         })
@@ -71,13 +86,13 @@ class Home extends Component {
                 
                 <JumpOutWindow 
                     display={this.state.login_display} 
-                    title="Log in" form={{id: '', pw: ''}} list={["id", "pw"]}
+                    title="Log in" form={{email: '', password: ''}} list={["email", "password"]}
                     submit="Log in!" id="login"
                     socket={this.props.socket}
                     />
                 <JumpOutWindow 
                     display={this.state.signup_display}
-                    title='Sign up' form={{email:'',id: '', pw: '', pw_again:''}} list={["email", "id", "pw", "pw_again"]}
+                    title='Sign up' form={{name: '', email:'', password: ''}} list={["name", "email", "password"]}
                     submit="Sign up!" id='signup'
                     socket={this.props.socket}
                     />
@@ -99,6 +114,11 @@ class Home extends Component {
                 </div>
             </div>
         )
+    }
+
+    componentWillUnmount = () => {
+        this.props.socket.off('recievedlogin');
+        this.props.socket.off('recievedsignup');
     }
 }
 
