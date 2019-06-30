@@ -30,7 +30,6 @@ class UserBlock extends React.Component {
             default:
                 break;
         }
-        console.log(this.props.status)
         var style = {}
         if(this.props.isSelf){
             style = {filter: "drop-shadow(0px 0px 3px rgb(0,0,0,0.7))", border: "solid 2px"}

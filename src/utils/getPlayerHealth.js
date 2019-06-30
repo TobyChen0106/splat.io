@@ -7,10 +7,9 @@ export const getPlayerHealth = (playerData, localPlayerData, players) => {
         const p_y = playerData.playerPosition.y;
 
         for (var p = 0; p < players.length; ++p) {
-            var splats = players[p].splats;
             if (players[p].playerTeam === playerData.playerTeam) continue;
+            var splats = players[p].splats;
             for (var s = 0; s < splats.length; ++s) {
-                // splat [splatShapeId, pos_x, pos_y, splatAngle, splatSize, splatDamage]
                 var distance = Math.pow(Math.pow(p_x - splats[s][1], 2) + Math.pow(p_y - splats[s][2], 2), 0.5);
                 var damage = 0;
                 const minDistance = Math.abs(splats[s][4] - playerWidth / 2)

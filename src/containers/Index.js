@@ -10,7 +10,6 @@ import Result from './Result'
 class Index extends Component {
     constructor(props) {
         super(props);
-        // this.socket = io(host);
         // this.socket = io('http://localhost:8080');
         this.socket = io('https://splat-io.herokuapp.com');
         this.state = {
@@ -47,20 +46,18 @@ class Index extends Component {
                     {...this.changeStatus}
                     socket={this.socket} />}
                 />
-                <Route path={`/wait/${this.state.roomId}`} render={(props) => {
-                    if (this.state.socket)
-                        console.log(this.state.socket.id)
-                    return <Wait {...props} {...this.state}
+                <Route path={`/wait/${this.state.roomId}`} render={(props) => <Wait {...props} {...this.state}
                     socket={this.socket}
                     setName={this.changeStatus.setName} />}
-                    }
+                    
                 />
                 <Route path={`/game/${this.state.roomId}`} render={(props) => <Game {...props} {...this.state}
                     socket={this.socket}
                     setRoomId={this.changeStatus.setRoomId} />}
                 />
                 <Route path={`/result/${this.state.roomId}`} render={(props) => <Result {...props} {...this.state}
-                    socket={this.socket} />}
+                    socket={this.socket}
+                    setName={this.changeStatus.setName} />}
                 />
             </Switch>
         )
