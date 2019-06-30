@@ -95,7 +95,7 @@ http.listen(port, () => {
 });
 
 // Connect to mongo
-mongoose.connect('mongodb+srv://cc41516:test@splat-l9jbz.mongodb.net/test?retryWrites=true&w=majority', {
+mongoose.connect('mongodb+srv://cc41516:test@splat-l9jbz.mongodb.net/SPLAT?retryWrites=true&w=majority', {
     useNewUrlParser: true
 });
 db = mongoose.connection;
@@ -111,15 +111,66 @@ db.once('open', () => {
         socket.on('error', (err) => { console.log(err); });
 
         socket.on('login', (data) => {
-            console.log('login', data.form)
-            //here
-            socket.emit('recievedlogin', {message: 'OK', userName: 'USERNAME', userStatus:'USERSTAUS'})
+            if (data) {
+                User.find({ email: data.email, password: data.password,}).limit(1).exec((err, res) => {
+                    if (err) throw err;
+                    else if (res.length === 0) {
+                        socket.emit('recievedlogin', {
+                            message: 'Invalid input. Please input correct emain and password.'
+                        })
+                    } 
+                    else {
+                        socket.emit('recievedlogin', {
+                            message: 'OK', 
+                            userName: res[0].name,
+                            userStatus: {
+                                winning: res[0].winning,
+                                kill: res[0].kill
+                            }
+                        })
+                    }
+                })
+            }
         })
 
         socket.on('signup', (data) => {
-            console.log('signup', data.form)
-            //here
-            socket.emit('recievedsignup', {message: 'OK'})
+            if (data) {
+                if (!data.name || !data.email || !data.password) {
+                    socket.emit('recievedsignup', {
+                        message: 'Please complete all necessary data.'
+                    })
+                }
+                else {
+                    User.find({ email: data.email }).limit(1).exec((err, res) => {
+                        if (err) throw err;
+                        else if (res.length > 0) {
+                            socket.emit('recievedlogin', {
+                                message: `${res[0].email} has been signed up. Please change a new email.`
+                            })
+                        }
+                        else {
+                            const user = new User({
+                                name: data.name,
+                                email: data.email,
+                                password: data.password,
+                                winning: 0,
+                                kill: 0
+                            })
+                            user.save(err => {
+                                if (err) console.error(err)
+                                else socket.emit('recievedsignup', {
+                                    message: 'OK',
+                                    userName: data.name,
+                                    userStatus: {
+                                        winning: 0,
+                                        kill: 0
+                                    }
+                                })
+                            })
+                        }
+                    })
+                }
+            }
         })
 
         socket.on('newPlayer', (data) => {
