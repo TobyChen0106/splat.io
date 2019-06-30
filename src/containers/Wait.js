@@ -15,7 +15,9 @@ class Wait extends Component {
             teamBColor: COLOR_ASSET[this.props.teamColor['B']].shadow,
             waitingMessage: ''
         }
+    }
 
+    componentWillMount = () => {
         this.props.socket.emit('getRoomPlayers', {
             roomId: this.props.roomId
         });
@@ -43,7 +45,7 @@ class Wait extends Component {
             }
         })
 
-        this.props.socket.once('startGaming', () => {
+        this.props.socket.on('startGaming', () => {
             this.props.history.push(`/game/${this.props.roomId}`);
         })
     }
@@ -56,6 +58,8 @@ class Wait extends Component {
     }
 
     //61,67 playerRecord 的部分，如果有登入就送他的紀錄，不然就送個''，UserBlock物件裡面得到''就會印出guest
+
+    
 
     render() {
         let teamA = this.state.teamA.map(name =>
@@ -96,6 +100,12 @@ class Wait extends Component {
             </div>
 
         )
+    }
+
+    componentWillUnmount = () => {
+        this.props.socket.off('getRoomPlayers');
+        this.props.socket.off('getWaitTime');
+        this.props.socket.off('startGaming');
     }
 }
 

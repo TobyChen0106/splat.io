@@ -62,6 +62,7 @@ class Game extends React.Component {
             respawnTime: 2000,
             gameState: GAME_STATE.GAMING,
             roomId: this.props.roomId,
+            updateIntervalId: null,
 
             playerMoveSpeed: 5,
             playerMoveDirection: { x: 0, y: 0 },
@@ -99,7 +100,9 @@ class Game extends React.Component {
             anouncement: ['Nothing~~', 'thissss'],
             gameResult: { A: 0, B: 0 },
         }
+    }
 
+    componentWillMount = () => {
         this.props.socket.emit('enterGame', { ...this.playerData });
 
         this.props.socket.on('updateGame', (data) => {
@@ -109,7 +112,6 @@ class Game extends React.Component {
         this.props.socket.on('getGameTime', (data) => {
             this.localPlayerData.gameTime = data.gameTime;
         })
-
     }
 
     onKeyDown = e => {
@@ -222,8 +224,6 @@ class Game extends React.Component {
                     ))
                 }, 3000);
             }
-
-
         }
         else {
             this.setState({ cameraSize: 2000 });
@@ -255,9 +255,9 @@ class Game extends React.Component {
         window.addEventListener("mousemove", this.trackMouse);
         window.addEventListener("mousedown", this.mouseDown);
         window.addEventListener("mouseup", this.mouseUp);
-        setInterval(() => {
+        this.localPlayerData.updateIntervalId = setInterval(() => {
             this.updateGame();
-        }, 50);
+        }, 1000);
         drawField(this.fieldRef);
         audio.currentTime = 0;
         audio.play();
@@ -325,6 +325,17 @@ class Game extends React.Component {
             this.props.socket.open();
             return (<Redirect to={`/result/${this.props.roomId}`} />);
         }
+    }
+
+    componentWillUnmount = () => {
+        window.removeEventListener("keyup", this.onKeyUp);
+        window.removeEventListener("keydown", this.onKeyDown);
+        window.removeEventListener("mousemove", this.trackMouse);
+        window.removeEventListener("mousedown", this.mouseDown);
+        window.removeEventListener("mouseup", this.mouseUp);
+        this.props.socket.off('updateGame');
+        this.props.socket.off('getGameTime');
+        clearInterval(this.localPlayerData.updateIntervalId)
     }
 }
 
