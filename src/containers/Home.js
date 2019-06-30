@@ -12,20 +12,16 @@ class Home extends Component {
         this.state = {
             login_display : {display: "none"},
             signup_display: {display: "none"},
-            isLoggediI: false,
-            userName: 'Player',
-            userStatus: 'Guest'
+            message: ''
         }
     }
 
     componentWillMount() {
         this.props.socket.on('recievedlogin', (data) => {
             if (data.message === 'OK'){
-                this.setState({
-                    isLoggedIn: true,
-                    userName: data.userName,
-                    userStatus: data.userStatus
-                })
+                this.props.setUserName(data.userName);
+                this.props.setUserStatus(data.userStatus);
+                this.setState({ message: data.message })
             }
             else {
                 console.log(data.message);
@@ -34,16 +30,13 @@ class Home extends Component {
 
         this.props.socket.on('recievedsignup', (data) => {
             if (data.message === 'OK'){
-                this.setState({
-                    isLoggedIn: true,
-                    userName: data.userName,
-                    userStatus: data.userStatus
-                })
+                this.props.setUserName(data.userName);
+                this.props.setUserStatus(data.userStatus);
+                this.setState({ message: data.message })
             }
             else {
                 console.log(data.message);
             }
-            
         })
     }
 
@@ -84,7 +77,7 @@ class Home extends Component {
                 <button className='App_button top-button' onClick={() => this.handleDisplay('login')}>
                     Log in
                 </button>
-                <h3  id='hiMessage'>Hi, {this.state.userName}</h3>
+                <h3  id='hiMessage'>Hi, {this.props.userName}</h3>
                 
                 <JumpOutWindow 
                     display={this.state.login_display} 

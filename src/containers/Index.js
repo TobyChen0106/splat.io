@@ -20,6 +20,8 @@ class Index extends Component {
             uid: null,
             team: null,
             teamColor: [],
+            userName: 'Guest',
+            userStatus: {}
         }
     }
 
@@ -31,7 +33,9 @@ class Index extends Component {
         },
         setUid: (uid) => { this.setState( {uid: uid} ); },
         setTeam: (team) => { this.setState( {team: team} ); },
-        setTeamColor: (teamColor) => { this.setState( {teamColor: teamColor} ); }
+        setTeamColor: (teamColor) => { this.setState( {teamColor: teamColor} ); },
+        setUserName: (userName) => { this.setState( {userName: userName} ); },
+        setUserStatus: (userStatus) => { this.setState( {userStatus: userStatus} ); },
     }
 
     render(){
