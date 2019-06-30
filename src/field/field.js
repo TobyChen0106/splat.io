@@ -20,9 +20,9 @@ export const battleField_1 = {
     //(xPos, yPos, width, height)
     rectObjects: [
         ["rock", 450, 50, 100, 200],
-        ["rock", 450, 550, 100, 200],
+        ["rock", 450, 650, 100, 200],
         ["rock", 1050, 50, 100, 200],
-        ["rock", 1050, 550, 100, 200],
+        ["rock", 1050, 650, 100, 200],
 
         ["rock", 750, 275, 100, 400],
         ["rock", 600, 400, 400, 100],
@@ -38,8 +38,8 @@ export const battleField_1 = {
         ["rock", 1550, 850, 50, 50],
     ],
     polyObjects: [
-        getRegularPolyObject("white", 50, 450, 150, 8, 22.5),
-        getRegularPolyObject("white", 1550, 450, 150, 8, 22.5),
+        // getRegularPolyObject("white", 50, 450, 150, 8, 22.5),
+        // getRegularPolyObject("white", 1550, 450, 150, 8, 22.5),
     ],
 
     spawnPoint:{
