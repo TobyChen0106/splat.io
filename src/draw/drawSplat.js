@@ -54,8 +54,7 @@ export const drawSplat = (c, a, splat, playerColor, playerAngle, playerPosition)
         //context.fillStyle =  'rgba(' + playerColor +')';
         var aimX = splat[i][1];
         var aimY = splat[i][2];
-        //var playerX = playerPosition.x;
-        //var playerY = playerPosition.y;
+     
         var angle = splat[i][3];
         // playerAngle< 0 ? playerAngle + 270 : playerAngle - 90;
         var ink_size = splat[i][4] * 2; //因為我圖畫得比較小所以先乘3

@@ -13,13 +13,6 @@ const GAME_STATE = {
     FREEZE: 3,
     FINISH: 4
 };
-// const KILL_WORDS = [
-//     'slayed',
-//     'knocked out',
-//     'destroyed',
-//     'killed',
-//     'smashed'
-// ]
 
 let generateColorId = () => {
     let len = 4
@@ -30,12 +23,6 @@ let generateColorId = () => {
     }
     return color;
 }
-
-// let generateMessage = (killerName, killedName) => {
-//     let len = KILL_WORDS.length;
-//     let i = Math.floor(Math.random() * len);
-//     return `${killerName} ${KILL_WORDS[i]} ${killedName} !`;
-// }
 
 let startGameTimeCountdown = (roomId) => {
     let gameIntervalId = setInterval(() => {
@@ -199,11 +186,9 @@ db.once('open', () => {
                 GameData[data.roomId].playersBasicInfo.map(p => {
                     if (p.playerUid === data.killerUid) p.kill += 1;
                 })
-                GameData[data.roomId].anouncement.push(generateMessage(data.killerName, data.killedName));
                 serverSocket.to(data.roomId).emit('killEvent', {
                     killerName: data.killerName,
                     killedName: data.killedName
-                    // anouncement: GameData[data.roomId].anouncement[GameData[data.roomId].anouncement.length - 1]
                 });
             }
         })

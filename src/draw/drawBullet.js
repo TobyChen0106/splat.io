@@ -20,7 +20,7 @@ export const drawBullet = (c, bullets, playerColor, p_x, p_y) => {
         drawCircle(context, bullets[i][1], bullets[i][2], 8, 10);
         drawCircleOutLine(context, bullets[i][1], bullets[i][2], 8, 10);
 
-        //play fire sound
+        // play fire sound
         if (bullets[i][3] === 1) {
             var distance = Math.pow(Math.pow(p_x - bullets[i][1], 2) + Math.pow(p_y - bullets[i][2], 2), 0.5);
             

@@ -34,7 +34,7 @@ export const getInkAmount = (inkConsumption, playerData, localPlayerData) => {
     new_playerHealth = new_playerHealth + restoreHP;
     new_playerHealth = Math.max(Math.min(new_playerHealth, 100), 0);
 
-    // localPlayerData.inkAmount = new_inkAmount;
+    localPlayerData.inkAmount = new_inkAmount;
     localPlayerData.playerHealth = new_playerHealth;
 
     return [new_inkAmount, new_playerHealth];
