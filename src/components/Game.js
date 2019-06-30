@@ -27,10 +27,10 @@ import fightSound from '../sounds/Fight.mp3'
 import whistle from '../sounds/whistle.wav'
 
 
-var audio = new Audio(fightSound);
+let audio = new Audio(fightSound);
 audio.volume = 0.5;
 
-var audio2 = new Audio(whistle);
+let audio2 = new Audio(whistle);
 audio.volume = 0.3;
 
 class Game extends React.Component {
@@ -99,7 +99,7 @@ class Game extends React.Component {
             playerPosition: { x: 100, y: 100 }, // to update camera position 
             inkAmount: 100, // to update inkbar 
             healthAmount: 100,
-            anouncement: ['Nothing~~', 'thissss'], //到時候再刪掉
+            anouncement: [],
             gameResult: { A: 0, B: 0 },
         }
     }
@@ -113,6 +113,10 @@ class Game extends React.Component {
 
         this.props.socket.on('getGameTime', (data) => {
             this.localPlayerData.gameTime = data.gameTime;
+        })
+
+        this.props.socket.on('killEvent', (data) => {
+            console.log(data.killerName, data.killedName);
         })
 
         // this._ismount = true;
@@ -155,8 +159,8 @@ class Game extends React.Component {
             this.mouseScale = windowWidth > windowHeight ? this.state.cameraSize / windowWidth : this.state.cameraSize / windowHeight;
 
             // get and update mouse position
-            var canvas = this.groundRef;
-            var rect = canvas.getBoundingClientRect();
+            let canvas = this.groundRef;
+            let rect = canvas.getBoundingClientRect();
             this.localPlayerData.mousePosition = {
                 x: (this.localPlayerData.mouseClient.x - rect.left) * this.mouseScale,
                 y: (this.localPlayerData.mouseClient.y - rect.top) * this.mouseScale
@@ -173,11 +177,10 @@ class Game extends React.Component {
                 getPlayerStatus(this.splatRef, this.playerData, this.localPlayerData);
             }
             // get and update player health according to 
-            var killed_msg = getPlayerHealth(this.playerData, this.localPlayerData, this.otherPlayerData);
+            let killed_msg = getPlayerHealth(this.playerData, this.localPlayerData, this.otherPlayerData);
             if (killed_msg !== null) {
-                //emit killed_msg
-                // killed_msg = { killerUid: players[p].playerUid, killerName: players[p].playerName, killedUid: playerData.playerUid, killedName:playerData.playerName }
                 console.log(killed_msg);
+                this.props.socket.emit('killEvent', killed_msg);
                 this.localPlayerData.deadTime = this.localPlayerData.timeStamp;
             }
 
@@ -198,8 +201,8 @@ class Game extends React.Component {
             const new_playerPosition = updatePlayerPosition(this.playerData, this.localPlayerData);
 
             if (this.localPlayerData.gameState === GAME_STATE.FREEZE) {
-                var filedWidth = this.state.gameBoardWidth;
-                var filedHeight = this.state.gameBoardHeight;
+                let filedWidth = this.state.gameBoardWidth;
+                let filedHeight = this.state.gameBoardHeight;
 
                 this.setState({ cameraSize: filedWidth > filedHeight ? filedWidth : filedHeight });
                 this.setState({ playerPosition: { x: filedWidth / 2, y: filedHeight / 2 } });
@@ -211,7 +214,7 @@ class Game extends React.Component {
             }
 
             // get splat (include draw bullet)
-            var [aimPoints, inkConsumption] = getSplats(this.playerData, this.localPlayerData, this.otherPlayerData);
+            let [aimPoints, inkConsumption] = getSplats(this.playerData, this.localPlayerData, this.otherPlayerData);
 
             //get and update ink amount  ******* and health 
             const new_inkAmountNhealth = getInkAmount(inkConsumption, this.playerData, this.localPlayerData);
@@ -224,20 +227,6 @@ class Game extends React.Component {
 
             // draw aim point
             drawAimPoint(this.aimPointRef, this.playerData.playerPosition, this.localPlayerData.mousePosition, this.playerData.playerAngle, aimPoints);
-
-            var temp = this.state.anouncement;
-            if (Math.floor(Math.random() * 20) === 0/* 這邊的random只是為了方便測試，要改成if收到新訊息*/) {
-
-                temp.push('new');
-                this.setState({ anouncement: temp });
-
-                this.anounceIntervalId = setTimeout(() => {
-                    this.setState((prevState) => (
-                        { anouncement: prevState.anouncement.splice(1) }
-                    ))
-                }, 3000);
-                console.log(this.anounceIntervalId)
-            }
         }
         else {
             this.setState({ cameraSize: 2000 });
@@ -256,7 +245,7 @@ class Game extends React.Component {
         this.props.socket.emit('updateGame', { ...this.playerData });
         
         if (this.localPlayerData.gameState === GAME_STATE.FREEZE && this.calculateResultFlag === 0) {
-            var gameResult = getGameResult(this.fieldRef, this.splatRef, this.playerData, this.localPlayerData);
+            let gameResult = getGameResult(this.fieldRef, this.splatRef, this.playerData, this.localPlayerData);
             this.setState({ gameResult: gameResult });
             this.calculateResultFlag = 1;
             console.log(this.state.gameResult);
@@ -272,17 +261,18 @@ class Game extends React.Component {
     }
 
     render() {
+        console.log(this.state.anouncement)
         let gameTime = this.localPlayerData.gameTime > 0 ? this.localPlayerData.gameTime : 0;
-        var anouncement = [];
-        for (var i = 0; i < this.state.anouncement.length; ++i) {
+        let anouncement = [];
+        for (let i = 0; i < this.state.anouncement.length; ++i) {
             anouncement.push(
-                <text id="anouncement" x="50" y={40 + 30 * i} width="300" height="200" key={i}>
+                <text id="anouncement" x="50" y={40 + 30 * i} width="1000" height="200" key={i}>
                 {this.state.anouncement[i]}
                 </text>
             )
         }
 
-        var timesUp = ''
+        let timesUp = ''
 
         if (this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             timesUp = (
@@ -344,6 +334,7 @@ class Game extends React.Component {
         window.removeEventListener("mouseup", this.mouseUp);
         this.props.socket.off('updateGame');
         this.props.socket.off('getGameTime');
+        this.props.socket.off('killEvent');
         console.log('will unmount: ', this.updateGameIntervalId, this.anounceIntervalId);
         clearInterval(this.updateIntervalId);
         clearInterval(this.anounceIntervalId);
