@@ -87,7 +87,7 @@ class Game extends React.Component {
 
         this.calculateResultFlag = 0;
         this.mouseScale = 1;
-
+        this.updateGameIntervalId=0;
         this.state = {
             gameBoardWidth: 1600,
             gameBoardHeight: 900,
@@ -237,6 +237,7 @@ class Game extends React.Component {
 
             if (this.localPlayerData.gameTime <= -5) {
                 this.localPlayerData.gameState = GAME_STATE.FINISH;
+                clearInterval(this.updateGameIntervalId);
             }
         }
 
@@ -256,7 +257,7 @@ class Game extends React.Component {
         window.addEventListener("mousemove", this.trackMouse);
         window.addEventListener("mousedown", this.mouseDown);
         window.addEventListener("mouseup", this.mouseUp);
-        setInterval(() => {
+        this.updateGameIntervalId = setInterval(() => {
             this.updateGame();
         }, 50);
         drawField(this.fieldRef);
