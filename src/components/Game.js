@@ -25,6 +25,7 @@ import InkBar from './inkBar';
 import HP from './HP'
 import fightSound from '../sounds/Fight.mp3'
 import whistle from '../sounds/whistle.wav'
+import { isJSXClosingFragment } from '@babel/types';
 
 
 var audio = new Audio(fightSound);
@@ -87,10 +88,13 @@ class Game extends React.Component {
 
         //data that recieved from the server
         this.otherPlayerData = [];
-
+        
         this.calculateResultFlag = 0;
         this.mouseScale = 1;
-        this.updateGameIntervalId = 0;
+
+        this.updateIntervalId = 0;
+        this.anounceIntervalId = 0;
+
         this.state = {
             gameBoardWidth: 1600,
             gameBoardHeight: 900,
@@ -114,13 +118,6 @@ class Game extends React.Component {
         this.props.socket.on('getGameTime', (data) => {
             this.localPlayerData.gameTime = data.gameTime;
         })
-
-        // this._ismount = true;
-        window.addEventListener("keyup", this.onKeyUp);
-        window.addEventListener("keydown", this.onKeyDown);
-        window.addEventListener("mousemove", this.trackMouse);
-        window.addEventListener("mousedown", this.mouseDown);
-        window.addEventListener("mouseup", this.mouseUp);
         
         audio.currentTime = 0;
         audio.play();
@@ -230,12 +227,13 @@ class Game extends React.Component {
                 temp.push('new');
                 this.setState({ anouncement: temp });
 
-                this.anounceIntervalId = setTimeout(() => {
-                    this.setState((prevState) => (
-                        { anouncement: prevState.anouncement.splice(1) }
-                    ))
-                }, 3000);
-                console.log(this.anounceIntervalId)
+                if(this.localPlayerData.gameState === GAME_STATE.GAMING ){
+                    this.anounceIntervalId = setTimeout(() => {
+                        this.setState((prevState) => (
+                            { anouncement: prevState.anouncement.splice(1) }
+                        ))
+                    }, 3000);
+                }
             }
         }
         else {
@@ -267,7 +265,12 @@ class Game extends React.Component {
             this.updateGame();
         }, 50);
         drawField(this.fieldRef);
-        console.log('did unmount: ', this.updateGameIntervalId)
+
+        window.addEventListener("keyup", this.onKeyUp);
+        window.addEventListener("keydown", this.onKeyDown);
+        window.addEventListener("mousemove", this.trackMouse);
+        window.addEventListener("mousedown", this.mouseDown);
+        window.addEventListener("mouseup", this.mouseUp);
     }
 
     render() {
