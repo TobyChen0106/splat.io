@@ -30,11 +30,18 @@ class UserBlock extends React.Component {
             default:
                 break;
         }
+        console.log(this.props.status)
+        var style = {}
+        if(this.props.isSelf){
+            style = {filter: "drop-shadow(0px 0px 3px rgb(0,0,0,0.7))", border: "solid 2px"}
+        }
         return (
-            <div className='UserBlock-container'>
+            <div className='UserBlock-container' style={style}>
                 <img src={img_src} alt={this.props.userName} />
-                <h3>{this.props.userName}</h3>
-                <h4>{this.props.playerRecord || 'guest'}</h4>
+                <h3>{this.props.userName}   <i id ="record">{this.props.playerRecord || 'guest'}</i> </h3>
+                
+                <h4>{this.props.status? 'Online!':'Waiting...' }</h4>
+                
             </div>
         )
     }

@@ -226,8 +226,8 @@ class Game extends React.Component {
                 this.setState({ cameraSize: filedWidth > filedHeight ? filedWidth : filedHeight });
                 this.setState({ playerPosition: { x: filedWidth / 2, y: filedHeight / 2 } });
                 audio.pause();
+                
 
-                audio2.play();
             } else {
                 this.setState({ playerPosition: new_playerPosition });
             }
@@ -255,6 +255,9 @@ class Game extends React.Component {
         // update time
         this.localPlayerData.timeStamp = Date.now();
         if (this.localPlayerData.gameTime < 10) this.localPlayerData.timeColor = "#c71585";
+        if (this.localPlayerData.gameTime === 0){
+            audio2.play()
+        }
         if (this.localPlayerData.gameTime <= 0) {
             this.localPlayerData.gameState = GAME_STATE.FREEZE;
 
