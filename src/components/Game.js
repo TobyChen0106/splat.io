@@ -190,7 +190,7 @@ class Game extends React.Component {
                 this.setState({ cameraSize: filedWidth > filedHeight ? filedWidth : filedHeight });
                 this.setState({ playerPosition: { x: filedWidth / 2, y: filedHeight / 2 } });
                 audio.pause();
-                audio2.currentTime = 0;
+                // audio2.currentTime = 0;
                 audio2.play()
             } else {
                 this.setState({ playerPosition: new_playerPosition });
@@ -205,7 +205,7 @@ class Game extends React.Component {
 
             this.otherPlayerData.push(this.playerData);
             //console.log(this.otherPlayerData);
-            drawAllPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
+            drawAllPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData, this.playerData.playerPosition.x, this.playerData.playerPosition.y);
 
             // draw aim point
             drawAimPoint(this.aimPointRef, this.playerData.playerPosition, this.localPlayerData.mousePosition, this.playerData.playerAngle, aimPoints);

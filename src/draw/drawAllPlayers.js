@@ -1,6 +1,6 @@
 import { drawPlayer, drawSplat, drawBullet, } from '../draw'
 
-export const drawAllPlayers = (splatRef, bulletRef, playerRef, splatAnimationRef, players) => {
+export const drawAllPlayers = (splatRef, bulletRef, playerRef, splatAnimationRef, players, p_x, p_y) => {
     // var splatRefContext = splatRef.getContext("2d");
     // splatRefContext.clearRect(0, 0, splatRef.width, splatRef.height);
 
@@ -21,9 +21,9 @@ export const drawAllPlayers = (splatRef, bulletRef, playerRef, splatAnimationRef
 
         drawPlayer(playerRef, splatAnimationRef, players[p], (p === l-1)? 1:0 );
         // drawSplat(this.splatRef, this.splatAnimationRef, this.playerData.splats, this.playerData.playerColor, this.playerData.playerAngle, this.playerData.playerPosition);
-        drawSplat(splatRef, splatAnimationRef, players[p].splats, players[p].playerColor,  players[p].playerAngle,  players[p].playerPosition);
+        drawSplat(splatRef, splatAnimationRef, players[p].splats, players[p].playerColor,  players[p].playerAngle,  players[p].playerPosition, p_x, p_y);
 
         // drawBullet(this.bulletRef, this.playerData.bullets, this.playerData.playerColor);
-        drawBullet(bulletRef,  players[p].bullets, players[p].playerColor);
+        drawBullet(bulletRef,  players[p].bullets, players[p].playerColor, p_x, p_y);
     }
 }  

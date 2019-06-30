@@ -54,12 +54,12 @@ export const drawPlayer = (c, a, state, isSelf) => {
             drawPlayerNormal(context, state, team, isSelf);
             break;
         case PLAYER_STATUS.DIVING_OWN:
-            audio.currentTime = 0;
+            // audio.currentTime = 0;
             audio.play();
             drawPlayerDive(context, state, team, isSelf);
             break;
         case PLAYER_STATUS.SWIMMING_OWN:
-            audio.currentTime = 0;
+            // audio.currentTime = 0;
             audio.play();
             drawPlayerDive(context, state, team, isSelf);
 
