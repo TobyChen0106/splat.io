@@ -17,8 +17,7 @@ class Result extends Component {
     }
 
     handleOK = () => {
-        this.props.history.push(`/home`);
-        // this.props.history.push(`/wait/${this.props.roomId}`);
+        this.props.history.push(`/wait/${this.props.roomId}`);
     }
 
     render() {

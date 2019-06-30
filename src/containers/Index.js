@@ -54,7 +54,8 @@ class Index extends Component {
                     }
                 />
                 <Route path={`/game/${this.state.roomId}`} render={(props) => <Game {...props} {...this.state}
-                    socket={this.socket} />}
+                    socket={this.socket}
+                    setRoomId={this.changeStatus.setRoomId} />}
                 />
                 <Route path={`/result/${this.state.roomId}`} render={(props) => <Result {...props} {...this.state}
                     socket={this.socket} />}

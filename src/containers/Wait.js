@@ -12,16 +12,19 @@ class Wait extends Component {
             isRoomFull: [],
             teamAColor: COLOR_ASSET[this.props.teamColor['A']].shadow,
             teamBColor: COLOR_ASSET[this.props.teamColor['B']].shadow,
-            waitingMessage: ''
+            waitingMessage: '',
+            currentPlayers: {}
         }
     }
 
     componentWillMount = () => {
         this.props.socket.emit('getRoomPlayers', {
-            roomId: this.props.roomId
+            roomId: this.props.roomId,
+            uid: this.props.uid
         });
 
         this.props.socket.on('getRoomPlayers', (data) => {
+            console.log(data)
             let waitingForPlayer = data.maxPlayers - data.teamA.length - data.teamB.length;
             if (waitingForPlayer < 0) waitingForPlayer = 0;
 
@@ -57,8 +60,6 @@ class Wait extends Component {
     }
 
     //61,67 playerRecord 的部分，如果有登入就送他的紀錄，不然就送個''，UserBlock物件裡面得到''就會印出guest
-
-    
 
     render() {
         let teamA = this.state.teamA.map(name =>

@@ -6,7 +6,7 @@ const MAX_PLAYERS = 2;
 const GAME_TIME = 15;
 const WAIT_TIME = 5;
 let GameData = {};
-let seed = '1234';
+let SEED = '1234';
 const GAME_STATE = {
     WAITING: 1,
     GAMING: 2,
@@ -14,7 +14,11 @@ const GAME_STATE = {
     FINISH: 4
 };
 
-let generateColorId = () => {
+const getNextSeed = () => {
+    return (parseInt(SEED) * 1213 % 9973).toString();
+}
+
+const generateColorId = () => {
     let len = 4
     let color = [];
     while (color.length < 2) {
@@ -24,12 +28,14 @@ let generateColorId = () => {
     return color;
 }
 
-let startGameTimeCountdown = (roomId) => {
+let startGameTimeCountdown = (serverSocket, roomId) => {
     let gameIntervalId = setInterval(() => {
         if (GameData[roomId]) {
             GameData[roomId].gameTime--;
             if (GameData[roomId].gameTime <= -6) {
                 clearInterval(gameIntervalId);
+                GameData[roomId].status = GAME_STATE.FINISH;
+                GameData[roomId].gameTime = GAME_TIME;
             }
         }
     }, 1000)   
@@ -43,13 +49,16 @@ let getRoomPlayers = (serverSocket, roomId) => {
             isRoomFull: GameData[roomId].playersBasicInfo.length === MAX_PLAYERS,
             maxPlayers: MAX_PLAYERS,
             waitTime: GameData[roomId].waitTime
-        })
+        });
+
         
-        if (GameData[roomId].playersBasicInfo.length < MAX_PLAYERS) {
-            clearInterval(GameData[roomId].waitIntervalId)
+        if (GameData[roomId].playersBasicInfo.length < MAX_PLAYERS ||
+            !GameData[roomId].playersBasicInfo.every(p => p.inWaitingRoom)) {
+            clearInterval(GameData[roomId].waitIntervalId);
             GameData[roomId].waitTime = WAIT_TIME;
         }
-        else if (GameData[roomId].playersBasicInfo.length === MAX_PLAYERS) {
+        else if (GameData[roomId].playersBasicInfo.length === MAX_PLAYERS && 
+                GameData[roomId].playersBasicInfo.every(p => p.inWaitingRoom)) {
             GameData[roomId].waitIntervalId = setInterval(() => {
                 if (GameData[roomId]) {
                     serverSocket.to(roomId).emit('getWaitTime', {
@@ -59,8 +68,9 @@ let getRoomPlayers = (serverSocket, roomId) => {
                     if (GameData[roomId].waitTime < 0) {
                         clearInterval(GameData[roomId].waitIntervalId);
                         serverSocket.to(roomId).emit('startGaming');
-                        GameData[roomId].status = GAME_STATE.GAMING
-                        startGameTimeCountdown(roomId);
+                        GameData[roomId].status = GAME_STATE.GAMING;
+                        GameData[roomId].playersBasicInfo.map(p => { p.inWaitingRoom = 0 });
+                        startGameTimeCountdown(serverSocket, roomId);
                     }
                 }
             }, 1000)       
@@ -105,7 +115,8 @@ db.once('open', () => {
             // find valid room
             if (GameData) {
                 Object.keys(GameData).forEach(id => {
-                    if (GameData[id].playersBasicInfo.length < MAX_PLAYERS) {
+                    if (GameData[id].playersBasicInfo.length < MAX_PLAYERS && 
+                        GameData[id].status !== GAME_STATE.GAMING) {
                         roomId = id;
                         socket.join(roomId);
                     }
@@ -114,8 +125,8 @@ db.once('open', () => {
             // no valid room
             if (!roomId) {
                 let color = generateColorId();
-                seed = (parseInt(seed) * 1213 % 9973).toString();
-                roomId = seed;
+                SEED = getNextSeed();
+                roomId = SEED;
                 socket.join(roomId);
                 GameData[roomId] = {
                     playersBasicInfo: [],
@@ -144,7 +155,8 @@ db.once('open', () => {
                 name: data.name,
                 uid: uid,
                 team: team,
-                kill: 0
+                kill: 0,
+                inWaitingRoom: 1
             })
 
             socket.emit('getFirstInInfo', {
@@ -156,6 +168,12 @@ db.once('open', () => {
         });
 
         socket.on('getRoomPlayers', (data) => {
+            // if player come back from game
+            if (GameData[data.roomId]) {
+                GameData[data.roomId].playersBasicInfo.map(p => {
+                    if (p.uid === data.uid) p.inWaitingRoom = 1;
+                })
+            }
             getRoomPlayers(serverSocket, data.roomId)
         });
 
@@ -182,7 +200,6 @@ db.once('open', () => {
 
         socket.on('killEvent', (data) => {
             if (GameData[data.roomId]) {
-                console.log(data)
                 GameData[data.roomId].playersBasicInfo.map(p => {
                     if (p.playerUid === data.killerUid) p.kill += 1;
                 })
