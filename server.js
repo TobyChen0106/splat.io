@@ -7,6 +7,12 @@ const GAME_TIME = 10;
 const WAIT_TIME = 5;
 let GameData = {};
 let seed = '1234';
+const GAME_STATE = {
+    WAITING: 1,
+    GAMING: 2,
+    FREEZE: 3,
+    FINISH: 4
+};
 
 let generateColorId = () => {
     let l = 4
@@ -53,6 +59,7 @@ let getRoomPlayers = (serverSocket, roomId) => {
                     if (GameData[roomId].waitTime < 0) {
                         clearInterval(GameData[roomId].waitIntervalId);
                         serverSocket.to(roomId).emit('startGaming');
+                        GameData[roomId].status = GAME_STATE.GAMING
                         startGameTimeCountdown(roomId);
                     }
                 }
@@ -117,7 +124,7 @@ db.once('open', () => {
                         A: color[0],
                         B: color[1]
                     },
-                    status: 'Waiting',
+                    status: GAME_STATE.WAITING,
                     gameTime: GAME_TIME,
                     waitTime: WAIT_TIME
                 }
