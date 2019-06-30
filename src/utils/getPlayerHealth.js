@@ -31,7 +31,12 @@ export const getPlayerHealth = (playerData, localPlayerData, players) => {
                 localPlayerData.playerHealth = 0;
                 playerData.playerStatus = PLAYER_STATUS.DEAD;
 
-                return { killerUid: players[p].playerUid, killerName: players[p].playerName, killedUid: playerData.playerUid, killedName: playerData.playerName };
+                return { 
+                    roomId: playerData.roomId,
+                    killerUid: players[p].playerUid, 
+                    killerName: players[p].playerName, 
+                    killedUid: playerData.playerUid, 
+                    killedName: playerData.playerName };
             }
 
         }
