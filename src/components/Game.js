@@ -224,7 +224,7 @@ class Game extends React.Component {
             var temp = this.state.anouncement;
             if (Math.floor(Math.random() * 20) === 0/* 這邊的random只是為了方便測試，要改成if收到新訊息*/) {
 
-                temp.push('new');
+                temp.push('new 1 2 3 4 5 6');
                 this.setState({ anouncement: temp });
 
                 if(this.localPlayerData.gameState === GAME_STATE.GAMING ){
