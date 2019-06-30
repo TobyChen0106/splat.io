@@ -9,8 +9,25 @@ class Home extends Component {
         super(props)
         this.state = {
             login_display : {display: "none"},
-            signup_display: {display: "none"}
+            signup_display: {display: "none"},
+            isLoggedin: false,
+            userName: 'Player',
+            userStatus: 'Guest'
         }
+    }
+
+    componentWillMount() {
+        this.props.socket.once('recievedlogin', (data) => {
+            console.log("home", data)
+            if (data.message === 'OK'){
+                this.setState({
+                    isLoggedin: true,
+                    userName: data.userName,
+                    userStatus: data.userStatus
+                })
+            }
+            
+        })
     }
 
     handleInputName = (e) => {
@@ -43,12 +60,14 @@ class Home extends Component {
     render() {
         return(
             <div className='Home_container'>
+                
                 <button className='App_button top-button' onClick={() => this.handleDisplay('signup')}>
                     Sign up
                 </button>
                 <button className='App_button top-button' onClick={() => this.handleDisplay('login')}>
                     Log in
                 </button>
+                <h3  id='hiMessage'>Hi, {this.state.userName}</h3>
                 
                 <JumpOutWindow 
                     display={this.state.login_display} 
@@ -69,6 +88,7 @@ class Home extends Component {
                         autoComplete="off"
                         spellCheck="false"
                         onKeyUp={this.handleInputName}
+                        value={this.state.userName}
                     />
                     <button className='App_button' onClick={this.handlePlay}>
                         Play!

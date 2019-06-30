@@ -49,6 +49,8 @@ class JumpOutWindow extends Component {
 
         this.props.socket.once('recieved' + id, (data) => {
             console.log("recieved ",data)
+            if(data.message === 'OK') 
+                this.closeJumpOut()
         })
     }
 

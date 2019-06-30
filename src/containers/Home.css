@@ -68,3 +68,9 @@
 
 }
 
+#hiMessage {
+    float: right;
+    width:300px;
+    font-size: 28px;
+    margin-top: 20px;
+}

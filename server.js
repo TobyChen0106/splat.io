@@ -103,13 +103,13 @@ db.once('open', () => {
         socket.on('login', (data) => {
             console.log('login', data.form)
             //here
-            socket.emit('recievedlogin', {message: ':)'})
+            socket.emit('recievedlogin', {message: 'OK', userName: 'USERNAME', userStatus:'USERSTAUS'})
         })
 
         socket.on('signup', (data) => {
             console.log('signup', data.form)
             //here
-            socket.emit('recievedsignup', {message: ':)'})
+            socket.emit('recievedsignup', {message: 'OK'})
         })
 
         socket.on('newPlayer', (data) => {
