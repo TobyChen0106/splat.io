@@ -10,8 +10,8 @@ class Wait extends Component {
             teamA: [],
             teamB: [],
             isRoomFull: [],
-            teamAColor: COLOR_ASSET[this.props.teamColor['A']].shadow,
-            teamBColor: COLOR_ASSET[this.props.teamColor['B']].shadow,
+            teamAColor: COLOR_ASSET[this.props.teamColor['A']],
+            teamBColor: COLOR_ASSET[this.props.teamColor['B']],
             waitingMessage: ''
         }
     }
@@ -37,7 +37,7 @@ class Wait extends Component {
         this.props.socket.on('getWaitTime', (data) => {
             this.setState({
                 waitTime: data.waitTime,
-                waitingMessage: `left ${data.waitTime} seconds to begin...`
+                waitingMessage: `${data.waitTime} Seconds Left Before Game Starts...`
             })
             if (data.waitTime <= 0) {
                 this.props.socket.off('getWaitTime');
@@ -63,13 +63,13 @@ class Wait extends Component {
     render() {
         let teamA = this.state.teamA.map(name =>
             <li key={name}>
-                <UserBlock userName={name} playerRecord=''/*playerRecord={ isLoggin? this.props.playerRecord : ''}*/ team='A' />
+                <UserBlock userName={name} playerRecord=''/*playerRecord={ isLoggin? this.props.playerRecord : ''}*/ team='A' color = {this.state.teamAColor.main}/>
             </li>
         );
 
         let teamB = this.state.teamB.map(name =>
             <li key={name}>
-                <UserBlock userName={name} playerRecord='' team='B' />
+                <UserBlock userName={name} playerRecord='' team='B'  color = {this.state.teamBColor.main}/>
             </li>
         );
 
@@ -78,13 +78,13 @@ class Wait extends Component {
                 <h1>Game Lobby</h1>
                 <h3 id='Wait_message'>{this.state.waitingMessage}</h3>
                 <div id='Wait_wrapper'>
-                    <div className='Wait_group' style={{background: this.state.teamAColor}} >
+                    <div className='Wait_group' style={{background: this.state.teamAColor.shadow}} >
                         <h3 className='Wait_grouptitle' >TEAM A</h3>
                         <ul>
                             {teamA}
                         </ul>
                     </div>
-                    <div className='Wait_group' style={{background: this.state.teamBColor}}>
+                    <div className='Wait_group' style={{background: this.state.teamBColor.shadow}}>
                         <h3>TEAM B</h3>
                         <ul>
                             {teamB}
