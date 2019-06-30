@@ -38,7 +38,7 @@ class Game extends React.Component {
         super(props);
         // data that most emit to server
         this._ismount = false;
-        
+
         this.playerData = {
             roomId: this.props.roomId,
             teamColor: this.props.teamColor,
@@ -65,6 +65,7 @@ class Game extends React.Component {
             respawnTime: 2000,
             gameState: GAME_STATE.GAMING,
             roomId: this.props.roomId,
+            updateIntervalId: null,
 
             playerMoveSpeed: 5,
             playerMoveDirection: { x: 0, y: 0 },
@@ -90,6 +91,7 @@ class Game extends React.Component {
 
         this.calculateResultFlag = 0;
         this.mouseScale = 1;
+
         this.state = {
             gameBoardWidth: 1600,
             gameBoardHeight: 900,
@@ -101,7 +103,9 @@ class Game extends React.Component {
             anouncement: ['Nothing~~', 'thissss'], //到時候再刪掉
             gameResult: { A: 0, B: 0 },
         }
+    }
 
+    componentWillMount = () => {
         this.props.socket.emit('enterGame', { ...this.playerData });
 
         this.props.socket.on('updateGame', (data) => {
@@ -111,7 +115,6 @@ class Game extends React.Component {
         this.props.socket.on('getGameTime', (data) => {
             this.localPlayerData.gameTime = data.gameTime;
         })
-
     }
 
     onKeyDown = e => {
@@ -207,7 +210,7 @@ class Game extends React.Component {
 
             this.otherPlayerData.push(this.playerData);
             //console.log(this.otherPlayerData);
-            drawAllPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData, 
+            drawAllPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData,
                 this.playerData.playerPosition.x, this.playerData.playerPosition.y, this.playerData.playerTeam);
 
             // draw aim point
@@ -225,8 +228,6 @@ class Game extends React.Component {
                     ))
                 }, 3000);
             }
-        
-
         }
         else {
             this.setState({ cameraSize: 2000 });
@@ -239,12 +240,11 @@ class Game extends React.Component {
 
             if (this.localPlayerData.gameTime <= -5) {
                 this.localPlayerData.gameState = GAME_STATE.FINISH;
-                clearInterval(this.updateGameIntervalId);
             }
         }
 
         this.props.socket.emit('updateGame', { ...this.playerData });
-        
+
         if (this.localPlayerData.gameState === GAME_STATE.FREEZE && this.calculateResultFlag === 0) {
             var gameResult = getGameResult(this.fieldRef, this.splatRef, this.playerData, this.localPlayerData);
             this.setState({ gameResult: gameResult });
@@ -260,26 +260,13 @@ class Game extends React.Component {
         window.addEventListener("mousemove", this.trackMouse);
         window.addEventListener("mousedown", this.mouseDown);
         window.addEventListener("mouseup", this.mouseUp);
-        this.interval = setInterval(() => {
+        this.localPlayerData.updateIntervalId = setInterval(() => {
             this.updateGame();
         }, 50);
         drawField(this.fieldRef);
         audio.currentTime = 0;
         audio.play();
     }
-
-    componentWillUnmount = () => {
-        this._ismount = false;
-        clearInterval(this.interval);
-        window.removeEventListener("keyup", this.onKeyUp);
-        window.removeEventListener("keydown", this.onKeyDown);
-        window.removeEventListener("mousemove", this.trackMouse);
-        window.removeEventListener("mousedown", this.mouseDown);
-        window.removeEventListener("mouseup", this.mouseUp);
-        audio.pause()
-        audio2.pause()
-        
-     }
 
     render() {
         let gameTime = this.localPlayerData.gameTime > 0 ? this.localPlayerData.gameTime : 0;
@@ -289,7 +276,7 @@ class Game extends React.Component {
         for (var i = 0; i < this.state.anouncement.length; ++i) {
             anouncement.push(
                 <text id="anouncement" x="50" y={40 + 30 * i} width="300" height="200" key={i}>
-                {this.state.anouncement[i]}
+                    {this.state.anouncement[i]}
                 </text>
             )
         }
@@ -308,7 +295,7 @@ class Game extends React.Component {
         if (this.localPlayerData.gameState === GAME_STATE.GAMING || this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             return (
                 <div id="game-container">
-                    
+
                     <svg id="svg-container"
                         width={Math.max(window.innerWidth, window.innerHeight)}
                         height={Math.max(window.innerWidth, window.innerHeight)}
@@ -347,6 +334,18 @@ class Game extends React.Component {
             this.props.socket.open();
             return (<Redirect to={`/result/${this.props.roomId}`} />);
         }
+    }
+
+    componentWillUnmount = () => {
+        console.log("wi")
+        window.removeEventListener("keyup", this.onKeyUp);
+        window.removeEventListener("keydown", this.onKeyDown);
+        window.removeEventListener("mousemove", this.trackMouse);
+        window.removeEventListener("mousedown", this.mouseDown);
+        window.removeEventListener("mouseup", this.mouseUp);
+        this.props.socket.off('updateGame');
+        this.props.socket.off('getGameTime');
+        clearInterval(this.localPlayerData.updateIntervalId)
     }
 }
 
