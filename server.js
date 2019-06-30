@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const User = require('./models/user');
 const uuid = require('uuidv4');
 const MAX_PLAYERS = 2;
-const GAME_TIME = 10;
+const GAME_TIME = 15;
 const WAIT_TIME = 5;
 let GameData = {};
 let seed = '1234';
@@ -15,10 +15,10 @@ const GAME_STATE = {
 };
 
 let generateColorId = () => {
-    let l = 4
+    let len = 4
     let color = [];
     while (color.length < 2) {
-        let c = Math.floor(Math.random() * l);
+        let c = Math.floor(Math.random() * len);
         if (color.indexOf(c) === -1) color.push(c);
     }
     return color;
@@ -138,7 +138,8 @@ db.once('open', () => {
                     },
                     status: GAME_STATE.WAITING,
                     gameTime: GAME_TIME,
-                    waitTime: WAIT_TIME
+                    waitTime: WAIT_TIME,
+                    anouncement: []
                 }
             }
 
@@ -154,7 +155,8 @@ db.once('open', () => {
             GameData[roomId].playersBasicInfo.push({
                 name: data.name,
                 uid: uid,
-                team: team
+                team: team,
+                kill: 0
             })
 
             socket.emit('getFirstInInfo', {
@@ -188,8 +190,20 @@ db.once('open', () => {
                     gameTime: GameData[data.roomId].gameTime
                 }) 
             }
-
         });
+
+        socket.on('killEvent', (data) => {
+            if (GameData[data.roomId]) {
+                console.log(data)
+                GameData[data.roomId].playersBasicInfo.map(p => {
+                    if (p.playerUid === data.killerUid) p.kill += 1;
+                })
+                serverSocket.to(data.roomId).emit('killEvent', {
+                    killerName: data.killerName,
+                    killedName: data.killedName
+                });
+            }
+        })
 
         socket.on('disconnect', () => {
             if (GameData[roomId]) {
