@@ -56,12 +56,15 @@ class JumpOutWindow extends Component {
                         X
                     </button>
                     <h2>{this.props.title}</h2>
-                    {this.props.list.map( el => 
-                        <div className='Jump-component' key={el}>
-                            <h3>{el}</h3>
-                            <input onChange={(e) => this.handleInputChange(e, el)}></input>
-                        </div>
-                    )}
+                    {this.props.list.map( el => {
+                        let type = (el === 'password') ? 'password' : '';
+                        return (
+                            <div className='Jump-component' key={el}>
+                                <h3>{el}</h3>
+                                <input type={type} onChange={(e) => this.handleInputChange(e, el)}></input>
+                            </div>
+                        )
+                    })}
                     <button className='App_button' 
                             onClick={() => this.handleSubmit(this.props.id)}>
                         {this.props.submit}
