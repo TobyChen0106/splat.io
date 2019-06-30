@@ -205,7 +205,8 @@ class Game extends React.Component {
 
             this.otherPlayerData.push(this.playerData);
             //console.log(this.otherPlayerData);
-            drawAllPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData, this.playerData.playerPosition.x, this.playerData.playerPosition.y);
+            drawAllPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData, 
+                this.playerData.playerPosition.x, this.playerData.playerPosition.y, this.playerData.playerTeam);
 
             // draw aim point
             drawAimPoint(this.aimPointRef, this.playerData.playerPosition, this.localPlayerData.mousePosition, this.playerData.playerAngle, aimPoints);
