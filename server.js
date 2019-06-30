@@ -112,8 +112,13 @@ db.once('open', () => {
 
         socket.on('login', (data) => {
             console.log('login', data.form)
-            //here
-            socket.emit('recievedlogin', {message: 'OK', userName: 'USERNAME', userStatus:'USERSTAUS'})
+            const user = new User({
+                name: data.form.id,
+                email: data.form.email,
+                password: data.form.pw,
+                winning: 0
+            })
+            socket.emit('recievedlogin', {message: 'OK', userName: data.form.id, userStatus: 'LoggedIn'})
         })
 
         socket.on('signup', (data) => {

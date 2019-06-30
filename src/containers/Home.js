@@ -77,7 +77,7 @@ class Home extends Component {
                     />
                 <JumpOutWindow 
                     display={this.state.signup_display}
-                    title='Sign up' form={{email:'',id: '', pw: '', pw_again:''}} list={["email", "id", "pw", "pw again"]}
+                    title='Sign up' form={{email:'',id: '', pw: '', pw_again:''}} list={["email", "id", "pw", "pw_again"]}
                     submit="Sign up!" id='signup'
                     socket={this.props.socket}
                     />
