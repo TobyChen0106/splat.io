@@ -7,15 +7,15 @@ const UserSchema = new Schema({
 		type: String,
 		required: [true, 'Name field is required.']
 	},
-	uid: {
+	email: {
 		type: String,
 		required: [true, 'Uid is required.']
 	},
-	winning: {
-		type: Number,
-		required: true
+	password: {
+		type: String,
+		required: [true, 'Password is required.']
 	},
-	losing: {
+	winning: {
 		type: Number,
 		required: true
 	}
