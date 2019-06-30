@@ -236,6 +236,7 @@ class Game extends React.Component {
                         { anouncement: prevState.anouncement.splice(1) }
                     ))
                 }, 3000);
+                console.log(this.anounceIntervalId)
             }
         }
         else {
@@ -267,6 +268,7 @@ class Game extends React.Component {
             this.updateGame();
         }, 50);
         drawField(this.fieldRef);
+        console.log('did unmount: ', this.updateGameIntervalId)
     }
 
     render() {
@@ -342,8 +344,11 @@ class Game extends React.Component {
         window.removeEventListener("mouseup", this.mouseUp);
         this.props.socket.off('updateGame');
         this.props.socket.off('getGameTime');
+        console.log('will unmount: ', this.updateGameIntervalId, this.anounceIntervalId);
         clearInterval(this.updateIntervalId);
         clearInterval(this.anounceIntervalId);
+        audio.pause();
+        audio2.pause();
     }
 }
 
