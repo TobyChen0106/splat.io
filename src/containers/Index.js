@@ -7,8 +7,6 @@ import Home from './Home'
 import Wait from './Wait'
 import Result from './Result'
 
-//let host = '140.112.244.155:8080' // server ip (andyh0913 for temporary use)
-
 class Index extends Component {
     constructor(props) {
         super(props);
