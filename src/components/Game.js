@@ -270,19 +270,6 @@ class Game extends React.Component {
         audio.play();
     }
 
-    // componentWillUnmount = () => {
-    //     this._ismount = false;
-    //     clearInterval(this.interval);
-    //     window.removeEventListener("keyup", this.onKeyUp);
-    //     window.removeEventListener("keydown", this.onKeyDown);
-    //     window.removeEventListener("mousemove", this.trackMouse);
-    //     window.removeEventListener("mousedown", this.mouseDown);
-    //     window.removeEventListener("mouseup", this.mouseUp);
-    //     audio.pause()
-    //     audio2.pause()
-        
-    //  }
-
     render() {
         let gameTime = this.localPlayerData.gameTime > 0 ? this.localPlayerData.gameTime : 0;
         // console.log(this.otherPlayerData)
