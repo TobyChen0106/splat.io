@@ -38,7 +38,7 @@ let startGameTimeCountdown = (serverSocket, roomId) => {
                 GameData[roomId].gameTime = GAME_TIME;
             }
         }
-    }, 1000)   
+    }, 1000)
 }
 
 let getRoomPlayers = (serverSocket, roomId) => {
@@ -51,14 +51,14 @@ let getRoomPlayers = (serverSocket, roomId) => {
             waitTime: GameData[roomId].waitTime
         });
 
-        
+
         if (GameData[roomId].playersBasicInfo.length < MAX_PLAYERS ||
             !GameData[roomId].playersBasicInfo.every(p => p.inWaitingRoom)) {
             clearInterval(GameData[roomId].waitIntervalId);
             GameData[roomId].waitTime = WAIT_TIME;
         }
-        else if (GameData[roomId].playersBasicInfo.length === MAX_PLAYERS && 
-                GameData[roomId].playersBasicInfo.every(p => p.inWaitingRoom)) {
+        else if (GameData[roomId].playersBasicInfo.length === MAX_PLAYERS &&
+            GameData[roomId].playersBasicInfo.every(p => p.inWaitingRoom)) {
             GameData[roomId].waitIntervalId = setInterval(() => {
                 if (GameData[roomId]) {
                     serverSocket.to(roomId).emit('getWaitTime', {
@@ -73,7 +73,7 @@ let getRoomPlayers = (serverSocket, roomId) => {
                         startGameTimeCountdown(serverSocket, roomId);
                     }
                 }
-            }, 1000)       
+            }, 1000)
         }
     }
 }
@@ -84,10 +84,14 @@ const http = require('http').Server(app);
 const port = process.env.PORT || 8080;
 
 // Routing
-app.use(express.static('public'));
+app.use(express.static('build'));
 
 // Socket.io serverSocket
 const serverSocket = require('socket.io')(http);
+
+app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'))
+})
 
 // Start server listening process.
 http.listen(port, () => {
@@ -103,23 +107,23 @@ db = mongoose.connection;
 db.on('error', error => { console.log(error) })
 db.once('open', () => {
     console.log('MongoDB connected!')
-    serverSocket.on('connection', socket => {        
+    serverSocket.on('connection', socket => {
         let uid = socket.id;
         let roomId = null;
         let team = null;
-        
+
         socket.on('error', (err) => { console.log(err); });
 
         socket.on('login', (data) => {
             console.log('login', data.form)
             //here
-            socket.emit('recievedlogin', {message: 'OK', userName: 'USERNAME', userStatus:'USERSTAUS'})
+            socket.emit('recievedlogin', { message: 'OK', userName: 'USERNAME', userStatus: 'USERSTAUS' })
         })
 
         socket.on('signup', (data) => {
             console.log('signup', data.form)
             //here
-            socket.emit('recievedsignup', {message: 'OK'})
+            socket.emit('recievedsignup', { message: 'OK' })
         })
 
         socket.on('newPlayer', (data) => {
@@ -127,12 +131,12 @@ db.once('open', () => {
             // find valid room
             if (GameData) {
                 Object.keys(GameData).forEach(id => {
-                    if (GameData[id].playersBasicInfo.length < MAX_PLAYERS && 
+                    if (GameData[id].playersBasicInfo.length < MAX_PLAYERS &&
                         GameData[id].status !== GAME_STATE.GAMING) {
                         roomId = id;
                         socket.join(roomId);
                     }
-                }) 
+                })
             }
             // no valid room
             if (!roomId) {
@@ -206,7 +210,7 @@ db.once('open', () => {
                 });
                 socket.emit('getGameTime', {
                     gameTime: GameData[data.roomId].gameTime
-                }) 
+                })
             }
         });
 
