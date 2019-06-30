@@ -1,13 +1,38 @@
 import React from 'react'
-import green from '../images/player/green/p-01.svg'
-import orange from '../images/player/orange/p-01.svg'
+// import green from '../images/player/green/p-01.svg'
+// import orange from '../images/player/orange/p-01.svg'
+import { COLOR_ASSET } from './ColorAssets'
+
+import greenPlayer from '../images/player/green/p-01.svg'
+import purplePlayer from '../images/player/purple/p-01.svg'
+import bluePlayer from '../images/player/blue/p-01.svg'
+import pinkPlayer from '../images/player/pink/p-01.svg'
+
 import './UserBlock.css'
 
 class UserBlock extends React.Component {
+
     render() {
-        return(
+        var img_src = "";
+        switch (this.props.color) {
+            case COLOR_ASSET[0].main:
+                img_src = pinkPlayer;
+                break;
+            case COLOR_ASSET[1].main:
+                img_src = bluePlayer
+                break;
+            case COLOR_ASSET[2].main:
+                img_src = greenPlayer;
+                break;
+            case COLOR_ASSET[3].main:
+                img_src = purplePlayer;
+                break;
+            default:
+                break;
+        }
+        return (
             <div className='UserBlock-container'>
-                <img src={this.props.team === 'A'? green:orange} alt={this.props.userName} />
+                <img src={img_src} alt={this.props.userName} />
                 <h3>{this.props.userName}</h3>
                 <h4>{this.props.playerRecord || 'guest'}</h4>
             </div>

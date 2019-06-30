@@ -104,6 +104,7 @@ class Game extends React.Component {
             healthAmount: 100,
             anouncement: [],
             gameResult: { A: 0, B: 0 },
+            winOrLose: "Tie",
         }
     }
 
@@ -262,9 +263,30 @@ class Game extends React.Component {
 
         if (this.localPlayerData.gameState === GAME_STATE.FREEZE && this.calculateResultFlag === 0) {
             let gameResult = getGameResult(this.fieldRef, this.splatRef, this.playerData, this.localPlayerData);
-            this.setState({ gameResult: gameResult });
+
+            var Afloat = parseInt(gameResult.A * 1000) / 10;
+            var Bfloat = parseInt(gameResult.B * 1000) / 10;
+
+            this.setState({ gameResult: { A: Afloat, B: Bfloat } });
+
+            if (Afloat === Bfloat) {
+                this.setState({ winOrLose: "Tie" });
+            } else if (Afloat > Bfloat) {
+                if (this.playerData.playerTeam === 'A') {
+                    this.setState({ winOrLose: "You Win!!" });
+                } else {
+                    this.setState({ winOrLose: "You Loss..." });
+                }
+            } else if (Afloat < Bfloat) {
+                if (this.playerData.playerTeam === 'B') {
+                    this.setState({ winOrLose: "You Win!!" });
+                } else {
+                    this.setState({ winOrLose: "You Loss..." });
+                }
+            }
             this.calculateResultFlag = 1;
-            console.log(this.state.gameResult);
+
+            // console.log(this.state.gameResult);
         }
     }
 
@@ -288,7 +310,7 @@ class Game extends React.Component {
             anouncement.push(
                 // needs some improvement
                 <text id="anouncement" x="50" y={40 + 30 * i} width="300" height="200" key={i}>
-                    {this.state.anouncement[i][0]+' killed '+this.state.anouncement[i][1]}
+                    {this.state.anouncement[i][0] + ' killed ' + this.state.anouncement[i][1]}
                 </text>
             )
         }
@@ -349,7 +371,8 @@ class Game extends React.Component {
                     pathname: `/result/${this.props.roomId}`,
                     state: {
                         result: this.state.gameResult,
-                        teamColor: this.playerData.teamColor
+                        teamColor: this.playerData.teamColor,
+                        winOrLose: this.state.winOrLose,
                     }
                 }}
                 />
