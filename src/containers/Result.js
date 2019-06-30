@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import './Result.css'
 import { COLOR_ASSET } from '../components/ColorAssets'
 import resultBarSVG from '../images/resultBar.svg'
+import Win from '../images/win.png'
+import Lose from '../images/loss.png'
 
 
 class Result extends Component {
@@ -14,7 +16,7 @@ class Result extends Component {
             teamAarea: this.props.location.state.result['A'],
             teamBarea: this.props.location.state.result['B'],
             winOrLose: this.props.location.state.winOrLose,
-            resultImage: this.props.resultImage,
+            resultImage: (this.props.location.state.winOrLose === "You Loss...")? Lose:Win,
         }
     }
 
@@ -35,7 +37,6 @@ class Result extends Component {
         //Afloat = Afloat === NaN ? 0 : Afloat
         var Bfloat = this.state.teamBarea;
         //Bfloat = Bfloat === NaN ? 0 : Bfloat
-        var Whitefloat = 1 - Afloat - Bfloat;
 
         return (
             <div className='Result-container'>
@@ -67,7 +68,7 @@ class Result extends Component {
                 </div>
 
                 <div className = 'result-image'>
-                    {this.state.resultImage}}
+                    <img src={this.state.resultImage} />
                 </div>
                 <button className='App_button' onClick={this.handleOK}>OK!</button>
             </div>
