@@ -37,3 +37,8 @@ h1 {
     margin-top: 15px;
     margin-bottom: 15px;
 }
+
+.Result-container svg {
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
