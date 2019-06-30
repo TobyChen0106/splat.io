@@ -14,6 +14,7 @@ class Result extends Component {
             teamAarea: this.props.location.state.result['A'],
             teamBarea: this.props.location.state.result['B'],
             winOrLose: this.props.location.state.winOrLose,
+            resultImage: this.props.resultImage,
         }
     }
 
@@ -65,8 +66,8 @@ class Result extends Component {
                     </svg>
                 </div>
 
-                <div>
-
+                <div className = 'result-image'>
+                    {this.state.resultImage}}
                 </div>
                 <button className='App_button' onClick={this.handleOK}>OK!</button>
             </div>
