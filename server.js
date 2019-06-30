@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const User = require('./models/user');
 const uuid = require('uuidv4');
 const MAX_PLAYERS = 2;
-const GAME_TIME = 15;
+const GAME_TIME = 20;
 const WAIT_TIME = 5;
 let GameData = {};
 let SEED = '1234';
@@ -15,7 +15,10 @@ const GAME_STATE = {
 };
 
 const getNextSeed = () => {
-    return (parseInt(SEED) * 1213 % 9973).toString();
+    while(GameData[SEED]) {
+        SEED = (parseInt(SEED) * 1213 % 9973).toString();
+    }
+    return SEED
 }
 
 const generateColorId = () => {
