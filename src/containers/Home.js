@@ -50,8 +50,18 @@ class Home extends Component {
                     Log in
                 </button>
                 
-                <JumpOutWindow display={this.state.login_display} title="Log in" form={["id", "pw"]} submit="Log in!" />
-                <JumpOutWindow display={this.state.signup_display} title='Sign up' form={["email","id", "pw", "pw again"]} submit="Sign up!" />
+                <JumpOutWindow 
+                    display={this.state.login_display} 
+                    title="Log in" form={{id: '', pw: ''}} list={["id", "pw"]}
+                    submit="Log in!" id="login"
+                    socket={this.props.socket}
+                    />
+                <JumpOutWindow 
+                    display={this.state.signup_display}
+                    title='Sign up' form={{email:'',id: '', pw: '', pw_again:''}} list={["email", "id", "pw", "pw again"]}
+                    submit="Sign up!" id='signup'
+                    socket={this.props.socket}
+                    />
                 <div className='Home_main'>
                     <img src={logo}></img>
                     <input 
