@@ -9,8 +9,25 @@ class Home extends Component {
         super(props)
         this.state = {
             login_display : {display: "none"},
-            signup_display: {display: "none"}
+            signup_display: {display: "none"},
+            isLoggedin: false,
+            userName: 'Player',
+            userStatus: 'Guest'
         }
+    }
+
+    componentWillMount() {
+        this.props.socket.once('recievedlogin', (data) => {
+            console.log("home", data)
+            if (data.message === 'OK'){
+                this.setState({
+                    isLoggedin: true,
+                    userName: data.userName,
+                    userStatus: data.userStatus
+                })
+            }
+            
+        })
     }
 
     handleInputName = (e) => {
@@ -43,15 +60,27 @@ class Home extends Component {
     render() {
         return(
             <div className='Home_container'>
+                
                 <button className='App_button top-button' onClick={() => this.handleDisplay('signup')}>
                     Sign up
                 </button>
                 <button className='App_button top-button' onClick={() => this.handleDisplay('login')}>
                     Log in
                 </button>
+                <h3  id='hiMessage'>Hi, {this.state.userName}</h3>
                 
-                <JumpOutWindow display={this.state.login_display} title="Log in" form={["id", "pw"]} submit="Log in!" />
-                <JumpOutWindow display={this.state.signup_display} title='Sign up' form={["email","id", "pw", "pw again"]} submit="Sign up!" />
+                <JumpOutWindow 
+                    display={this.state.login_display} 
+                    title="Log in" form={{id: '', pw: ''}} list={["id", "pw"]}
+                    submit="Log in!" id="login"
+                    socket={this.props.socket}
+                    />
+                <JumpOutWindow 
+                    display={this.state.signup_display}
+                    title='Sign up' form={{email:'',id: '', pw: '', pw_again:''}} list={["email", "id", "pw", "pw again"]}
+                    submit="Sign up!" id='signup'
+                    socket={this.props.socket}
+                    />
                 <div className='Home_main'>
                     <img src={logo}></img>
                     <input 

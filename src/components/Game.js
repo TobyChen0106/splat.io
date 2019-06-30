@@ -38,7 +38,7 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
         // data that most emit to server
-        
+
         this.playerData = {
             roomId: this.props.roomId,
             teamColor: this.props.teamColor,
@@ -64,7 +64,7 @@ class Game extends React.Component {
             spawnPosition: { x: 500, y: 500 },
             respawnTime: 2000,
             gameState: GAME_STATE.GAMING,
-            roomId: this.props.roomId, 
+            roomId: this.props.roomId,
 
             playerMoveSpeed: 5,
             playerMoveDirection: { x: 0, y: 0 },
@@ -87,7 +87,7 @@ class Game extends React.Component {
 
         //data that recieved from the server
         this.otherPlayerData = [];
-        
+
         this.calculateResultFlag = 0;
         this.mouseScale = 1;
 
@@ -119,7 +119,19 @@ class Game extends React.Component {
         })
 
         this.props.socket.on('killEvent', (data) => {
-            console.log(data.killerName, data.killedName);
+            // console.log(data.killerName, data.killedName);
+
+            var temp = this.state.anouncement;
+            temp.push([data.killerName, data.killedName]);
+            this.setState({ anouncement: temp });
+
+            if (this.localPlayerData.gameState === GAME_STATE.GAMING) {
+                this.anounceIntervalId = setTimeout(() => {
+                    this.setState((prevState) => (
+                        { anouncement: prevState.anouncement.splice(1) }
+                    ))
+                }, 3000);
+            }
         })
 
         window.addEventListener("keyup", this.onKeyUp);
@@ -127,7 +139,7 @@ class Game extends React.Component {
         window.addEventListener("mousemove", this.trackMouse);
         window.addEventListener("mousedown", this.mouseDown);
         window.addEventListener("mouseup", this.mouseUp);
-        
+
         audio.currentTime = 0;
         audio.play();
     }
@@ -230,20 +242,7 @@ class Game extends React.Component {
             // draw aim point
             drawAimPoint(this.aimPointRef, this.playerData.playerPosition, this.localPlayerData.mousePosition, this.playerData.playerAngle, aimPoints);
 
-            var temp = this.state.anouncement;
-            if (Math.floor(Math.random() * 20) === 0/* 這邊的random只是為了方便測試，要改成if收到新訊息*/) {
 
-                temp.push('new');
-                this.setState({ anouncement: temp });
-
-                if(this.localPlayerData.gameState === GAME_STATE.GAMING ){
-                    this.anounceIntervalId = setTimeout(() => {
-                        this.setState((prevState) => (
-                            { anouncement: prevState.anouncement.splice(1) }
-                        ))
-                    }, 3000);
-                }
-            }
         }
         else {
             this.setState({ cameraSize: 2000 });
@@ -287,8 +286,9 @@ class Game extends React.Component {
         let anouncement = [];
         for (let i = 0; i < this.state.anouncement.length; ++i) {
             anouncement.push(
+                // needs some improvement
                 <text id="anouncement" x="50" y={40 + 30 * i} width="300" height="200" key={i}>
-                    {this.state.anouncement[i]}
+                    {this.state.anouncement[i][0]+' killed '+this.state.anouncement[i][1]}
                 </text>
             )
         }
@@ -345,14 +345,14 @@ class Game extends React.Component {
             // this.props.socket.disconnect();
             // this.props.socket.open();
             return (
-            <Redirect to={{
-                pathname: `/result/${this.props.roomId}`,
-                state: {
-                    result: this.state.gameResult,
-                    teamColor: this.playerData.teamColor
-                }
-            }}
-            />
+                <Redirect to={{
+                    pathname: `/result/${this.props.roomId}`,
+                    state: {
+                        result: this.state.gameResult,
+                        teamColor: this.playerData.teamColor
+                    }
+                }}
+                />
             );
         }
     }

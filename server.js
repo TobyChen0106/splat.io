@@ -110,6 +110,18 @@ db.once('open', () => {
         
         socket.on('error', (err) => { console.log(err); });
 
+        socket.on('login', (data) => {
+            console.log('login', data.form)
+            //here
+            socket.emit('recievedlogin', {message: 'OK', userName: 'USERNAME', userStatus:'USERSTAUS'})
+        })
+
+        socket.on('signup', (data) => {
+            console.log('signup', data.form)
+            //here
+            socket.emit('recievedsignup', {message: 'OK'})
+        })
+
         socket.on('newPlayer', (data) => {
             // determine which room to join
             // find valid room
