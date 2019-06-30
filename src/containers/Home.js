@@ -88,7 +88,6 @@ class Home extends Component {
                         autoComplete="off"
                         spellCheck="false"
                         onKeyUp={this.handleInputName}
-                        value={this.state.userName}
                     />
                     <button className='App_button' onClick={this.handlePlay}>
                         Play!
