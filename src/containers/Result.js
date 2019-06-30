@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {NavLink} from 'react-router-dom'
 import './Result.css'
 import {COLOR_ASSET} from '../components/ColorAssets'
 import resultBarSVG from '../images/resultBar.svg'

@@ -1,5 +1,5 @@
 
-import { GAME_STATE, PLAYER_STATUS } from '../enum'
+import { PLAYER_STATUS } from '../enum'
 import splashSound from '../sounds/splash/splash2.wav'
 
 import greenPlayer from '../images/player/green/p-01.svg'
@@ -26,8 +26,8 @@ export const playerHeight = 50;
 
 const handOffset = 23
 
-var diveSVG;
-var gunSVG = GunSVG
+//var diveSVG;
+//var gunSVG = GunSVG
 
 var ripple = [];
 var lastRippleTimeStamp = 0;
@@ -144,7 +144,7 @@ const drawPlayerNormal = (context, state, team, isSelf) => {
     const playerColor = state.playerColor
     const playerPosition = state.playerPosition
     const playerAngle = state.playerAngle
-    const playerStatus = state.playerStatus
+    //const playerStatus = state.playerStatus
     /*
     context.save();
     context.translate(playerPosition.x, playerPosition.y)
@@ -232,8 +232,8 @@ const drawPlayerDive = (context, state, team, isSelf, isTeamMate) => {
     const playerName = state.playerName
     const playerColor = state.playerColor
     const playerPosition = state.playerPosition
-    const playerAngle = state.playerAngle
-    const playerStatus = state.playerStatus
+    //const playerAngle = state.playerAngle
+    //const playerStatus = state.playerStatus
 
 
     if (isTeamMate) {
@@ -273,8 +273,8 @@ const drawPlayerDead = (context, state, team, isSelf) => {
     const playerName = state.playerName
     const playerColor = state.playerColor
     const playerPosition = state.playerPosition
-    const playerAngle = state.playerAngle
-    const playerStatus = state.playerStatus
+    //const playerAngle = state.playerAngle
+    //const playerStatus = state.playerStatus
 
 
     context.save()
@@ -313,8 +313,8 @@ const drawPlayerName = (context, state) => {
     const playerName = state.playerName
     const playerColor = state.playerColor
     const playerPosition = state.playerPosition
-    const playerAngle = state.playerAngle
-    const playerStatus = state.playerStatus
+    //const playerAngle = state.playerAngle
+    //const playerStatus = state.playerStatus
 
     context.save()
 

@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {NavLink} from 'react-router-dom'
 import temp from '../images/temp.gif'
 import logo from '../images/logo.png'
 import JumpOutWindow from '../components/JumpoutWindow'
