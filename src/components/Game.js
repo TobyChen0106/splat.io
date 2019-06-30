@@ -37,7 +37,7 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
         // data that most emit to server
-        this._ismount = false;
+        // this._ismount = false;
         
         this.playerData = {
             roomId: this.props.roomId,
@@ -64,8 +64,7 @@ class Game extends React.Component {
             spawnPosition: { x: 500, y: 500 },
             respawnTime: 2000,
             gameState: GAME_STATE.GAMING,
-            roomId: this.props.roomId,
-            updateIntervalId: null,
+            roomId: this.props.roomId, 
 
             playerMoveSpeed: 5,
             playerMoveDirection: { x: 0, y: 0 },
@@ -91,7 +90,7 @@ class Game extends React.Component {
 
         this.calculateResultFlag = 0;
         this.mouseScale = 1;
-        this.updateGameIntervalId=0;
+        this.updateGameIntervalId = 0;
         this.state = {
             gameBoardWidth: 1600,
             gameBoardHeight: 900,
@@ -115,6 +114,16 @@ class Game extends React.Component {
         this.props.socket.on('getGameTime', (data) => {
             this.localPlayerData.gameTime = data.gameTime;
         })
+
+        // this._ismount = true;
+        window.addEventListener("keyup", this.onKeyUp);
+        window.addEventListener("keydown", this.onKeyDown);
+        window.addEventListener("mousemove", this.trackMouse);
+        window.addEventListener("mousedown", this.mouseDown);
+        window.addEventListener("mouseup", this.mouseUp);
+        
+        audio.currentTime = 0;
+        audio.play();
     }
 
     onKeyDown = e => {
@@ -137,7 +146,6 @@ class Game extends React.Component {
     }
 
     updateGame = () => {
-        //console.log('update game')
         if (this.localPlayerData.gameState === GAME_STATE.GAMING || this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             // drawOtherPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
 
@@ -223,7 +231,7 @@ class Game extends React.Component {
                 temp.push('new');
                 this.setState({ anouncement: temp });
 
-                setTimeout(() => {
+                this.anounceIntervalId = setTimeout(() => {
                     this.setState((prevState) => (
                         { anouncement: prevState.anouncement.splice(1) }
                     ))
@@ -241,7 +249,6 @@ class Game extends React.Component {
 
             if (this.localPlayerData.gameTime <= -5) {
                 this.localPlayerData.gameState = GAME_STATE.FINISH;
-                clearInterval(this.updateGameIntervalId);
             }
         }
 
@@ -256,24 +263,14 @@ class Game extends React.Component {
     }
 
     componentDidMount = () => {
-        this._ismount = true;
-        window.addEventListener("keyup", this.onKeyUp);
-        window.addEventListener("keydown", this.onKeyDown);
-        window.addEventListener("mousemove", this.trackMouse);
-        window.addEventListener("mousedown", this.mouseDown);
-        window.addEventListener("mouseup", this.mouseUp);
-        this.localPlayerData.updateIntervalId = setInterval(() => {
+        this.updateIntervalId = setInterval(() => {
             this.updateGame();
         }, 50);
         drawField(this.fieldRef);
-        audio.currentTime = 0;
-        audio.play();
     }
 
     render() {
         let gameTime = this.localPlayerData.gameTime > 0 ? this.localPlayerData.gameTime : 0;
-        // console.log(this.otherPlayerData)
-        //turn the this.state.anouncement to <text />...
         var anouncement = [];
         for (var i = 0; i < this.state.anouncement.length; ++i) {
             anouncement.push(
@@ -345,7 +342,8 @@ class Game extends React.Component {
         window.removeEventListener("mouseup", this.mouseUp);
         this.props.socket.off('updateGame');
         this.props.socket.off('getGameTime');
-        clearInterval(this.localPlayerData.updateIntervalId)
+        clearInterval(this.updateIntervalId);
+        clearInterval(this.anounceIntervalId);
     }
 }
 
