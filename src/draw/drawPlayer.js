@@ -30,7 +30,7 @@ const handOffset = 23
 //var gunSVG = GunSVG
 
 var ripple = [];
-var lastRippleTimeStamp = 0;
+//var lastRippleTimeStamp = 0;
 var lastRipplePosition = { x: -1000, y: -1000 };
 
 var audio = new Audio(splashSound);
