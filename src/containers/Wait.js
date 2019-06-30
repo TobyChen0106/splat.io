@@ -67,14 +67,18 @@ class Wait extends Component {
         let teamA = this.state.teamA.map(e =>
             <li key={e.name}>
                 <UserBlock userName={e.name} playerRecord=''/*playerRecord={ isLoggin? this.props.playerRecord : ''}*/ 
-                status={e.inWaitingRoom} team='A' color = {this.state.teamAColor.main}/>
+                status={e.inWaitingRoom} team='A' color = {this.state.teamAColor.main}
+                isSelf={e.uid === this.props.uid}
+                />
             </li>
         );
 
         let teamB = this.state.teamB.map(e =>
             <li key={e.name}>
                 <UserBlock userName={e.name}  playerRecord=''
-                 status={e.inWaitingRoom}  team='B'  color = {this.state.teamBColor.main}/>
+                 status={e.inWaitingRoom}  team='B'  color = {this.state.teamBColor.main}
+                 isSelf={e.uid === this.props.uid}
+                 />
             </li>
         );
 
@@ -99,8 +103,8 @@ class Wait extends Component {
                     </div>
                 </div>
                 <div id='Wait_button'>
-                    <button className='App_button' onClick={this.handleBack}>
-                        Back
+                    <button className='App_button' id="back" onClick={this.handleBack}>
+                        {"<"} Back
                     </button>
                 </div>
             </div>
