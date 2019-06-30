@@ -337,7 +337,6 @@ class Game extends React.Component {
     }
 
     componentWillUnmount = () => {
-        console.log("wi")
         window.removeEventListener("keyup", this.onKeyUp);
         window.removeEventListener("keydown", this.onKeyDown);
         window.removeEventListener("mousemove", this.trackMouse);
