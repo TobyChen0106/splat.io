@@ -25,6 +25,7 @@
 .UserBlock-container h3 {
     margin-top: 10px;
     margin-bottom: 5px;
+    font-size: 36px;
 
 }
 .UserBlock-container h4 {
@@ -32,4 +33,9 @@
     margin-top: 10px;
     margin-bottom: 5px;
     color: blanchedalmond;
+}
+
+#record {
+    display: inline;
+    font-size: 20px;
 }

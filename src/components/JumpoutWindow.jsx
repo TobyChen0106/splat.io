@@ -55,7 +55,7 @@ class JumpOutWindow extends Component {
     }
 
     render() {
-        console.log(this.state.form)
+        //console.log(this.state.form)
         return(
             <div style={this.state.show} className='Jump-bg'>
                 <div className="Jump-container">

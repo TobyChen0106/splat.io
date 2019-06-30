@@ -28,12 +28,15 @@ class Wait extends Component {
             if (waitingForPlayer < 0) waitingForPlayer = 0;
 
             this.setState({
-                teamA: data.teamA.map(p => p.name),
-                teamB: data.teamB.map(p => p.name),
+                teamA: data.teamA, //.map(p => p.name),
+                teamB: data.teamB, //.map(p => p.name),
                 isRoomFull: data.isRoomFull,
                 maxPlayers: data.maxPlayers,
                 waitingMessage: `waiting for ${waitingForPlayer} more players to join...`
             });
+            if(waitingForPlayer === 0){
+                this.setState({waitingMessage: "Waiting... press back and re-enter if you don't wanna wait"})
+            }
         });
         
         this.props.socket.on('getWaitTime', (data) => {
@@ -61,17 +64,21 @@ class Wait extends Component {
     //61,67 playerRecord 的部分，如果有登入就送他的紀錄，不然就送個''，UserBlock物件裡面得到''就會印出guest
 
     render() {
-        let teamA = this.state.teamA.map(name =>
-            <li key={name}>
-                <UserBlock userName={name} playerRecord=''/*playerRecord={ isLoggin? this.props.playerRecord : ''}*/ team='A' color = {this.state.teamAColor.main}/>
+        let teamA = this.state.teamA.map(e =>
+            <li key={e.name}>
+                <UserBlock userName={e.name} playerRecord=''/*playerRecord={ isLoggin? this.props.playerRecord : ''}*/ 
+                status={e.inWaitingRoom} team='A' color = {this.state.teamAColor.main}/>
             </li>
         );
 
-        let teamB = this.state.teamB.map(name =>
-            <li key={name}>
-                <UserBlock userName={name} playerRecord='' team='B'  color = {this.state.teamBColor.main}/>
+        let teamB = this.state.teamB.map(e =>
+            <li key={e.name}>
+                <UserBlock userName={e.name}  playerRecord=''
+                 status={e.inWaitingRoom}  team='B'  color = {this.state.teamBColor.main}/>
             </li>
         );
+
+        console.log(this.state.teamA)
 
         return (
             <div className='Wait_container'>
