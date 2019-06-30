@@ -29,13 +29,13 @@ const ink = [
 var ripple = [];
 var audio = new Audio(inkHit06);
 audio.volume = 0.5;
-
+/*
 function random_ink() {
     var l = ink.length;
     var r = Math.floor(Math.random() * l)
     return ink[r]
 }
-
+*/
 export const drawSplat = (c, a, splat, playerColor, playerAngle, playerPosition) => {
 
     var context = c.getContext("2d");
