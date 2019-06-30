@@ -9,7 +9,6 @@ import Lose from '../images/loss.png'
 class Result extends Component {
     constructor(props) {
         super(props)
-        console.log(this.props.location.state)
         this.state = {
             teamAColor: COLOR_ASSET[this.props.location.state.teamColor['A']], //把[]裡面的數字換成teamColorA,
             teamBColor: COLOR_ASSET[this.props.location.state.teamColor['B']],
@@ -20,7 +19,29 @@ class Result extends Component {
         }
     }
 
+    componentWillMount = () => {
+        this.props.socket.emit('enterResult', {
+            roomId: this.props.roomId,
+            uid: this.props.uid
+        })
+        this.props.socket.once('kickOut', () => {
+            this.props.socket.disconnect();
+            this.props.socket.open();
+            this.props.history.push('/home');
+            this.props.setName();
+            console.log("You've been kicked out because of your long waiting time. Press 'play' again to join a new game.")
+        })
+    }
+
+    componentWillUnmount = () => {
+        this.props.socket.off('kickOut');
+    }
+
     handleOK = () => {
+        this.props.socket.emit('backToWaitRoom', {
+            roomId: this.props.roomId,
+            uid: this.props.uid
+        })
         this.props.history.push(`/wait/${this.props.roomId}`);
     }
 
@@ -34,13 +55,11 @@ class Result extends Component {
             filter: "drop-shadow(0px 0px 5px " + this.state.teamBColor.glow + ")"
         }
         var Afloat = this.state.teamAarea;
-        //Afloat = Afloat === NaN ? 0 : Afloat
         var Bfloat = this.state.teamBarea;
-        //Bfloat = Bfloat === NaN ? 0 : Bfloat
 
         return (
             <div className='Result-container'>
-                <h1>Result: {this.state.winOrLose}</h1>
+                <h1>{this.state.winOrLose}</h1>
                 <div className='Result-number-container'>
                     <div className='Result-number' style={{ color: this.state.teamAColor }}>
                         <h2>Team A</h2>

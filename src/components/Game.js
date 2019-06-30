@@ -78,7 +78,7 @@ class Game extends React.Component {
             mouseDownState: 0,
 
             timeStamp: Date.now(), // Date.now()
-            gameTime: Date.now(), // remaining time for the game
+            gameTime: 60, // remaining time for the game
 
             deadTime: 0, //record deadtime
             timeColor: "#FFFFFF",
@@ -124,9 +124,7 @@ class Game extends React.Component {
         })
 
         this.props.socket.on('killEvent', (data) => {
-            // console.log(data.killerName, data.killedName);
-
-            var temp = this.state.anouncement;
+            let temp = this.state.anouncement;
             temp.push([data.killerName, data.killedName]);
             this.setState({ anouncement: temp });
 
@@ -208,7 +206,8 @@ class Game extends React.Component {
             if (this.playerData.playerStatus === PLAYER_STATUS.DEAD && this.localPlayerData.timeStamp - this.localPlayerData.deadTime >= this.localPlayerData.respawnTime) {
                 // respawn 
                 this.playerData.playerStatus = PLAYER_STATUS.STANDING_SPACE;
-                this.playerData.playerPosition = this.localPlayerData.spawnPosition;
+                this.playerData.playerPosition.x = this.localPlayerData.spawnPosition.x;
+                this.playerData.playerPosition.y = this.localPlayerData.spawnPosition.y;
                 this.localPlayerData.inkAmount = 100;
                 this.localPlayerData.playerHealth = 100;
             }
@@ -271,8 +270,8 @@ class Game extends React.Component {
         if (this.localPlayerData.gameState === GAME_STATE.FREEZE && this.calculateResultFlag === 0) {
             let gameResult = getGameResult(this.fieldRef, this.splatRef, this.playerData, this.localPlayerData);
 
-            var Afloat = parseInt(gameResult.A * 1000) / 10;
-            var Bfloat = parseInt(gameResult.B * 1000) / 10;
+            let Afloat = parseInt(gameResult.A * 1000) / 10;
+            let Bfloat = parseInt(gameResult.B * 1000) / 10;
 
             this.setState({ gameResult: { A: Afloat, B: Bfloat } });
             this.setState({ resultImage: gameResult.resultImage });

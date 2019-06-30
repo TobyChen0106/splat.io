@@ -9,7 +9,6 @@ class Wait extends Component {
         this.state = {
             teamA: [],
             teamB: [],
-            isRoomFull: [],
             teamAColor: COLOR_ASSET[this.props.teamColor['A']],
             teamBColor: COLOR_ASSET[this.props.teamColor['B']],
             waitingMessage: '',
@@ -29,7 +28,6 @@ class Wait extends Component {
             this.setState({
                 teamA: data.teamA, //.map(p => p.name),
                 teamB: data.teamB, //.map(p => p.name),
-                isRoomFull: data.isRoomFull,
                 maxPlayers: data.maxPlayers,
                 waitingMessage: `waiting for ${waitingForPlayer} more players to join...`
             });
@@ -63,7 +61,6 @@ class Wait extends Component {
     //61,67 playerRecord 的部分，如果有登入就送他的紀錄，不然就送個''，UserBlock物件裡面得到''就會印出guest
 
     render() {
-        console.log(this.state)
         let teamA = this.state.teamA.map(e =>
             <li key={e.name}>
                 <UserBlock userName={e.name} playerRecord=''/*playerRecord={ isLoggin? this.props.playerRecord : ''}*/ 
@@ -81,8 +78,6 @@ class Wait extends Component {
                  />
             </li>
         );
-
-        console.log(this.state.teamA)
 
         return (
             <div className='Wait_container'>

@@ -2,9 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./models/user');
 const uuid = require('uuidv4');
-const MAX_PLAYERS = 2;
-const GAME_TIME = 20;
-const WAIT_TIME = 5;
+const MAX_PLAYERS = 4;
+const GAME_TIME = 60;
+const WAIT_TIME = 15;
 let GameData = {};
 let SEED = '1234';
 const GAME_STATE = {
@@ -34,11 +34,12 @@ const generateColorId = () => {
 let startGameTimeCountdown = (serverSocket, roomId) => {
     let gameIntervalId = setInterval(() => {
         if (GameData[roomId]) {
+            console.log(GameData[roomId].gameTime)
             GameData[roomId].gameTime--;
             if (GameData[roomId].gameTime <= -6) {
                 clearInterval(gameIntervalId);
                 GameData[roomId].status = GAME_STATE.FINISH;
-                GameData[roomId].gameTime = GAME_TIME;
+                serverSocket.to(roomId).emit('endGaming');
             }
         }
     }, 1000)   
@@ -49,12 +50,10 @@ let getRoomPlayers = (serverSocket, roomId) => {
         serverSocket.to(roomId).emit('getRoomPlayers', {
             teamA: GameData[roomId].playersBasicInfo.filter(p => p.team === 'A'),
             teamB: GameData[roomId].playersBasicInfo.filter(p => p.team === 'B'),
-            isRoomFull: GameData[roomId].playersBasicInfo.length === MAX_PLAYERS,
             maxPlayers: MAX_PLAYERS,
             waitTime: GameData[roomId].waitTime
         });
 
-        
         if (GameData[roomId].playersBasicInfo.length < MAX_PLAYERS ||
             !GameData[roomId].playersBasicInfo.every(p => p.inWaitingRoom)) {
             clearInterval(GameData[roomId].waitIntervalId);
@@ -72,6 +71,7 @@ let getRoomPlayers = (serverSocket, roomId) => {
                         clearInterval(GameData[roomId].waitIntervalId);
                         serverSocket.to(roomId).emit('startGaming');
                         GameData[roomId].status = GAME_STATE.GAMING;
+                        GameData[roomId].gameTime = GAME_TIME;
                         GameData[roomId].playersBasicInfo.map(p => { p.inWaitingRoom = 0 });
                         startGameTimeCountdown(serverSocket, roomId);
                     }
@@ -204,7 +204,7 @@ db.once('open', () => {
                     status: GAME_STATE.WAITING,
                     gameTime: GAME_TIME,
                     waitTime: WAIT_TIME,
-                    anouncement: []
+                    anouncement: [],
                 }
             }
 
@@ -222,7 +222,8 @@ db.once('open', () => {
                 uid: uid,
                 team: team,
                 kill: 0,
-                inWaitingRoom: 1
+                inWaitingRoom: 1,
+                autoKick: 0
             })
 
             socket.emit('getFirstInInfo', {
@@ -235,11 +236,11 @@ db.once('open', () => {
 
         socket.on('getRoomPlayers', (data) => {
             // if player come back from game
-            if (GameData[data.roomId]) {
-                GameData[data.roomId].playersBasicInfo.map(p => {
-                    if (p.uid === data.uid) p.inWaitingRoom = 1;
-                })
-            }
+            // if (GameData[data.roomId]) {
+            //     GameData[data.roomId].playersBasicInfo.map(p => {
+            //         if (p.uid === data.uid) p.inWaitingRoom = 1;
+            //     })
+            // }
             getRoomPlayers(serverSocket, data.roomId)
         });
 
@@ -273,6 +274,31 @@ db.once('open', () => {
                     killerName: data.killerName,
                     killedName: data.killedName
                 });
+            }
+        })
+
+        socket.on('enterResult', (data) => {
+            if (GameData[data.roomId]) {
+                GameData[data.roomId].playersBasicInfo.map(p => {
+                    if (p.uid === data.uid) {
+                        p.autoKick = 1;
+                        setTimeout(() => {
+                            if (p.autoKick) socket.emit('kickOut');
+                        }, 10 * 1000)
+                    }
+
+                })
+            }
+        })
+
+        socket.on('backToWaitRoom', (data) => {
+            if (GameData[data.roomId]) {
+                GameData[data.roomId].playersBasicInfo.map(p => {
+                    if (p.uid === data.uid) {
+                        p.autoKick = 0;
+                        p.inWaitingRoom = 1;
+                    }
+                })
             }
         })
 
