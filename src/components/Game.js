@@ -333,7 +333,16 @@ class Game extends React.Component {
         else {
             this.props.socket.disconnect();
             this.props.socket.open();
-            return (<Redirect to={`/result/${this.props.roomId}`} />);
+            return (
+            <Redirect to={{
+                pathname: `/result/${this.props.roomId}`,
+                state: {
+                    result: this.state.gameResult,
+                    teamColor: this.playerData.teamColor
+                }
+            }}
+            />
+            );
         }
     }
 
