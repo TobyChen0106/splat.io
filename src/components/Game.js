@@ -88,7 +88,6 @@ class Game extends React.Component {
 
         this.calculateResultFlag = 0;
         this.mouseScale = 1;
-        this.updateGameIntervalId=0;
         this.state = {
             gameBoardWidth: 1600,
             gameBoardHeight: 900,
@@ -164,7 +163,6 @@ class Game extends React.Component {
             if (killed_msg !== null) {
                 //emit killed_msg
                 // killed_msg = { killerUid: players[p].playerUid, killerName: players[p].playerName, killedUid: playerData.playerUid, killedName:playerData.playerName }
-                console.log(killed_msg);
                 this.localPlayerData.deadTime = this.localPlayerData.timeStamp;
             }
 
@@ -191,8 +189,8 @@ class Game extends React.Component {
                 this.setState({ cameraSize: filedWidth > filedHeight ? filedWidth : filedHeight });
                 this.setState({ playerPosition: { x: filedWidth / 2, y: filedHeight / 2 } });
                 audio.pause();
-                // audio2.currentTime = 0;
-                audio2.play()
+
+                audio2.play();
             } else {
                 this.setState({ playerPosition: new_playerPosition });
             }
@@ -258,7 +256,7 @@ class Game extends React.Component {
         window.addEventListener("mousemove", this.trackMouse);
         window.addEventListener("mousedown", this.mouseDown);
         window.addEventListener("mouseup", this.mouseUp);
-        this.updateGameIntervalId = setInterval(() => {
+        this.interval = setInterval(() => {
             this.updateGame();
         }, 50);
         drawField(this.fieldRef);
@@ -300,7 +298,7 @@ class Game extends React.Component {
         if (this.localPlayerData.gameState === GAME_STATE.GAMING || this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             return (
                 <div id="game-container">
-                    {timesUp}
+                    
                     <svg id="svg-container"
                         width={Math.max(window.innerWidth, window.innerHeight)}
                         height={Math.max(window.innerWidth, window.innerHeight)}
@@ -330,6 +328,7 @@ class Game extends React.Component {
                         <HP hp={this.localPlayerData.playerHealth} />
                         {anouncement}
                     </svg>
+                    {timesUp}
                 </div>
             )
         }
