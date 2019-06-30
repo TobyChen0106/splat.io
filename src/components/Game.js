@@ -38,6 +38,8 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
         // data that most emit to server
+        const spawnPoint_x = this.props.team === 'A' ? battleField_1.spawnPoint.teamA.x : battleField_1.spawnPoint.teamB.x;
+        const spawnPoint_y = this.props.team === 'A' ? battleField_1.spawnPoint.teamA.y : battleField_1.spawnPoint.teamB.y;
 
         this.playerData = {
             roomId: this.props.roomId,
@@ -50,7 +52,7 @@ class Game extends React.Component {
             playerColor: COLOR_ASSET[this.props.teamColor[this.props.team]],
             playerColorID: this.props.teamColor[this.props.team],
 
-            playerPosition: { x: 100, y: 100 },
+            playerPosition: { x: spawnPoint_x, y: spawnPoint_y },
             playerAngle: 0,
             playerStatus: PLAYER_STATUS.STANDING_SPACE,
             playerWeapon: weapons.splatterShot_v1,
@@ -61,7 +63,7 @@ class Game extends React.Component {
 
         // data that only holded by local front end
         this.localPlayerData = {
-            spawnPosition: { x: 500, y: 500 },
+            spawnPosition: { x: spawnPoint_x, y: spawnPoint_y },
             respawnTime: 2000,
             gameState: GAME_STATE.GAMING,
             roomId: this.props.roomId,
@@ -82,7 +84,8 @@ class Game extends React.Component {
             timeColor: "#FFFFFF",
 
             enemyColor: this.props.team === 'A' ? COLOR_ASSET[this.props.teamColor['B']] : COLOR_ASSET[this.props.teamColor['A']],
-            result: { teamA: 0, teamB: 0 }
+            result: { teamA: 0, teamB: 0 },
+
         }
 
         //data that recieved from the server
@@ -105,6 +108,7 @@ class Game extends React.Component {
             anouncement: [],
             gameResult: { A: 0, B: 0 },
             winOrLose: "Tie",
+            resultImage: null,
         }
     }
 
@@ -194,7 +198,7 @@ class Game extends React.Component {
             // get and update player health according to 
             let killed_msg = getPlayerHealth(this.playerData, this.localPlayerData, this.otherPlayerData);
             if (killed_msg !== null) {
-                console.log(killed_msg);
+                // console.log(killed_msg);
                 this.props.socket.emit('killEvent', killed_msg);
                 this.localPlayerData.deadTime = this.localPlayerData.timeStamp;
             }
@@ -268,6 +272,7 @@ class Game extends React.Component {
             var Bfloat = parseInt(gameResult.B * 1000) / 10;
 
             this.setState({ gameResult: { A: Afloat, B: Bfloat } });
+            this.setState({ resultImage: gameResult.resultImage });
 
             if (Afloat === Bfloat) {
                 this.setState({ winOrLose: "Tie" });
@@ -293,7 +298,7 @@ class Game extends React.Component {
     componentDidMount = () => {
         this.updateIntervalId = setInterval(() => {
             this.updateGame();
-        }, 50);
+        }, 20);
         drawField(this.fieldRef);
 
         window.addEventListener("keyup", this.onKeyUp);
@@ -304,6 +309,7 @@ class Game extends React.Component {
     }
 
     render() {
+        console.log(this.state.resultImage)
         let gameTime = this.localPlayerData.gameTime > 0 ? this.localPlayerData.gameTime : 0;
         let anouncement = [];
         for (let i = 0; i < this.state.anouncement.length; ++i) {
@@ -324,7 +330,6 @@ class Game extends React.Component {
                 </div>
             )
         }
-
 
         if (this.localPlayerData.gameState === GAME_STATE.GAMING || this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             return (
@@ -373,6 +378,7 @@ class Game extends React.Component {
                         result: this.state.gameResult,
                         teamColor: this.playerData.teamColor,
                         winOrLose: this.state.winOrLose,
+                        // resultImage: this.state.resultImage,
                     }
                 }}
                 />
