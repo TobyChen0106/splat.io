@@ -24,7 +24,6 @@ class Wait extends Component {
         });
 
         this.props.socket.on('getRoomPlayers', (data) => {
-            console.log(data)
             let waitingForPlayer = data.maxPlayers - data.teamA.length - data.teamB.length;
             if (waitingForPlayer < 0) waitingForPlayer = 0;
 
