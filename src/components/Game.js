@@ -312,7 +312,7 @@ class Game extends React.Component {
     }
 
     render() {
-        console.log(this.state.resultImage)
+        // console.log(this.state.resultImage)
         let gameTime = this.localPlayerData.gameTime > 0 ? this.localPlayerData.gameTime : 0;
         let anouncement = [];
         for (let i = 0; i < this.state.anouncement.length; ++i) {

@@ -20,7 +20,7 @@ export const getGameResult = (fieldRef, splatRef, playerData, localPlayerData) =
         const fildWidth = battleField_1.fieldRange.xMax - battleField_1.fieldRange.xMin;
         const fildHeight = battleField_1.fieldRange.yMax - battleField_1.fieldRange.yMin;
         var result = sxt.getImageData(battleField_1.fieldRange.xMin, battleField_1.fieldRange.yMin, fildWidth, fildHeight).data;
-        // var resultImage = new Image();
+        var resultImage = new Image();
         resultImage.src = splatRef.toDataURL();
 
         var own_color = hexToRgb(playerData.playerColor.main);
