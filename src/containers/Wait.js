@@ -10,8 +10,8 @@ class Wait extends Component {
             teamA: [],
             teamB: [],
             isRoomFull: [],
-            teamAColor: COLOR_ASSET[this.props.teamColor['A']].shadow,
-            teamBColor: COLOR_ASSET[this.props.teamColor['B']].shadow,
+            teamAColor: COLOR_ASSET[this.props.teamColor['A']],
+            teamBColor: COLOR_ASSET[this.props.teamColor['B']],
             waitingMessage: '',
             currentPlayers: {}
         }

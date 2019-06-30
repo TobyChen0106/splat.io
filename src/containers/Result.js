@@ -53,13 +53,13 @@ class Result extends Component {
                 <div>
                     <svg width="1200" height="100" x="200" y="200">
                         <rect className="inkBar"
-                            x="40" y="20" width={1120 * Afloat/(Afloat+Bfloat+5)} height="60" style={inkStyleA} />
+                            x="40" y="20" width={1120 * Afloat / (Afloat + Bfloat + 0.0001)} height="60" style={inkStyleA} />
 
                         <rect className="inkBar"
-                            x={40 + 1120 * Afloat/(Afloat+Bfloat+5)+ 5} y="20" width={1120 * Bfloat/(Afloat+Bfloat+5)} height="60" style={inkStyleB} />
+                            x={40 + 1120 * Afloat / (Afloat + Bfloat + 0.0001)} y="20" width={1120 * Bfloat / (Afloat + Bfloat + 0.0001)} height="60" style={inkStyleB} />
 
                         <rect className="inkBar"
-                            x={40 + 1120 * Afloat/(Afloat+Bfloat+5)} y="20" width="5" height="60" style={{ fill: "#FFFFFF" }} />
+                            x={40 + 1120 * Afloat / (Afloat + Bfloat + 0.0001)} y="20" width="5" height="60" style={{ fill: "#FFFFFF" }} />
 
                         <image href={resultBarSVG} width="1200" height="100" />
                     </svg>
