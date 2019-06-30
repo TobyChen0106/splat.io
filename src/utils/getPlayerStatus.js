@@ -1,5 +1,5 @@
-import { GAME_STATE, PLAYER_STATUS } from '../enum'
-var dive_counter = 0;
+import {  PLAYER_STATUS } from '../enum'
+//var dive_counter = 0;
 
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);

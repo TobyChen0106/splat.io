@@ -1,4 +1,4 @@
-import { GAME_STATE, PLAYER_STATUS } from '../enum'
+import { PLAYER_STATUS } from '../enum'
 export const getInkAmount = (inkConsumption, playerData, localPlayerData) => {
     var new_inkAmount = localPlayerData.inkAmount;
     var new_playerHealth = localPlayerData.playerHealth;

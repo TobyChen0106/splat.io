@@ -37,6 +37,8 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
         // data that most emit to server
+        this._ismount = false;
+        
         this.playerData = {
             roomId: this.props.roomId,
             teamColor: this.props.teamColor,
@@ -89,7 +91,7 @@ class Game extends React.Component {
 
         this.calculateResultFlag = 0;
         this.mouseScale = 1;
-
+        this.updateGameIntervalId=0;
         this.state = {
             gameBoardWidth: 1600,
             gameBoardHeight: 900,
@@ -135,6 +137,7 @@ class Game extends React.Component {
     }
 
     updateGame = () => {
+        //console.log('update game')
         if (this.localPlayerData.gameState === GAME_STATE.GAMING || this.localPlayerData.gameState === GAME_STATE.FREEZE) {
             // drawOtherPlayers(this.splatRef, this.bulletRef, this.playerRef, this.splatAnimationRef, this.otherPlayerData);
 
@@ -238,6 +241,7 @@ class Game extends React.Component {
 
             if (this.localPlayerData.gameTime <= -5) {
                 this.localPlayerData.gameState = GAME_STATE.FINISH;
+                clearInterval(this.updateGameIntervalId);
             }
         }
 
@@ -252,6 +256,7 @@ class Game extends React.Component {
     }
 
     componentDidMount = () => {
+        this._ismount = true;
         window.addEventListener("keyup", this.onKeyUp);
         window.addEventListener("keydown", this.onKeyDown);
         window.addEventListener("mousemove", this.trackMouse);
@@ -265,6 +270,19 @@ class Game extends React.Component {
         audio.play();
     }
 
+    // componentWillUnmount = () => {
+    //     this._ismount = false;
+    //     clearInterval(this.interval);
+    //     window.removeEventListener("keyup", this.onKeyUp);
+    //     window.removeEventListener("keydown", this.onKeyDown);
+    //     window.removeEventListener("mousemove", this.trackMouse);
+    //     window.removeEventListener("mousedown", this.mouseDown);
+    //     window.removeEventListener("mouseup", this.mouseUp);
+    //     audio.pause()
+    //     audio2.pause()
+        
+    //  }
+
     render() {
         let gameTime = this.localPlayerData.gameTime > 0 ? this.localPlayerData.gameTime : 0;
         // console.log(this.otherPlayerData)
@@ -272,7 +290,9 @@ class Game extends React.Component {
         var anouncement = [];
         for (var i = 0; i < this.state.anouncement.length; ++i) {
             anouncement.push(
-                <text id="anouncement" x="50" y={40 + 30 * i} width="300" height="200" >{this.state.anouncement[i]}</text>
+                <text id="anouncement" x="50" y={40 + 30 * i} width="300" height="200" key={i}>
+                {this.state.anouncement[i]}
+                </text>
             )
         }
 

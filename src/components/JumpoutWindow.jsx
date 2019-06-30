@@ -4,7 +4,7 @@ import './JumpOutWindow.css'
 
 function myForm(e){
     return(
-        <div className='Jump-component'>
+        <div className='Jump-component' key={e}>
             <h3>{e}</h3>
             <input></input>
         </div>

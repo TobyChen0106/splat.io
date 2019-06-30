@@ -7,7 +7,7 @@ class UserBlock extends React.Component {
     render() {
         return(
             <div className='UserBlock-container'>
-                <img src={this.props.team === 'A'? green:orange} />
+                <img src={this.props.team === 'A'? green:orange} alt={this.props.userName} />
                 <h3>{this.props.userName}</h3>
                 <h4>{this.props.playerRecord || 'guest'}</h4>
             </div>
