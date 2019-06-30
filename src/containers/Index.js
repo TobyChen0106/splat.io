@@ -14,7 +14,7 @@ class Index extends Component {
         super(props);
         // this.socket = io(host);
         // this.socket = io('http://localhost:8080');
-        this.socket = io('http://192.168.0.175:8080');
+        this.socket = io('https://splat-io.herokuapp.com');
         this.state = {
             roomId: null,
             name: 'Player',
