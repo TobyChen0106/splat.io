@@ -31,7 +31,6 @@ class JumpOutWindow extends Component {
     }
 
     closeJumpOut = () => {
-        console.log(this.state.show)
         this.setState({show: {display: "none"}})
     }
 
@@ -42,20 +41,14 @@ class JumpOutWindow extends Component {
     }
 
     handleSubmit(id) {
-        console.log(id)
-        this.props.socket.emit(id, {
-            form: this.state.form
-        })
+        this.props.socket.emit(id, {...this.state.form})
 
         this.props.socket.once('recieved' + id, (data) => {
-            console.log("recieved ",data)
-            if(data.message === 'OK') 
-                this.closeJumpOut()
+            if(data.message === 'OK') this.closeJumpOut()
         })
     }
 
     render() {
-        //console.log(this.state.form)
         return(
             <div style={this.state.show} className='Jump-bg'>
                 <div className="Jump-container">

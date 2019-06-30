@@ -11,6 +11,10 @@
     width: 100%; 
     top: 0;
     z-index: -2;
+
+    background: rgba(83, 104, 114, 0.89);
+    background-image: url('../images/bg.png'), url(../images/cross2.png), 
+        radial-gradient(farthest-corner at 45px 45px , #FF0000 0%, #0000FF 100%)
 }
 
 #bg_img {
@@ -42,6 +46,7 @@
 
 .Home_main img {
     animation: size-transform 1.5s infinite;
+    margin-bottom: 15px;
 }
 
 @keyframes size-transform {
@@ -73,4 +78,35 @@
     width:300px;
     font-size: 28px;
     margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+.Home-intro {
+    position: absolute;
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    height: 300px;
+    bottom: 60px;
+    z-index: 10;
+}
+.Home-intro div {
+    position: relative;
+    width: 50%;
+    height: 300px;
+    float: right;
+}
+
+
+.Home-intro img{
+    object-fit: cover;
+    width: 100%;
+}
+
+#how2play img {
+    margin-top: 70px;
+}
+#how2win img {
+    margin-top: 20px;
+    width: 80%;
 }

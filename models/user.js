@@ -18,9 +18,13 @@ const UserSchema = new Schema({
 	winning: {
 		type: Number,
 		required: true
+	},
+	kill: {
+		type: Number,
+		required: true
 	}
 })
 
-const User = mongoose.model('user', UserSchema)
+const User = mongoose.model('user', UserSchema, 'UserData')
 
 module.exports = User

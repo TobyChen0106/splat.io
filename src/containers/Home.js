@@ -3,6 +3,8 @@ import temp from '../images/temp.gif'
 import logo from '../images/logo.png'
 import JumpOutWindow from '../components/JumpoutWindow'
 import './Home.css'
+import How2Play from '../images/rule1.png'
+import How2Win from '../images/rule2.png'
 
 class Home extends Component {
     constructor(props) {
@@ -10,23 +12,31 @@ class Home extends Component {
         this.state = {
             login_display : {display: "none"},
             signup_display: {display: "none"},
-            isLoggedin: false,
-            userName: 'Player',
-            userStatus: 'Guest'
+            message: ''
         }
     }
 
     componentWillMount() {
-        this.props.socket.once('recievedlogin', (data) => {
-            console.log("home", data)
+        this.props.socket.on('recievedlogin', (data) => {
             if (data.message === 'OK'){
-                this.setState({
-                    isLoggedin: true,
-                    userName: data.userName,
-                    userStatus: data.userStatus
-                })
+                this.props.setUserName(data.userName);
+                this.props.setUserStatus(data.userStatus);
+                this.setState({ message: data.message })
             }
-            
+            else {
+                console.log(data.message);
+            }
+        })
+
+        this.props.socket.on('recievedsignup', (data) => {
+            if (data.message === 'OK'){
+                this.props.setUserName(data.userName);
+                this.props.setUserStatus(data.userStatus);
+                this.setState({ message: data.message })
+            }
+            else {
+                console.log(data.message);
+            }
         })
     }
 
@@ -67,17 +77,17 @@ class Home extends Component {
                 <button className='App_button top-button' onClick={() => this.handleDisplay('login')}>
                     Log in
                 </button>
-                <h3  id='hiMessage'>Hi, {this.state.userName}</h3>
+                <h3  id='hiMessage'>Hi, {this.props.userName}</h3>
                 
                 <JumpOutWindow 
                     display={this.state.login_display} 
-                    title="Log in" form={{id: '', pw: ''}} list={["id", "pw"]}
+                    title="Log in" form={{email: '', password: ''}} list={["email", "password"]}
                     submit="Log in!" id="login"
                     socket={this.props.socket}
                     />
                 <JumpOutWindow 
                     display={this.state.signup_display}
-                    title='Sign up' form={{email:'',id: '', pw: '', pw_again:''}} list={["email", "id", "pw", "pw again"]}
+                    title='Sign up' form={{name: '', email:'', password: ''}} list={["name", "email", "password"]}
                     submit="Sign up!" id='signup'
                     socket={this.props.socket}
                     />
@@ -93,12 +103,27 @@ class Home extends Component {
                         Play!
                     </button>
                 </div>
+
+                <div className='Home-intro'>
+                    <div id='how2play'>
+                        <img src={How2Play} alt="how to play"></img>
+                    </div>
+                    <div id='how2win'>
+                        <img src={How2Win} alt="how to wing"></img>
+                    </div>
+                </div>
+
                 <div className='Home_mask'></div>
                 <div id='bg_wrapper'>
-                    <img src={temp} id='bg_img'></img>
+                    {/*<img src={temp} id='bg_img'></img>*/}
                 </div>
             </div>
         )
+    }
+
+    componentWillUnmount = () => {
+        this.props.socket.off('recievedlogin');
+        this.props.socket.off('recievedsignup');
     }
 }
 
