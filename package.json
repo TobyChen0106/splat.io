@@ -7,7 +7,7 @@
     "canvas": "^2.5.0",
     "canvg": "^2.0.0",
     "express": "^4.17.1",
-    "jsdom": "^13.2.0",
+    "jsdom": "^16.5.0",
     "loadash": "^1.0.0",
     "mongodb": "^3.2.7",
     "mongoose": "^5.6.1",
